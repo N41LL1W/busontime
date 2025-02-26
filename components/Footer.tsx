@@ -7,7 +7,7 @@ const Footer: React.FC = () => {
         <p>
           &copy; {new Date().getFullYear()} BUSONTIME. Desenvolvido por{' '}
           <a
-            href="https://github.com/WillianBatista"
+            href="https://github.com/N41LL1W"
             target="_blank"
             rel="noopener noreferrer"
             className="text-blue-400 underline"

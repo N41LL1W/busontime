@@ -1,9 +1,11 @@
 import React from 'react';
 import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
+import HorariosPage from '../components/HorariosPage'; // Importando o componente que exibe os horários
+import Footer from '../components/Footer';
+import Header from '../components/Header';
 
 const HomePage = () => {
-  // Definindo os tipos corretamente
   const mutationRibeiraoJardinopolis = useMutation({
     mutationFn: async (): Promise<string> => {
       const response = await axios.post('/api/scrap-ribeirao-jardinopolis');
@@ -20,6 +22,9 @@ const HomePage = () => {
 
   return (
     <div>
+      <div>
+        <Header />
+      </div>
       <h1>Bem-vindo ao sistema de raspagem de horários!</h1>
       <div className="buttons flex gap-4 mt-4">
         <button
@@ -45,6 +50,13 @@ const HomePage = () => {
         </button>
         {mutationLinha01.status === 'error' && <p className="text-red-500">Erro ao tentar raspar dados.</p>}
         {mutationLinha01.status === 'success' && <p className="text-green-500">{mutationLinha01.data}</p>}
+      </div>
+        <div>
+          {/* Exibindo a tabela de horários */}
+          <HorariosPage />
+        </div>
+        <div>
+        <Footer />
       </div>
     </div>
   );
