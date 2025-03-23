@@ -2,7 +2,7 @@ import React from 'react';
 
 const Footer: React.FC = () => {
   return (
-    <footer className="bg-gray-800 text-white py-4 mt-4">
+    <footer className="bg-gray-800 text-white py-4 mt-4 fixed bottom-0 left-0 right-0 z-50">
       <div className="container mx-auto text-center text-sm">
         <p>
           &copy; {new Date().getFullYear()} BUSONTIME. Desenvolvido por{' '}

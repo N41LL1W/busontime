@@ -22,10 +22,13 @@ const HomePage = () => {
 
   return (
     <div>
-      <div>
+
+      <div className='mb-10 pb-10'>
         <Header />
       </div>
+
       <h1>Bem-vindo ao sistema de raspagem de horários!</h1>
+
       <div className="buttons flex gap-4 mt-4">
         <button
           onClick={() => mutationRibeiraoJardinopolis.mutate()}
@@ -51,7 +54,8 @@ const HomePage = () => {
         {mutationLinha01.status === 'error' && <p className="text-red-500">Erro ao tentar raspar dados.</p>}
         {mutationLinha01.status === 'success' && <p className="text-green-500">{mutationLinha01.data}</p>}
       </div>
-        <div>
+
+        <div className='mb-20'>
           {/* Exibindo a tabela de horários */}
           <HorariosPage />
         </div>
