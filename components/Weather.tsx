@@ -141,100 +141,103 @@ const WeatherComponent = () => {
     
     
     return (
-        <div className="p-4 max-w-2xl mx-auto">
-        <h1 className="text-xl font-bold text-gray-400">Clima</h1>
-        <input
-        type="text"
-        value={city}
-        onChange={(e) => setCity(e.target.value)}
-        placeholder="Digite sua cidade"
-        className="border rounded p-2 text-gray-800 w-full mt-2"
-        />
-        <button
-        onClick={fetchWeatherData}
-        className="ml-2 bg-gray-500 text-white p-2 rounded mt-2"
-        >
-        Ver Clima
-        </button>
-        
-        {error && <p className="text-red-500 mt-4">{error}</p>}
-        
-        {weatherData && (
-            <div className={`grid grid-cols-2 mt-2 text-white p-1 rounded-lg shadow-md ${getBackgroundColor()}`}>
-            <div className="justify-items-center">
-            <h2 className="font-bold text-lg">{weatherData.city} - {weatherData.country}</h2>
-            <img
-            src={weatherData.weatherIcon}
-            alt="Ícone do clima"
-            className=""
+        <div className="p-4 max-w-2xl mx-auto z-20">
+
+            <h1 className=" mt-8 text-xl font-bold text-gray-400">Clima</h1>
+
+            <input
+            type="text"
+            value={city}
+            onChange={(e) => setCity(e.target.value)}
+            placeholder="Digite sua cidade"
+            className="border rounded p-2 text-gray-800 w-full mt-2"
             />
-            <p>{weatherData.description}</p>
-            <p>{weatherData.temperature}°C</p>
-            </div>
-            <div className="grid grid-rows-3 grid-cols-3 gap-2 text-center mt-2">
-            {/* Temperaturas Mínima e Máxima */}
-            <div className="col-span-3 grid grid-cols-2">
-            <div>
-            <p className="font-bold">{weatherData.tempMin}ºC</p>
-            <p className="text-sm">Mínima</p>
-            </div>
-            <div>
-            <p className="font-bold">{weatherData.tempMax}ºC</p>
-            <p className="text-sm">Máxima</p>
-            </div>
-            </div>
+
+            <button
+            onClick={fetchWeatherData}
+            className="ml-2 bg-gray-500 text-white p-2 rounded mt-2"
+            >
+            Ver Clima
+            </button>
             
-            {/* Nascer e Pôr do Sol */}
-            <div className="col-span-3 grid grid-cols-2">
-            <div>
-            <p className="font-bold">{weatherData.sunrise}</p>
-            <p className="text-sm">Nascer do Sol</p>
-            </div>
-            <div>
-            <p className="font-bold">{weatherData.sunset}</p>
-            <p className="text-sm">Pôr do Sol</p>
-            </div>
-            </div>
-            
-            {/* Botão e Horário Local */}
-            <div className="col-span-3 grid grid-cols-2">
-            <p className="font-bold">Horário Local: {weatherData.date}</p>
-            {weatherData && (
-                <button
-                onClick={() => setShowDetails(!showDetails)}
-                className=" text-white px-4 py-2 rounded mt-1"
-                >
-                {showDetails ? "Esconder Informações" : "Mais Informações"}
-                </button>
+                {error && <p className="text-red-500 mt-4">{error}</p>}
+                
+                {weatherData && (
+                    <div className={`grid grid-cols-2 mt-1 text-white p-1 rounded-lg shadow-md ${getBackgroundColor()}`}>
+                        <div className="justify-items-center">
+                            <h2 className="font-bold text-lg mt-4">{weatherData.city} - {weatherData.country}</h2>
+                            <img
+                            src={weatherData.weatherIcon}
+                            alt="Ícone do clima"
+                            className=""
+                            />
+                            <p>{weatherData.description}</p>
+                            <p>{weatherData.temperature} °C</p>
+                        </div>
+                        <div className="grid grid-rows-3 grid-cols-3 gap-2 text-center mt-4">
+                            {/* Temperaturas Mínima e Máxima */}
+                            <div className="col-span-3 grid grid-cols-2">
+                                <div>
+                                    <p className="font-bold">{weatherData.tempMin} ºC</p>
+                                    <p className="text-sm">Mínima</p>
+                                </div>
+                                <div>
+                                    <p className="font-bold">{weatherData.tempMax} ºC</p>
+                                    <p className="text-sm">Máxima</p>
+                                </div>
+                        </div>
+                        
+                        {/* Nascer e Pôr do Sol */}
+                        <div className="col-span-3 grid grid-cols-2">
+                            <div>
+                                <p className="font-bold">{weatherData.sunrise}</p>
+                                <p className="text-sm">Nascer do Sol</p>
+                            </div>
+                            <div>
+                                <p className="font-bold">{weatherData.sunset}</p>
+                                <p className="text-sm">Pôr do Sol</p>
+                            </div>
+                        </div>
+                        
+                        {/* Botão e Horário Local */}
+                        <div className="col-span-3 grid grid-cols-2">
+                            <p className="font-bold">Horário Local: {weatherData.date}</p>
+                            {weatherData && (
+                                <button
+                                onClick={() => setShowDetails(!showDetails)}
+                                className=" text-white px-4 py-2 rounded mt-1"
+                                >
+                                {showDetails ? "Esconder Informações" : "Mais Informações"}
+                                </button>
+                            )}
+                        </div>
+                    </div>
+                </div>
             )}
-            </div>
-            </div>
-            </div>
-        )}
         
         
         
-        {weatherData && showDetails && (
-            <div className="overflow-x-auto">
-            <h2 className="text-white font-bold mb-2">Dados completos da API</h2>
-            <table className="w-full border-collapse border border-gray-600 text-white">
-            <thead>
-            <tr className="bg-gray-800">
-            <th className="border border-gray-600 px-4 py-2 text-left">Propriedade</th>
-            <th className="border border-gray-600 px-4 py-2 text-left">Valor</th>
-            </tr>
-            </thead>
-            <tbody>
-            {Object.entries(weatherData).map(([key, value]) => (
-                <tr key={key} className="bg-gray-700">
-                <td className="border border-gray-600 px-4 py-2">{key}</td>
-                <td className="border border-gray-600 px-4 py-2">{String(value)}</td>
-                </tr>
-            ))}
-            </tbody>
-            </table>
-            </div>
-        )}
+            {weatherData && showDetails && (
+                <div className="overflow-x-auto">
+                    <h2 className="text-white font-bold mb-2">Dados completos da API</h2>
+                        <table className="w-full border-collapse border border-gray-600 text-white">
+                            <thead>
+                                <tr className="bg-gray-800">
+                                    <th className="border border-gray-600 px-4 py-2 text-left">Propriedade</th>
+                                    <th className="border border-gray-600 px-4 py-2 text-left">Valor</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            {Object.entries(weatherData).map(([key, value]) => (
+                                <tr key={key} className="bg-gray-700">
+                                    <td className="border border-gray-600 px-4 py-2">{key}</td>
+                                    <td className="border border-gray-600 px-4 py-2">{String(value)}</td>
+                                </tr>
+                            ))}
+                            </tbody>
+                        </table>
+                </div>
+            )}
         </div>
     );
 };
