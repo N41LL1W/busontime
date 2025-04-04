@@ -5,7 +5,7 @@ import HorariosPage from '../components/HorariosPage'; // Importando o component
 import Footer from '../components/Footer';
 import Header from '../components/Header';
 
-const HomePage = () => {
+const Page = () => {
   const mutationRibeiraoJardinopolis = useMutation({
     mutationFn: async (): Promise<string> => {
       const response = await axios.post('/api/scrap-ribeirao-jardinopolis');
@@ -66,4 +66,4 @@ const HomePage = () => {
   );
 };
 
-export default HomePage;
+export default Page;

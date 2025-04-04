@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
-import HorarioTable from "../components/HorarioTable";
 import WeatherComponent from "../components/Weather";
-import Footer from '../components/Footer';
-import Header from '../components/Header';
+import BusScheduleFilter from "../components/BusScheduleFilter";
+import Calendar from "../components/Calendar";
+import Footer from "../components/Footer";
+import Header from "../components/Header";
 
-
-const Page: React.FC = () => {
+const HomePage: React.FC = () => {
   const [horarios, setHorarios] = useState([]);
 
   useEffect(() => {
@@ -21,9 +21,9 @@ const Page: React.FC = () => {
         <Header />
       </div>
       <div className="p-4">
-          <WeatherComponent />
-        <h1 className="text-2xl font-bold mb-4">Tabela de Horários</h1>
-        <HorarioTable horarios={horarios} />
+        <WeatherComponent />
+        <Calendar />
+        <BusScheduleFilter schedules={horarios} />
       </div>
       <div className="mt-10">
         <Footer />
@@ -32,4 +32,4 @@ const Page: React.FC = () => {
   );
 };
 
-export default Page;
+export default HomePage;
