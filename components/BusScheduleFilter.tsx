@@ -1,151 +1,198 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { Schedule } from "@/types";
-import { format, isAfter } from "date-fns";
-import { Card, CardContent } from "./ui/card";
-import { Button } from "./ui/button";
-import { Input } from "./ui/input";
-import { Calendar } from "./ui/calendar";
-import { ptBR } from "date-fns/locale";
+import React, { useEffect, useState } from "react";
+import { format, isBefore } from "date-fns";
+import { CalendarIcon, ClockIcon, FilterX } from "lucide-react";
+
+import { Calendar } from "@/components/ui/calendar";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Input } from "@/components/ui/input";
+
+import type { Horario } from "@/types/schedule";
 
 interface BusScheduleFilterProps {
-  schedules: Schedule[];
+  schedules: Horario[];
 }
 
-export function BusScheduleFilter({ schedules }: BusScheduleFilterProps) {
+const BusScheduleFilter: React.FC<BusScheduleFilterProps> = ({ schedules }) => {
   const now = new Date();
   const [selectedDate, setSelectedDate] = useState<Date>(now);
-  const [selectedTime, setSelectedTime] = useState<string>(format(now, "HH:mm"));
-  const [filteredSchedules, setFilteredSchedules] = useState<Schedule[]>([]);
-  const [origin, setOrigin] = useState<string>("");
-  const [destination, setDestination] = useState<string>("");
+  const [selectedTime, setSelectedTime] = useState(format(now, "HH:mm"));
+  const [origin, setOrigin] = useState("");
+  const [destination, setDestination] = useState("");
+  const [filteredSchedules, setFilteredSchedules] = useState<Horario[]>([]);
+  const [currentPage, setCurrentPage] = useState(1);
 
-  // Função para mapear a data para o valor customizado do banco
-  const getCategoriaDia = (date: Date) => {
+  const itensPorPagina = 5;
+  const totalPages = Math.ceil(filteredSchedules.length / itensPorPagina);
+
+  const getCategoriaDia = (date: Date): string => {
     const dia = date.getDay();
     if (dia === 0) return "Domingo e Feriados";
     if (dia === 6) return "Sábado";
     return "Segunda à Sexta";
   };
 
+  const isHoje = format(selectedDate, "yyyy-MM-dd") === format(now, "yyyy-MM-dd");
+
   const filterSchedules = () => {
     const categoriaDiaAtual = getCategoriaDia(selectedDate);
-    const hoje = format(now, "yyyy-MM-dd");
-    const dataSelecionada = format(selectedDate, "yyyy-MM-dd");
-    const isHoje = dataSelecionada === hoje;
+    let resultados = schedules.filter((schedule) => schedule.diaDaSemana === categoriaDiaAtual);
 
-    let resultados = schedules.filter(
-      (schedule) => schedule.diaDaSemana === categoriaDiaAtual
-    );
-
-    // Filtro por origem e destino
     if (origin) {
       resultados = resultados.filter((s) =>
-        s.itinerario.toLowerCase().includes(origin.toLowerCase())
+        s.origem.toLowerCase().includes(origin.toLowerCase())
       );
     }
 
     if (destination) {
       resultados = resultados.filter((s) =>
-        s.itinerario.toLowerCase().includes(destination.toLowerCase())
+        s.destino.toLowerCase().includes(destination.toLowerCase())
       );
     }
 
-    // Filtro por horário selecionado (considerando somente horários após o escolhido)
-    if (selectedTime) {
-      resultados = resultados.filter((s) => {
-        const [hora, minuto] = selectedTime.split(":").map(Number);
-        const horarioSelecionado = new Date(selectedDate);
-        horarioSelecionado.setHours(hora, minuto, 0, 0);
-
-        const [horaHorario, minutoHorario] = s.horario.split(":").map(Number);
-        const horarioBanco = new Date(selectedDate);
-        horarioBanco.setHours(horaHorario, minutoHorario, 0, 0);
-
-        return isAfter(horarioBanco, horarioSelecionado);
-      });
-    }
+    resultados = resultados.filter((s) => s.horario >= selectedTime);
+    resultados.sort((a, b) => a.horario.localeCompare(b.horario));
 
     setFilteredSchedules(resultados);
+    setCurrentPage(1); // Reseta a página ao aplicar filtro
   };
 
   useEffect(() => {
     filterSchedules();
   }, [selectedDate, selectedTime, origin, destination, schedules]);
 
-  return (
-    <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-      <Card>
-        <CardContent className="pt-4 flex flex-col gap-2">
-          <h2 className="font-semibold text-lg">Escolha a data:</h2>
-          <Calendar
-            mode="single"
-            selected={selectedDate}
-            onSelect={(date) => date && setSelectedDate(date)}
-            locale={ptBR}
-            fromDate={now} // bloqueia datas passadas
-          />
-        </CardContent>
-      </Card>
+  const handleClear = () => {
+    const now = new Date();
+    setSelectedDate(now);
+    setSelectedTime(format(now, "HH:mm"));
+    setOrigin("");
+    setDestination("");
+  };
 
-      <Card>
-        <CardContent className="pt-4 flex flex-col gap-2">
-          <h2 className="font-semibold text-lg">Escolha o horário:</h2>
-          <Input
-            type="time"
-            value={selectedTime}
-            onChange={(e) => setSelectedTime(e.target.value)}
-            min={
-              format(selectedDate, "yyyy-MM-dd") === format(now, "yyyy-MM-dd")
-                ? format(now, "HH:mm")
-                : "00:00"
-            }
-            className="w-[100px]"
-            onFocus={(e) => e.target.showPicker?.()} // Força abrir o seletor
-          />
-        </CardContent>
-      </Card>
+  const isDateDisabled = (date: Date) => {
+    return isBefore(date, now.setHours(0, 0, 0, 0));
+  };
 
-      <Card>
-        <CardContent className="pt-4 flex flex-col gap-2">
-          <h2 className="font-semibold text-lg">Filtro por itinerário:</h2>
-          <Input
-            placeholder="Origem"
-            value={origin}
-            onChange={(e) => setOrigin(e.target.value)}
-          />
-          <Input
-            placeholder="Destino"
-            value={destination}
-            onChange={(e) => setDestination(e.target.value)}
-          />
-          <Button variant="default" onClick={filterSchedules}>
-            Filtrar
-          </Button>
-        </CardContent>
-      </Card>
-
-      <div className="md:col-span-2 lg:col-span-3 mt-4">
-        <h3 className="font-semibold text-lg mb-2">
-          Resultados encontrados: {filteredSchedules.length}
-        </h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
-          {filteredSchedules.map((s, i) => (
-            <Card key={i}>
-              <CardContent className="p-4">
-                <p><strong>Horário:</strong> {s.horario}</p>
-                <p><strong>Itinerário:</strong> {s.itinerario}</p>
-                <p><strong>Dia da Semana:</strong> {s.diaDaSemana}</p>
-                {s.tarifa && <p><strong>Tarifa:</strong> R$ {s.tarifa}</p>}
-                {s.observacao && <p><strong>Obs.:</strong> {s.observacao}</p>}
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-      </div>
-    </div>
+  const paginatedSchedules = filteredSchedules.slice(
+    (currentPage - 1) * itensPorPagina,
+    currentPage * itensPorPagina
   );
-}
+
+  return (
+    <Card className="p-6 max-w-5xl mx-auto shadow-md bg-white">
+      <CardContent className="flex flex-col gap-6">
+        {/* Filtros */}
+        <div className="grid md:grid-cols-2 gap-4">
+          <div className="flex items-center gap-3">
+            <CalendarIcon className="text-gray-600" />
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button className="w-[160px] justify-start text-left font-normal">
+                  {format(selectedDate, "dd/MM/yyyy")}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0">
+                <Calendar
+                  mode="single"
+                  selected={selectedDate}
+                  onSelect={(date) => date && setSelectedDate(date)}
+                  disabled={isDateDisabled}
+                />
+              </PopoverContent>
+            </Popover>
+
+            <ClockIcon className="text-gray-600" />
+            <Input
+              type="time"
+              value={selectedTime}
+              onChange={(e) => setSelectedTime(e.target.value)}
+              min={isHoje ? format(now, "HH:mm") : undefined}
+              className="w-[100px]"
+              onFocus={(e) => e.target.showPicker?.()}
+            />
+          </div>
+
+          <div className="flex gap-3">
+            <Input
+              type="text"
+              value={origin}
+              onChange={(e) => setOrigin(e.target.value)}
+              placeholder="Origem"
+            />
+            <Input
+              type="text"
+              value={destination}
+              onChange={(e) => setDestination(e.target.value)}
+              placeholder="Destino"
+            />
+            <Button
+              variant="destructive"
+              onClick={handleClear}
+              className="whitespace-nowrap"
+            >
+              <FilterX className="mr-2 w-4 h-4" />
+              Limpar
+            </Button>
+          </div>
+        </div>
+
+        {/* Resultados */}
+        <div>
+          <h3 className="font-bold text-lg mb-3">Horários encontrados:</h3>
+          {paginatedSchedules.length > 0 ? (
+            <>
+              <ul className="divide-y border rounded-md">
+                {paginatedSchedules.map((schedule) => (
+                  <li key={schedule.id} className="p-3 text-sm">
+                    <div className="font-semibold text-gray-800">
+                      {schedule.horario} - {schedule.origem} ➝ {schedule.destino}
+                    </div>
+                    {schedule.observacao && (
+                      <div className="text-xs text-gray-500">{schedule.observacao}</div>
+                    )}
+                  </li>
+                ))}
+              </ul>
+
+              {/* Paginação */}
+              <div className="flex justify-center items-center gap-2 mt-4 flex-wrap">
+                <Button
+                  variant="ghost"
+                  disabled={currentPage === 1}
+                  onClick={() => setCurrentPage((p) => p - 1)}
+                >
+                  Anterior
+                </Button>
+
+                {[...Array(totalPages)].map((_, index) => (
+                  <Button
+                    key={index}
+                    variant={currentPage === index + 1 ? "default" : "ghost"}
+                    onClick={() => setCurrentPage(index + 1)}
+                  >
+                    {index + 1}
+                  </Button>
+                ))}
+
+                <Button
+                  variant="ghost"
+                  disabled={currentPage === totalPages}
+                  onClick={() => setCurrentPage((p) => p + 1)}
+                >
+                  Próximo
+                </Button>
+              </div>
+            </>
+          ) : (
+            <p className="text-gray-500 italic">Nenhum horário disponível.</p>
+          )}
+        </div>
+      </CardContent>
+    </Card>
+  );
+};
 
 export default BusScheduleFilter;

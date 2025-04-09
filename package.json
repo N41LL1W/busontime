@@ -13,13 +13,15 @@
     "dayjs": "^1.11.13",
     "lucide-react": "^0.487.0",
     "next": "^15.2.4",
+    "node-fetch": "^3.3.2",
     "puppeteer": "^24.1.0",
     "react": "^18.3.1",
     "react-day-picker": "^9.6.4",
     "react-dom": "^18.3.1",
     "tailwind-merge": "^3.1.0",
     "tailwind-variants": "^1.0.0",
-    "tailwindcss-animate": "^1.0.7"
+    "tailwindcss-animate": "^1.0.7",
+    "tesseract.js": "^6.0.1"
   },
   "devDependencies": {
     "@types/date-fns": "^2.5.3",
