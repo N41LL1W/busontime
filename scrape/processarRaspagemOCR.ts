@@ -22,9 +22,14 @@ export default async function processarRaspagemOCR(
     });
 
     const textoExtraido = resultado.data.text;
-    console.log(`Texto OCR para ${origem} → ${destino} (${diaDaSemana}):\n`, textoExtraido);
+    console.log(`\n📄 Texto OCR para ${origem} → ${destino} (${diaDaSemana}):\n`);
+    console.log(textoExtraido);
 
     const horarios = limparHorarios(textoExtraido);
+
+    if (!horarios.length) {
+      console.warn("⚠️ Nenhum horário reconhecido — verifique a qualidade da imagem ou formato dos horários.");
+    }
 
     for (const horario of horarios) {
       // Verifica se já existe o mesmo registro antes de inserir
