@@ -22,7 +22,7 @@ const HomePage: React.FC = () => {
       </div>
       <div className="p-4">
         <WeatherComponent />
-        <Calendar />
+
         <BusScheduleFilter schedules={horarios} />
       </div>
       <div className="mt-10">

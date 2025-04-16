@@ -20,6 +20,7 @@ const rotas = [
   { label: "Miguelópolis - Ituverava", endpoint: "scrap-miguelopolis-ituverava" },
   { label: "São Benedito da Cachoerinha - Ituverava", endpoint: "scrap-cachoerinha-ituverava" },
   { label: "Miguelópolis - Baretos (via Guaíra)", endpoint: "scrap-miguelopolis-baretos" },
+  { label: "Saida de Jaboticabal", endpoint: "scrap-jaboticabal" },
 ];
 
 export default function RaspagemButtons() {
