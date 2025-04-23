@@ -1,27 +1,27 @@
 export function extrairHorariosDoTexto(
   texto: string,
-  itinerario: string,
+  origem: string,
   tarifa: string,
   diasSemana: string[]
 ) {
   const horarios: {
-    itinerario: string;
+    origem: string;
     diaDaSemana: string;
     horario: string;
     tarifa: string;
     observacao?: string;
   }[] = [];
 
-  // Normaliza o texto
   const textoNormalizado = texto.toLowerCase();
 
-  // Define os possíveis títulos para separar os blocos
-  const blocos = textoNormalizado.split(/(?=ribeirão preto\s*→\s*brodowski|brodowski\s*→\s*ribeirão preto)/i);
+  const blocos = textoNormalizado.split(
+    /(?=ribeirão preto\s*→\s*[\w\s]+|[\w\s]+\s*→\s*ribeirão preto)/i
+  );
+
+  const origemFormatada = origem.toLowerCase().replace(/\s+/g, " ").trim();
 
   for (const bloco of blocos) {
-    // Confere se o bloco atual é do itinerário desejado
-    const itinerarioFormatado = itinerario.toLowerCase().replace(/\s+/g, " ");
-    if (!bloco.includes(itinerarioFormatado)) continue;
+    if (!bloco.includes(origemFormatada)) continue;
 
     for (const dia of diasSemana) {
       const diaFormatado = dia.toLowerCase();
@@ -36,7 +36,7 @@ export function extrairHorariosDoTexto(
 
         for (const hora of horas) {
           horarios.push({
-            itinerario,
+            origem,
             diaDaSemana: dia,
             horario: hora,
             tarifa,

@@ -1,8 +1,6 @@
-"use client";
-
 import { useState } from "react";
-import axios from "axios";
 import { Button } from "@/components/ui/button";
+import axios from "axios";
 
 const rotas = [
   { label: "Ribeirão - Jardinópolis", endpoint: "scrap-ribeirao-jardinopolis" },
@@ -23,8 +21,11 @@ const rotas = [
   { label: "Saida de Jaboticabal", endpoint: "scrap-jaboticabal" },
 ];
 
+type Status = "idle" | "checking" | "updated" | "outdated";
+
 export default function RaspagemButtons() {
   const [loading, setLoading] = useState<string | null>(null);
+  const [statusMap, setStatusMap] = useState<Record<string, Status>>({});
 
   const scrap = async (endpoint: string) => {
     setLoading(endpoint);
@@ -52,26 +53,90 @@ export default function RaspagemButtons() {
     }
   };
 
-  return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 p-4">
-      {rotas.map(({ label, endpoint }) => (
-        <Button
-          key={endpoint}
-          onClick={() => scrap(endpoint)}
-          disabled={loading !== null}
-        >
-          {loading === endpoint ? "Raspando..." : label}
-        </Button>
-      ))}
+  const scrapAll = async () => {
+    for (const rota of rotas) {
+      await scrap(rota.endpoint);
+    }
+  };
 
-      {/* Botão de resetar banco */}
-      <Button
-        variant="destructive"
-        onClick={resetDB}
-        disabled={loading !== null}
-      >
-        {loading === "reset" ? "Limpando..." : "Zerar Banco de Dados"}
-      </Button>
+  const verificarRotas = async () => {
+    for (const { endpoint } of rotas) {
+      setStatusMap((prev) => ({ ...prev, [endpoint]: "checking" }));
+
+      try {
+        const res = await axios.post(`/api/verificacao/verificar-${endpoint}`);
+        const statusRecebido: Status = res.data?.status === "updated" ? "updated" : "outdated";
+
+        setStatusMap((prev) => ({
+          ...prev,
+          [endpoint]: statusRecebido,
+        }));
+      } catch (error) {
+        setStatusMap((prev) => ({
+          ...prev,
+          [endpoint]: "outdated",
+        }));
+      }
+    }
+  };
+
+  const getColor = (status: Status) => {
+    switch (status) {
+      case "checking":
+        return "bg-yellow-500";
+      case "updated":
+        return "bg-green-500";
+      case "outdated":
+        return "bg-red-500";
+      default:
+        return "bg-gray-300";
+    }
+  };
+
+  return (
+    <div className="p-4 space-y-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        {rotas.map(({ label, endpoint }) => {
+          const status: Status = statusMap[endpoint] ?? "idle";
+
+          return (
+            <div key={endpoint} className="flex flex-col gap-1">
+              <div className="flex items-center gap-2">
+                <Button
+                  onClick={() => scrap(endpoint)}
+                  disabled={loading !== null}
+                  className="flex-1"
+                >
+                  {loading === endpoint ? "Raspando..." : label}
+                </Button>
+                <div
+                  className={`w-4 h-4 rounded-full border ${getColor(status)}`}
+                  title={status}
+                />
+              </div>
+              {status && (
+                <span className="text-xs text-gray-600 ml-2">
+                  {status === "checking" && "Verificando..."}
+                  {status === "updated" && "Atualizado"}
+                  {status === "outdated" && "Desatualizado"}
+                </span>
+              )}
+            </div>
+          );
+        })}
+      </div>
+
+      <div className="flex flex-wrap gap-4 pt-4">
+        <Button onClick={scrapAll} disabled={loading !== null} variant="outline">
+          Raspagem Completa
+        </Button>
+        <Button onClick={verificarRotas} disabled={loading !== null} variant="secondary">
+          Verificar com Semáforo
+        </Button>
+        <Button variant="destructive" onClick={resetDB} disabled={loading !== null}>
+          {loading === "reset" ? "Limpando..." : "Zerar Banco de Dados"}
+        </Button>
+      </div>
     </div>
   );
 }

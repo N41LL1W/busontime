@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import HorarioTable from './HorarioTable';
 import UpdateButton from './UpdateButton';
@@ -17,6 +17,8 @@ const updateHorarios = async () => {
 
 const HorariosPage: React.FC = () => {
   const queryClient = useQueryClient();
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(25);
 
   const { data: horarios, isLoading: isFetching } = useQuery({
     queryKey: ['horarios'],
@@ -26,10 +28,17 @@ const HorariosPage: React.FC = () => {
   const mutation = useMutation({
     mutationFn: updateHorarios,
     onSuccess: () => {
-      // Atualiza a lista de horários após a raspagem
       queryClient.invalidateQueries({ queryKey: ['horarios'] });
     },
   });
+
+  const totalItems = horarios?.length || 0;
+  const totalPages = itemsPerPage === 0 ? 1 : Math.ceil(totalItems / itemsPerPage);
+
+  const paginatedHorarios =
+    itemsPerPage === 0
+      ? horarios
+      : horarios?.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
   return (
     <div className="p-4">
@@ -40,8 +49,45 @@ const HorariosPage: React.FC = () => {
           isLoading={mutation.status === 'pending' || isFetching}
         />
       </div>
+
+      <div className="mb-4 flex items-center gap-2">
+        <label htmlFor="itemsPerPage">Itens por página:</label>
+        <select
+          id="itemsPerPage"
+          className="border p-1 rounded"
+          value={itemsPerPage}
+          onChange={(e) => {
+            const value = parseInt(e.target.value);
+            setItemsPerPage(value);
+            setCurrentPage(1);
+          }}
+        >
+          <option value={25}>25</option>
+          <option value={50}>50</option>
+          <option value={100}>100</option>
+          <option value={0}>Mostrar tudo</option>
+        </select>
+      </div>
+
       {Array.isArray(horarios) && horarios.length > 0 ? (
-        <HorarioTable horarios={horarios} />
+        <>
+          <HorarioTable horarios={paginatedHorarios || []} />
+          {itemsPerPage !== 0 && (
+            <div className="mt-4 flex justify-center gap-2">
+              {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                <button
+                  key={page}
+                  className={`px-3 py-1 rounded border ${
+                    page === currentPage ? 'bg-blue-500 text-white' : 'bg-white'
+                  }`}
+                  onClick={() => setCurrentPage(page)}
+                >
+                  {page}
+                </button>
+              ))}
+            </div>
+          )}
+        </>
       ) : (
         <p>Carregando horários...</p>
       )}
