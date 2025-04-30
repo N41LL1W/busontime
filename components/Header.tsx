@@ -28,7 +28,7 @@ const Header: React.FC = () => {
               <img src="/images/logoBusontime-rbg.png" alt="Logo BUSONTIME" className="h-8 md:h-12" />
               <nav className="flex gap-6 text-white text-lg ml-12">
                 <a href="/" className="hover:underline">HOME</a>
-                <a href="/page" className="hover:underline">PAGE</a>
+                <a href="/admin" className="hover:underline">ADMIN</a>
               </nav>
           </div>
         )}
@@ -43,7 +43,7 @@ const Header: React.FC = () => {
             <p className="text-sm mt-10">SISTEMA DE HORÁRIOS DO TRANSPORTE SUBURBANO</p>
             <nav className="flex justify-center gap-6 text-lg mt-2">
               <a href="/" className="hover:underline">HOME</a>
-              <a href="/page" className="hover:underline">PAGE</a>
+              <a href="/admin" className="hover:underline">ADMIN</a>
             </nav>
           </div>
         )}
