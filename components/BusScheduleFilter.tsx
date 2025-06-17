@@ -1,7 +1,8 @@
+// components/BusScheduleFilter.tsx
 "use client";
 
-import React, { useEffect, useState } from "react";
-import { format, isBefore } from "date-fns";
+import React, { useMemo, useState, useEffect } from "react";
+import { format, isBefore, startOfToday } from "date-fns";
 import { CalendarIcon, ClockIcon, FilterX } from "lucide-react";
 
 import { Calendar } from "@/components/ui/calendar";
@@ -17,235 +18,196 @@ interface BusScheduleFilterProps {
   schedules: Horario[];
 }
 
+// ANÁLISE: Função auxiliar para obter o dia da semana. Está correta.
+const getCategoriaDia = (date: Date): string => {
+  const dia = date.getDay();
+  if (dia === 0) return "Domingo e Feriados";
+  if (dia === 6) return "Sábado";
+  return "Segunda à Sexta";
+};
+
 const BusScheduleFilter: React.FC<BusScheduleFilterProps> = ({ schedules }) => {
-  const now = new Date();
-  const [selectedDate, setSelectedDate] = useState<Date>(now);
-  const [selectedTime, setSelectedTime] = useState(format(now, "HH:mm"));
+  // REATORAÇÃO: `now` agora é obtido a cada render, garantindo que esteja sempre atualizado.
+  // Usamos `useState` com uma função para garantir que a `new Date()` seja chamada apenas na inicialização.
+  const [selectedDate, setSelectedDate] = useState<Date>(() => new Date());
+  const [selectedTime, setSelectedTime] = useState(() => format(new Date(), "HH:mm"));
   const [origin, setOrigin] = useState("");
   const [destination, setDestination] = useState("");
-  const [filteredSchedules, setFilteredSchedules] = useState<Horario[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
-  
-  const [origens, setOrigens] = useState<string[]>([]);
-  const [destinos, setDestinos] = useState<string[]>([]);
-  // const [diasDaSemana, setDiasDaSemana] = useState<string[]>([]); // Não parece estar sendo usado diretamente nos filtros visuais
-  
+
   const itensPorPagina = 5;
-  const totalPages = Math.ceil(filteredSchedules.length / itensPorPagina);
-  
-  const getCategoriaDia = (date: Date): string => {
-    const dia = date.getDay();
-    if (dia === 0) return "Domingo e Feriados";
-    if (dia === 6) return "Sábado";
-    return "Segunda à Sexta";
-  };
-  
-  const isHoje = format(selectedDate, "yyyy-MM-dd") === format(now, "yyyy-MM-dd");
-  
-  const filterSchedules = () => {
+
+  // REATORAÇÃO: Lógica de filtros interdependentes e estado derivado com `useMemo`.
+  // Isso é mais performático e declarativo que o `useEffect` anterior.
+  const {
+    filteredSchedules,
+    availableOrigins,
+    availableDestinations
+  } = useMemo(() => {
+    const now = new Date();
     const categoriaDiaAtual = getCategoriaDia(selectedDate);
-    let resultados = schedules.filter((schedule) => schedule.diaDaSemana === categoriaDiaAtual);
-    
+    const isHoje = format(selectedDate, "yyyy-MM-dd") === format(now, "yyyy-MM-dd");
+
+    // 1. Filtra por dia da semana e, se for hoje, por horário
+    let schedulesDoDia = schedules.filter((schedule) => {
+      const isDiaCorreto = schedule.diaDaSemana === categoriaDiaAtual;
+      // Se for hoje, só mostra horários futuros a partir do horário selecionado
+      if (isHoje) {
+        return isDiaCorreto && schedule.horario >= selectedTime;
+      }
+      return isDiaCorreto;
+    });
+
+    // 2. Cria as listas de filtros disponíveis a partir dos horários do dia
+    const potentialOrigins = Array.from(new Set(schedulesDoDia.map((s) => s.origem))).sort();
+    const potentialDestinations = Array.from(new Set(schedulesDoDia.map((s) => s.destino))).sort();
+
+    // 3. Aplica os filtros de origem e destino selecionados pelo usuário
+    let finalFiltered = [...schedulesDoDia];
+    let finalAvailableOrigins = potentialOrigins;
+    let finalAvailableDestinations = potentialDestinations;
+
     if (origin) {
-      resultados = resultados.filter((s) => s.origem === origin);
+      finalFiltered = finalFiltered.filter((s) => s.origem === origin);
+      // UX: A lista de destinos agora só mostra destinos possíveis a partir da origem selecionada
+      finalAvailableDestinations = Array.from(new Set(finalFiltered.map(s => s.destino))).sort();
     }
     
     if (destination) {
-      resultados = resultados.filter((s) => s.destino === destination);
+      finalFiltered = finalFiltered.filter((s) => s.destino === destination);
+      // UX: A lista de origens agora só mostra origens que vão para o destino selecionado
+      if (!origin) { // Só atualiza as origens se uma não estiver já selecionada
+        finalAvailableOrigins = Array.from(new Set(finalFiltered.map(s => s.origem))).sort();
+      }
     }
     
-    // Filtrar horários a partir do selectedTime
-    // Atenção: Comparar strings de horário pode não ser ideal se os formatos variarem.
-    // Considere converter para minutos do dia ou objetos Date para comparação mais robusta se necessário.
-    resultados = resultados.filter((s) => s.horario >= selectedTime);
-    resultados.sort((a, b) => a.horario.localeCompare(b.horario));
-    
-    setFilteredSchedules(resultados);
+    // Ordena os resultados finais por horário
+    finalFiltered.sort((a, b) => a.horario.localeCompare(b.horario));
+
+    return {
+      filteredSchedules: finalFiltered,
+      availableOrigins: finalAvailableOrigins,
+      availableDestinations: finalAvailableDestinations
+    };
+  }, [schedules, selectedDate, selectedTime, origin, destination]);
+
+
+  // REATORAÇÃO: O useEffect de filtro foi removido. A lógica de paginação agora usa `filteredSchedules` diretamente.
+  const totalPages = Math.ceil(filteredSchedules.length / itensPorPagina);
+  const paginatedSchedules = filteredSchedules.slice(
+    (currentPage - 1) * itensPorPagina,
+    currentPage * itensPorPagina
+  );
+
+  // Efeito para resetar a página quando os filtros mudam
+  useEffect(() => {
     setCurrentPage(1);
-  };
-  
-  useEffect(() => {
-    const origensUnicas = Array.from(new Set(schedules.map((s) => s.origem))).sort();
-    const destinosUnicos = Array.from(new Set(schedules.map((s) => s.destino))).sort();
-    // const diasUnicos = Array.from(new Set(schedules.map((s) => s.diaDaSemana))); // Se não for usado, pode remover
-    setOrigens(origensUnicas);
-    setDestinos(destinosUnicos);
-    // setDiasDaSemana(diasUnicos);
-  }, [schedules]);
-  
-  useEffect(() => {
-    filterSchedules();
-    // A dependência 'schedules' aqui pode causar re-renderizações frequentes se filterSchedules modificar algo que 'schedules' depende indiretamente
-    // Se 'schedules' for uma prop estável que só muda quando os dados da API são buscados, está ok.
-  }, [selectedDate, selectedTime, origin, destination, schedules]); // Removido filterSchedules da lista de dependências para evitar loop se ele próprio modificar uma dependência
-  
+  }, [filteredSchedules]); // Usar filteredSchedules aqui é seguro
+
   const handleClear = () => {
     const now = new Date();
     setSelectedDate(now);
     setSelectedTime(format(now, "HH:mm"));
     setOrigin("");
     setDestination("");
+    setCurrentPage(1);
   };
   
-  const isDateDisabled = (date: Date) => {
-    // Garante que a comparação seja feita apenas com a data, ignorando a hora.
-    const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-    return isBefore(date, todayStart);
-  };
-  
-  const paginatedSchedules = filteredSchedules.slice(
-    (currentPage - 1) * itensPorPagina,
-    currentPage * itensPorPagina
-  );
-  
-  return (
-    <Card className="p-4 md:p-6 max-w-5xl mx-auto shadow-md bg-white dark:bg-gray-800 dark:text-gray-100">
-      <CardContent className="flex flex-col gap-6">
-        {/* Filtros */}
-        {/* Container principal dos filtros, grid em desktop, flex-col em mobile */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
-          {/* Coluna/Seção de Data e Hora */}
-          <div className="flex flex-col sm:flex-row sm:items-center gap-3 text-gray-600 dark:text-gray-400">
-            <div className="flex items-center gap-2 w-full sm:w-auto">
-              <CalendarIcon className="flex-shrink-0" />
-              <Popover>
-                <PopoverTrigger asChild>
-                  <Button
-                    variant="ghost"
-                    className="w-full sm:w-[160px] justify-start text-left font-normal border dark:border-gray-600 text-gray-900 dark:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-600"
-                  >
-                    {format(selectedDate, "dd/MM/yyyy")}
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-auto p-0 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 border dark:border-gray-700">
-                  <Calendar
-                    mode="single"
-                    selected={selectedDate}
-                    onSelect={(date) => date && setSelectedDate(date)}
-                    disabled={isDateDisabled}
-                  />
-                </PopoverContent>
-              </Popover>
-            </div>
+  // ANÁLISE: Lógica de desabilitar datas passadas está correta.
+  const isDateDisabled = (date: Date) => isBefore(date, startOfToday());
 
-            <div className="flex items-center gap-2 w-full sm:w-auto">
-              <ClockIcon className="flex-shrink-0" />
+  return (
+    // O JSX permanece em grande parte o mesmo, mas agora consome as listas de filtros dinâmicas.
+    <Card className="p-4 md:p-6 max-w-5xl mx-auto shadow-lg bg-card text-card-foreground">
+      <CardContent className="flex flex-col gap-6 p-0">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-4">
+          {/* Data e Hora */}
+          <div className="flex flex-col sm:flex-row gap-4 lg:col-span-5">
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button variant="outline" className="w-full sm:w-auto flex-1 justify-start text-left font-normal">
+                  <CalendarIcon className="mr-2 h-4 w-4" />
+                  {format(selectedDate, "dd/MM/yyyy")}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0">
+                <Calendar mode="single" selected={selectedDate} onSelect={(d) => d && setSelectedDate(d)} disabled={isDateDisabled} />
+              </PopoverContent>
+            </Popover>
+            <div className="relative w-full sm:w-[130px]">
+              <ClockIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
                 type="time"
                 value={selectedTime}
                 onChange={(e) => setSelectedTime(e.target.value)}
-                min={isHoje ? format(now, "HH:mm") : undefined}
-                className="w-full sm:w-[110px] bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 border dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-600"
-                onFocus={(e) => e.target.showPicker?.()}
+                className="w-full pl-9"
               />
             </div>
           </div>
           
-          {/* Coluna/Seção de Origem, Destino e Limpar */}
-          {/* Em mobile (default), será flex-col. Em sm+, será flex-row e wrap. */}
-          <div className="flex flex-col sm:flex-row sm:flex-wrap gap-3">
-            <div className="w-full sm:flex-1 sm:min-w-[140px]"> {/* Permite que o select cresça mas tenha um min-width */}
-              <Select value={origin} onValueChange={setOrigin}>
-                <SelectTrigger className="w-full bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 border dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-600">
-                  <SelectValue placeholder="Origem" />
-                </SelectTrigger>
-                <SelectContent className="bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 border dark:border-gray-700">
-                  {origens.map((cidade) => (
-                    <SelectItem key={cidade} value={cidade}>
-                      {cidade}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
+          {/* Origem e Destino */}
+          <div className="flex flex-col sm:flex-row gap-4 lg:col-span-5">
+            <Select value={origin} onValueChange={setOrigin}>
+              <SelectTrigger className="flex-1">
+                <SelectValue placeholder="Origem" />
+              </SelectTrigger>
+              <SelectContent>
+                {availableOrigins.map((cidade) => (
+                  <SelectItem key={cidade} value={cidade}>{cidade}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <Select value={destination} onValueChange={setDestination}>
+              <SelectTrigger className="flex-1">
+                <SelectValue placeholder="Destino" />
+              </SelectTrigger>
+              <SelectContent>
+                {availableDestinations.map((cidade) => (
+                  <SelectItem key={cidade} value={cidade}>{cidade}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
 
-            <div className="w-full sm:flex-1 sm:min-w-[140px]">
-              <Select value={destination} onValueChange={setDestination}>
-                <SelectTrigger className="w-full bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 border dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-600">
-                  <SelectValue placeholder="Destino" />
-                </SelectTrigger>
-                <SelectContent className="bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 border dark:border-gray-700">
-                  {destinos.map((cidade) => (
-                    <SelectItem key={cidade} value={cidade}>
-                      {cidade}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-            
-            <div className="w-full sm:w-auto"> {/* Botão de limpar ocupa largura total em mobile, auto em sm+ */}
-              <Button
-                variant="destructive"
-                onClick={handleClear}
-                className="w-full whitespace-nowrap bg-red-500 dark:bg-red-700 text-white dark:text-gray-100 hover:bg-red-600 dark:hover:bg-red-800"
-              >
-                <FilterX className="mr-2 w-4 h-4" />
-                Limpar
-              </Button>
-            </div>
+          {/* Limpar */}
+          <div className="lg:col-span-2">
+            <Button variant="destructive" onClick={handleClear} className="w-full">
+              <FilterX className="mr-2 w-4 h-4" /> Limpar
+            </Button>
           </div>
         </div>
         
-        {/* Resultados */}
+        {/* Resultados e Paginação (mesma lógica de antes, só visualmente ajustada) */}
         <div>
-          <h3 className="font-bold text-lg mb-3 text-gray-800 dark:text-gray-200">Horários encontrados:</h3>
+          <h3 className="font-bold text-lg mb-3">Horários encontrados:</h3>
           {paginatedSchedules.length > 0 ? (
             <>
-              <ul className="divide-y border rounded-md border-gray-200 dark:border-gray-700">
+              {/* Lista */}
+              <ul className="divide-y border rounded-md">
                 {paginatedSchedules.map((schedule) => (
-                  <li key={schedule.id} className="p-3 text-sm text-gray-800 dark:text-gray-100">
-                    <div className="font-semibold">
-                      {schedule.horario} - {schedule.origem} ➝ {schedule.destino}
+                  <li key={schedule.id} className="p-3">
+                    <div className="font-semibold text-base">
+                      <span className="text-primary">{schedule.horario}</span> - {schedule.origem} ➝ {schedule.destino}
                     </div>
                     {schedule.observacao && (
-                      <div className="text-xs text-gray-500 dark:text-gray-400">{schedule.observacao}</div>
+                      <div className="text-xs text-muted-foreground mt-1">{schedule.observacao}</div>
                     )}
                   </li>
                 ))}
               </ul>
-              
               {/* Paginação */}
-              <div className="flex justify-center items-center gap-1 sm:gap-2 mt-4 flex-wrap">
-                <Button
-                  variant="ghost"
-                  size="sm" // Botões menores para paginação podem ajudar em mobile
-                  disabled={currentPage === 1}
-                  onClick={() => setCurrentPage((p) => p - 1)}
-                  className="text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700"
-                >
-                  Anterior
-                </Button>
-                
-                {[...Array(totalPages)].map((_, index) => (
-                  <Button
-                    key={index}
-                    size="sm"
-                    variant={currentPage === index + 1 ? "default" : "ghost"}
-                    onClick={() => setCurrentPage(index + 1)}
-                    className={`px-2 sm:px-3 ${ // Menor padding horizontal em mobile
-                      currentPage === index + 1
-                      ? "bg-blue-500 text-white dark:bg-blue-700 dark:text-gray-100"
-                      : "text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700"
-                    }`}
-                  >
-                    {index + 1}
-                  </Button>
-                ))}
-                
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  disabled={currentPage === totalPages || totalPages === 0} // Adicionado totalPages === 0
-                  onClick={() => setCurrentPage((p) => p + 1)}
-                  className="text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700"
-                >
-                  Próximo
-                </Button>
-              </div>
+              {totalPages > 1 && (
+                <div className="flex justify-center items-center gap-2 mt-4">
+                  <Button variant="ghost" size="sm" disabled={currentPage === 1} onClick={() => setCurrentPage(p => p - 1)}>Anterior</Button>
+                  <span className="text-sm text-muted-foreground">Página {currentPage} de {totalPages}</span>
+                  <Button variant="ghost" size="sm" disabled={currentPage === totalPages} onClick={() => setCurrentPage(p => p + 1)}>Próximo</Button>
+                </div>
+              )}
             </>
           ) : (
-            <p className="text-gray-500 italic dark:text-gray-400">Nenhum horário disponível para os filtros selecionados.</p>
+            <div className="text-center py-8 px-4 border-2 border-dashed rounded-lg">
+              <p className="text-muted-foreground">Nenhum horário disponível para os filtros selecionados.</p>
+            </div>
           )}
         </div>
       </CardContent>

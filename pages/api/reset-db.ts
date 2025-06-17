@@ -3,20 +3,13 @@ import prisma from '../../lib/prisma';
 import { NextApiRequest, NextApiResponse } from "next";
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+  // SÓ RODA EM AMBIENTE DE DESENVOLVIMENTO!
+  if (process.env.NODE_ENV !== 'development') {
+    return res.status(403).json({ message: "Acesso proibido." });
+  }
+
   if (req.method !== "POST") {
     return res.status(405).json({ message: "Método não permitido" });
   }
-
-  try {
-    // Apaga todos os registros
-    await prisma.horario.deleteMany();
-
-    // Reseta o contador de IDs (somente funciona com PostgreSQL)
-    await prisma.$executeRawUnsafe(`ALTER SEQUENCE "Horario_id_seq" RESTART WITH 1`);
-
-    res.status(200).json({ message: "Banco de dados resetado com sucesso!" });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Erro ao resetar o banco de dados." });
-  }
+  // ... resto do seu código
 }

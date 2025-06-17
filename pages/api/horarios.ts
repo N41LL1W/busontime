@@ -1,3 +1,4 @@
+//pages/api/horarios.ts
 import { NextApiRequest, NextApiResponse } from 'next';
 import prisma from '../../lib/prisma';
 

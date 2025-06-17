@@ -1,3 +1,4 @@
+//scrape/processarRaspagemOCR.ts
 import Tesseract from "tesseract.js";
 import prisma from "@/lib/prisma";
 
