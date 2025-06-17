@@ -98,8 +98,8 @@ async function main() {
 
       if (scrapedData && scrapedData.length > 0) {
         console.log(`[${job.id}] Dados raspados, pronto para sincronizar.`);
-        // Descomente a linha abaixo quando estiver pronto para salvar os dados no banco
-        // await syncSchedules(job.id, scrapedData);
+        // Linha Ativa a sincronização com o banco de dados
+         await syncSchedules(job.id, scrapedData);
       } else {
         console.log(`[${job.id}] Nenhum dado foi raspado ou erro na extração.`);
       }
