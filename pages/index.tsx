@@ -1,93 +1,74 @@
 // pages/index.tsx
-import React, { useEffect, useState } from "react";
+import React from "react";
 import BusScheduleFilter from "../components/BusScheduleFilter";
-import type { Horario } from "../types/schedule"; // Importe o tipo
 import { GetStaticProps } from "next";
-import prisma from "../lib/prisma"; // Use o Prisma diretamente aqui
+import prisma from "../lib/prisma";
 
-// Tipagem para as props da página
+// IMPORTANTE: Este tipo agora é nosso. Ele estende o tipo do Prisma com o novo campo.
+import type { Horario as PrismaHorario } from "@prisma/client";
+export type HorarioComFonte = PrismaHorario & { sourceUrl: string };
+
 interface HomePageProps {
-  horarios: Horario[];
+  horarios: HorarioComFonte[]; // Usamos nosso novo tipo
   error?: string;
 }
 
-// 1. getStaticProps é executado no servidor durante o build (e revalidação)
+// Mapa de rotas para URLs de fonte.
+// A CHAVE deve ser "origem-destino" em letras minúsculas.
+const fontesDasRotas: Record<string, string> = {
+  // Rotas da RibeTransporte
+  "ribeirão preto-jardinópolis": "https://www.ribetransporte.com.br/ribeirao-preto-a-jardinopolis/",
+  "jardinópolis-ribeirão preto": "https://www.ribetransporte.com.br/linha-01/",
+  
+  // Rotas de OCR (VSB)
+  "barrinha-sertãozinho": "https://suburbano.vsb.com.br/wp-content/uploads/2022/09/03-09-2022-Sertaozinho-x-Barrinha-jpg-1085x1536.jpg",
+  "sertãozinho-barrinha": "https://suburbano.vsb.com.br/wp-content/uploads/2022/09/03-09-2022-Sertaozinho-x-Barrinha-jpg-1085x1536.jpg",
+  
+  "batatais-altinópolis": "https://suburbano.vsb.com.br/wp-content/uploads/2024/10/03-10-2024-Batatais-x-Altinopolis_page-0001-1-1-scaled.jpg",
+  "altinópolis-batatais": "https://suburbano.vsb.com.br/wp-content/uploads/2024/10/03-10-2024-Batatais-x-Altinopolis_page-0001-1-1-scaled.jpg",
+  
+  // Adicione TODAS as outras rotas aqui no mesmo formato...
+  // Ex: "cidade a-cidade b": "url_da_fonte_aqui"
+};
+
 export const getStaticProps: GetStaticProps<HomePageProps> = async () => {
   try {
-    console.log("getStaticProps: Buscando horários para pré-renderização...");
-    const horariosData = await prisma.horario.findMany({
+    const horariosDoBanco = await prisma.horario.findMany({
       orderBy: { horario: 'asc' },
     });
 
-    // O Prisma retorna objetos Date que não são serializáveis para JSON.
-    // Se você tiver campos de Data/Hora no seu schema, precisa convertê-los para string.
-    // O seu tipo 'Horario' atual usa string, então está ok.
+    // A MÁGICA ACONTECE AQUI:
+    // Injetamos a URL da fonte em cada horário.
+    const horariosComFonteInjetada = horariosDoBanco.map(horario => {
+      const chaveDaRota = `${horario.origem.toLowerCase()}-${horario.destino.toLowerCase()}`;
+      const sourceUrl = fontesDasRotas[chaveDaRota] || ""; // Pega a URL do nosso mapa
+
+      return {
+        ...horario,
+        sourceUrl: sourceUrl,
+      };
+    });
 
     return {
       props: {
-        horarios: horariosData,
+        horarios: horariosComFonteInjetada,
       },
-      // 2. Revalidate: Next.js irá tentar gerar a página novamente no máximo a cada 1 hora.
-      // Isso mantém os dados atualizados sem precisar de um rebuild do site.
-      revalidate: 3600, // 1 hora em segundos
+      revalidate: 3600,
     };
   } catch (error) {
     console.error("Erro em getStaticProps:", error);
-    return {
-      props: {
-        horarios: [],
-        error: "Não foi possível carregar os horários no momento.",
-      },
-      revalidate: 60, // Tente novamente em 1 minuto se der erro
-    };
+    return { props: { horarios: [], error: "Erro ao carregar dados." }, revalidate: 60 };
   }
 };
 
-// 3. O componente da página agora recebe os horários via props
+// O componente da página não muda
 export default function HomePage({ horarios, error }: HomePageProps) {
-  // O estado de dark mode e a lógica de UI permanecem os mesmos
-  const [darkMode, setDarkMode] = useState(false);
-
-  useEffect(() => {
-    const isDarkModePreferred = window.localStorage.getItem('darkMode') === 'true';
-    setDarkMode(isDarkModePreferred);
-  }, []);
-
-  useEffect(() => {
-    const html = document.documentElement;
-    if (darkMode) {
-      html.classList.add("dark");
-      window.localStorage.setItem('darkMode', 'true');
-    } else {
-      html.classList.remove("dark");
-      window.localStorage.setItem('darkMode', 'false');
-    }
-  }, [darkMode]);
-
+  if (error) {
+    return <p className="p-4 text-center text-red-500">{error}</p>;
+  }
   return (
-    <div className="min-h-screen bg-background text-foreground transition-colors">
-      <header className="flex justify-between items-center p-4 border-b sticky top-0 bg-background/80 backdrop-blur-sm z-10">
-        <h1 className="text-2xl font-bold">Horários de Ônibus</h1>
-        <button
-          onClick={() => setDarkMode(!darkMode)}
-          className="px-4 py-2 rounded-lg bg-secondary text-secondary-foreground hover:bg-secondary/80 transition-colors"
-        >
-          {darkMode ? "Modo Claro" : "Modo Escuro"}
-        </button>
-      </header>
-
-      <main className="p-4">
-        {/* Não precisamos mais de estado de loading/erro para a carga inicial! */}
-        {error ? (
-          <p className="text-center text-red-500">{error}</p>
-        ) : (
-          <BusScheduleFilter schedules={horarios} />
-        )}
-      </main>
-
-      <footer className="text-center p-4 text-sm text-gray-500 dark:text-gray-400">
-        © {new Date().getFullYear()} Horários de Ônibus
-      </footer>
+    <div className="p-4 md:p-6 pb-20">
+      <BusScheduleFilter schedules={horarios} />
     </div>
   );
 }
