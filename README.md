@@ -1,6 +1,6 @@
 # BusOnTime (ou o nome do seu App)
 
-![BusOnTime Cover](https://via.placeholder.com/1200x630.png/020617/FFFFFF?text=BusOnTime%20App) 
+![BusOnTime Cover](https://github.com/N41LL1W/busontime/public/images/capa_readme_busontime.png) 
 <!-- Sugestão: Crie uma imagem de capa simples usando o Canva ou similar e substitua o link acima -->
 
 Um aplicativo web moderno, rápido e responsivo para consulta de horários de ônibus, focado em centralizar informações de diversas fontes de transporte público regional.
