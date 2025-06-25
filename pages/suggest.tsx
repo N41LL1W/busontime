@@ -19,7 +19,7 @@ export default function SuggestPage() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    const email = "seu-email-para-o-app@exemplo.com"; // <-- TROQUE PELO SEU EMAIL
+    const email = "busontime001@gmail.com"; // <-- TROQUE PELO SEU EMAIL
     const subject = encodeURIComponent(`Sugestão de Horário: ${cidade}`);
     const body = encodeURIComponent(
       `Olá,
