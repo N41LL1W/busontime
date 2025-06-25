@@ -50,7 +50,7 @@ export const getStaticProps: GetStaticProps<HomePageProps> = async () => {
       props: {
         horarios: horariosComFonteInjetada,
       },
-      revalidate: 3600, // Revalida (tenta recriar a página) a cada 1 hora
+      //revalidate: 3600, // Revalida (tenta recriar a página) a cada 1 hora
     };
   } catch (error) {
     console.error("Erro em getStaticProps:", error);
@@ -60,7 +60,7 @@ export const getStaticProps: GetStaticProps<HomePageProps> = async () => {
         horarios: [], 
         error: "Não foi possível carregar os dados do servidor. Tente novamente mais tarde." 
       }, 
-      revalidate: 60 // Tenta de novo em 1 minuto
+      //revalidate: 60 // Tenta de novo em 1 minuto
     };
   }
 };
