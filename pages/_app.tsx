@@ -1,19 +1,13 @@
 // pages/_app.tsx
 import '@/styles/globals.css';
 import type { AppProps } from 'next/app';
-import NavBar from '@/components/NavBar'; // Certifique-se de que o caminho esteja correto
+import NavBar from '@/components/NavBar';
 import { useEffect, useState } from 'react';
 
-// O componente que criamos antes para a navegação
-// Garanta que ele exista em components/NavBar.tsx
-// import Link from 'next/link';
-// import { usePathname } from 'next/navigation';
-// import { Home, Info } from 'lucide-react';
-// const navItems = [ { href: '/', label: 'Horários', icon: Home }, { href: '/about', label: 'Sobre', icon: Info } ];
-// ... (código completo do NavBar.tsx)
+import { Capacitor } from '@capacitor/core';
+import { AdMob, BannerAdOptions, BannerAdSize, BannerAdPosition } from '@capacitor-community/admob';
 
 function MyApp({ Component, pageProps }: AppProps) {
-  // A lógica do Dark Mode agora vive aqui para ser global
   const [darkMode, setDarkMode] = useState(false);
 
   useEffect(() => {
@@ -32,28 +26,58 @@ function MyApp({ Component, pageProps }: AppProps) {
     }
   }, [darkMode]);
 
+  useEffect(() => {
+    if (Capacitor.isNativePlatform()) {
+      initializeAdMob();
+    }
+  }, []);
+
+  const initializeAdMob = async () => {
+    try {
+      // CORREÇÃO: Chamada simplificada, que é mais compatível entre plataformas.
+      await AdMob.initialize(); 
+      console.log('AdMob inicializado com sucesso.');
+      showBannerAd();
+    } catch (error) {
+      console.error('Erro ao inicializar o AdMob:', error);
+    }
+  };
+
+  const showBannerAd = async () => {
+    const options: BannerAdOptions = {
+      adId: 'ca-app-pub-3940256099942544/6300978111', // ID de teste do Google
+      adSize: BannerAdSize.ADAPTIVE_BANNER,
+      position: BannerAdPosition.BOTTOM_CENTER,
+      margin: 64,
+      isTesting: true,
+    };
+
+    try {
+      await AdMob.showBanner(options);
+      console.log('Banner do AdMob deve estar visível.');
+    } catch (error) {
+      console.error('Erro ao exibir o banner do AdMob:', error);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-background text-foreground transition-colors">
-      {/* CABEÇALHO GLOBAL */}
       <header className="flex justify-between items-center p-4 border-b sticky top-0 bg-background/80 backdrop-blur-sm z-10">
-        <h1 className="text-2xl font-bold">Horários de Ônibus</h1>
+        <h1 className="text-2xl font-bold">BusOnTime</h1>
         <button
           onClick={() => setDarkMode(!darkMode)}
           className="px-4 py-2 rounded-lg bg-secondary text-secondary-foreground hover:bg-secondary/80 transition-colors"
         >
-          {darkMode ? "Modo Claro" : "Modo Escuro"}
+          {darkMode ? "Claro" : "Escuro"}
         </button>
       </header>
       
-      {/* CONTEÚDO DA PÁGINA ATUAL (index.tsx ou about.tsx) */}
       <main>
         <Component {...pageProps} />
       </main>
 
-      {/* BARRA DE NAVEGAÇÃO COM AS ABAS */}
       <NavBar />
 
-      {/* RODAPÉ GLOBAL (OPCIONAL) */}
       <footer className="text-center p-4 pt-0 pb-20 text-sm text-muted-foreground">
         © {new Date().getFullYear()} BusOnTime
       </footer>
