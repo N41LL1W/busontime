@@ -1,130 +1,101 @@
-# BusOnTime
+# BusOnTime - Horários de Ônibus Simplificados
 
-![BusOnTime Cover](https://raw.githubusercontent.com/N41LL1W/busontime/main/public/images/capa_readme_busontime.png)
-<!-- Sugestão: Crie uma imagem de capa simples usando o Canva ou similar e substitua o link acima -->
+![BusOnTime Cover](https://via.placeholder.com/1200x630.png/020617/FFFFFF?text=BusOnTime%20App) 
+<!-- TODO: Substitua o placeholder por uma imagem de capa real -->
 
-Um aplicativo web moderno, rápido e responsivo para consulta de horários de ônibus, focado em centralizar informações de diversas fontes de transporte público regional.
+Um aplicativo moderno e de código aberto para consulta de horários de ônibus, projetado para centralizar informações de transporte público e oferecer uma experiência de usuário limpa, rápida e confiável.
 
-**[Acesse o App Online aqui!]** <!-- Coloque o link quando fizer o deploy -->
+**[Acesse na Google Play Store!]** <!-- Link a ser adicionado após a publicação -->
+**[Acesse a Versão Web!]** <!-- Link da sua Vercel -->
 
 ---
 
-## 💡 Sobre o Projeto
+## 🎯 O Problema
 
-O transporte público em muitas cidades depende de informações de horários espalhadas por diversos sites, muitas vezes em formatos difíceis de usar (como imagens ou tabelas mal formatadas). Este projeto nasceu para resolver esse problema, oferecendo uma interface única, limpa e rápida para consultar todos os horários em um só lugar.
+Em muitas cidades, os horários de ônibus são disponibilizados de forma descentralizada e em formatos pouco práticos, como imagens de baixa qualidade, tabelas em sites desatualizados ou PDFs difíceis de navegar em um celular. Encontrar uma informação simples se torna uma tarefa frustrante.
 
-O aplicativo foi construído com uma arquitetura moderna, pensando em performance, escalabilidade e na melhor experiência para o usuário final, incluindo funcionalidades como Dark Mode e filtros inteligentes.
+## ✨ A Solução: BusOnTime
 
-### ✨ Funcionalidades Principais
+BusOnTime ataca esse problema de frente, oferecendo:
 
-- **Busca Centralizada:** Consulte horários de diversas linhas e empresas em uma única interface.
-- **Filtros Inteligentes:** Filtre os horários por data, hora, origem e destino. As opções de filtro se ajustam dinamicamente com base na sua seleção.
-- **Interface Moderna:** Design limpo e responsivo que se adapta a celulares, tablets e desktops.
-- **Dark Mode:** Tema escuro para conforto visual em ambientes com pouca luz.
-- **Fonte dos Dados:** Transparência total! Cada horário exibe um link para a fonte original da informação (site ou imagem).
-- **Performance:** Carregamento quase instantâneo da página principal graças à Geração de Site Estático (SSG) com o Next.js.
+- **Centralização:** Todos os horários de diversas fontes em um único lugar.
+- **Interface Intuitiva:** Um design limpo e moderno, focado na facilidade de uso.
+- **Performance:** Carregamento quase instantâneo e filtros que funcionam em tempo real.
+- **Transparência:** Cada horário pode ser rastreado até sua fonte original, seja um site ou uma imagem.
+- **Engajamento Comunitário:** Uma seção de sugestões permite que os próprios usuários ajudem a expandir a base de dados.
 
 ### 📸 Screenshots
 
-<!-- TIRE UM PRINT DO SEU APP E COLOQUE AQUI! É MUITO IMPORTANTE. -->
-<!-- Você pode arrastar a imagem para a caixa de texto do GitHub para fazer o upload. -->
+<!-- TODO: Adicione aqui os screenshots do seu aplicativo. -->
 <!-- Exemplo: -->
-<!-- ![Screenshot do App](link_da_imagem_no_github.png) -->
+<!-- 
+<p align="center">
+  <img src="link_do_screenshot_1.png" width="200" />
+  <img src="link_do_screenshot_2.png" width="200" />
+  <img src="link_do_screenshot_3.png" width="200" />
+</p> 
+-->
 
-[GIF ou Screenshot do App]
 
 ---
 
-## 🛠️ Stack de Tecnologias
+## 🛠️ Stack de Tecnologias & Arquitetura
 
-Este projeto foi construído com as seguintes tecnologias:
+O projeto foi construído com uma abordagem moderna e desacoplada, separando a coleta de dados da interface do usuário.
 
 - **Frontend:**
-  - [**Next.js**](https://nextjs.org/) (React Framework)
-  - [**TypeScript**](https://www.typescriptlang.org/)
-  - [**Tailwind CSS**](https://tailwindcss.com/)
-  - [**shadcn/ui**](https://ui.shadcn.com/) (Componentes de UI)
-- **Backend e Coleta de Dados:**
-  - [**Node.js**](https://nodejs.org/)
-  - [**Prisma**](https://www.prisma.io/) (ORM para interação com o banco de dados)
-  - [**PostgreSQL**](https://www.postgresql.org/) (Banco de Dados) <!-- Troque se estiver usando outro, como SQLite -->
-- **Ferramentas de Scraping:**
-  - [**Cheerio**](https://cheerio.js.org/): Para parsing de HTML em sites estáticos.
-  - [**Tesseract.js**](https://tesseract.projectnaptha.com/): Para reconhecimento óptico de caracteres (OCR) em imagens de horários.
+  - **Next.js (React):** Para uma renderização performática e estrutura de app.
+  - **TypeScript:** Para um código mais seguro e manutenível.
+  - **Tailwind CSS & shadcn/ui:** Para uma UI bonita e customizável.
+  - **Capacitor:** Para "empacotar" a aplicação web em um aplicativo Android nativo.
+
+- **Backend (Pipeline de Dados):**
+  - **Node.js:** Ambiente de execução dos scripts.
+  - **Scrapers Dedicados:** Funções isoladas que usam **Cheerio** (para HTML) e **Tesseract.js** (para OCR de imagens) para extrair dados das fontes.
+  - **Orquestrador Central (`run-scrapers.ts`):** Um script mestre que gerencia a execução de todos os scrapers de forma robusta.
+  - **Prisma ORM & PostgreSQL:** Para armazenar e gerenciar os dados coletados de forma eficiente.
+
+- **Fluxo de Dados:**
+  1. O **Orquestrador** executa os **Scrapers** periodicamente (via automação).
+  2. Os dados são limpos, formatados e salvos no banco de dados **PostgreSQL** pelo **Prisma**.
+  3. A aplicação **Next.js** usa `getStaticProps` para pré-renderizar as páginas com os dados do banco durante o `build`, garantindo um carregamento ultrarrápido.
+  4. O app final é empacotado pelo **Capacitor** e publicado na Google Play Store.
 
 ---
 
-## ⚙️ Arquitetura e Funcionamento do Código
-
-O sistema é dividido em duas partes principais: o **Pipeline de Coleta de Dados (Backend)** e a **Aplicação Web (Frontend)**.
-
-### 1. Pipeline de Coleta de Dados (ETL)
-
-A coleta de dados não é feita em tempo real a cada acesso do usuário, o que seria lento e instável. Em vez disso, um processo automatizado (ETL - Extract, Transform, Load) é executado periodicamente para manter o banco de dados atualizado.
-
-- **`scripts/run-scrapers.ts`**: Este é o **orquestrador** principal. Ele gerencia a execução de todos os scrapers. Utiliza `Promise.allSettled` para garantir que a falha de um scraper não interrompa os outros.
-
-- **`scrapers/`**: Esta pasta contém os **módulos de extração**. Cada scraper é uma função pura responsável por uma única fonte de dados:
-  - **`cheerio-*.ts`**: Scrapers que usam Axios e Cheerio para extrair dados de tabelas HTML em sites estáticos. São rápidos e eficientes.
-  - **`ocr-from-image.ts`**: Um scraper robusto que usa Tesseract.js para extrair texto de imagens de horários, uma solução para as fontes de dados mais desafiadoras. Ele também tenta categorizar os horários por dia da semana e sentido da rota.
-
-- **`lib/database-sync.ts`**: Contém a função `syncSchedules`. Ela recebe os dados raspados e os sincroniza com o banco de dados de forma **atômica** usando `prisma.$transaction`. Isso garante a consistência dos dados, evitando estados em que os horários antigos foram apagados mas os novos ainda não foram inseridos.
-
-### 2. Aplicação Web (Next.js)
-
-- **`pages/index.tsx`**: A página principal utiliza **`getStaticProps`**. Isso significa que a página é pré-renderizada no servidor com todos os horários já carregados. O resultado é um carregamento extremamente rápido para o usuário. A página é revalidada periodicamente (`revalidate`) para buscar novos dados sem a necessidade de um novo deploy.
-  - **Injeção de Fonte:** É nesta etapa que a URL da fonte de cada horário é "injetada" nos dados, antes de serem passados para o frontend.
-
-- **`components/BusScheduleFilter.tsx`**: O coração da interface. Este componente recebe a lista completa de horários e utiliza o hook `useMemo` para recalcular de forma performática a lista filtrada sempre que o usuário altera uma opção (data, origem, etc.), sem precisar de novas chamadas à API.
-
-- **`pages/_app.tsx`**: Define o layout global da aplicação, incluindo o cabeçalho, o rodapé e a barra de navegação inferior, criando a sensação de um aplicativo nativo.
-
----
-
-## 🚀 Como Rodar o Projeto Localmente
+## 🚀 Como Executar o Projeto
 
 1.  **Clone o repositório:**
     ```bash
-    git clone https://github.com/N41LL1W/seu-repositorio.git
-    cd seu-repositorio
+    git clone https://github.com/N41LL1W/busontime.git
+    cd busontime
     ```
-
-2.  **Instale as dependências:**
-    ```bash
-    npm install
-    ```
-
-3.  **Configure as variáveis de ambiente:**
-    - Crie um arquivo `.env` na raiz do projeto.
-    - Adicione a sua string de conexão com o banco de dados:
-      ```env
-      DATABASE_URL="postgresql://user:password@host:port/database"
-      ```
-
-4.  **Aplique as migrações do banco de dados:**
-    ```bash
-    npx prisma migrate dev
-    ```
-
-5.  **(Opcional) Popule o banco de dados com os horários mais recentes:**
-    ```bash
-    npm run scrape
-    ```
-
-6.  **Inicie o servidor de desenvolvimento:**
-    ```bash
-    npm run dev
-    ```
-
-Abra [http://localhost:3000](http://localhost:3000) no seu navegador para ver o resultado.
+2.  **Instale as dependências:** `npm install`
+3.  **Configure o `.env`** com a sua `DATABASE_URL`.
+4.  **Rode as migrações do banco:** `npx prisma migrate dev`
+5.  **(Opcional) Popule o banco com dados:** `npm run scrape`
+6.  **Inicie o servidor web:** `npm run dev`
 
 ---
 
-## 👨‍💻 Sobre Mim
+## 🔮 Próximos Passos e Visão de Futuro
+
+- [ ] Implementar compras no app para remover anúncios (versão Premium).
+- [ ] Adicionar funcionalidade de "horários favoritos".
+- [ ] Notificações push para alertar sobre mudanças nos horários.
+- [ ] Suporte para a plataforma iOS.
+- [ ] Criar um painel de administração para gerenciar as fontes de scraping.
+
+---
+
+## 📄 Licença
+
+Este projeto está sob a licença MIT. Veja o arquivo `LICENSE` para mais detalhes.
+
+---
+
+## 👨‍💻 Contato
 
 **Willian (N41LL1W)**
 
-- **GitHub:** [@N41LL1W](https://github.com/N41LL1W)
-- **LinkedIn:** (https://www.linkedin.com/in/willian-gomes-95800a183/)
-
-Sinta-se à vontade para entrar em contato, dar sugestões ou contribuir com o projeto!
+[GitHub](https://github.com/N41LL1W) • [LinkedIn](https://www.linkedin.com/in/seu-usuario-aqui/)

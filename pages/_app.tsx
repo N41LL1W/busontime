@@ -1,13 +1,15 @@
-// pages/_app.tsx
 import '@/styles/globals.css';
 import type { AppProps } from 'next/app';
 import NavBar from '@/components/NavBar';
 import { useEffect, useState } from 'react';
+import Link from 'next/link'; // Importação necessária para o link no rodapé
 
+// Importações do Capacitor e AdMob
 import { Capacitor } from '@capacitor/core';
 import { AdMob, BannerAdOptions, BannerAdSize, BannerAdPosition } from '@capacitor-community/admob';
 
 function MyApp({ Component, pageProps }: AppProps) {
+  // Lógica do Dark Mode
   const [darkMode, setDarkMode] = useState(false);
 
   useEffect(() => {
@@ -26,6 +28,7 @@ function MyApp({ Component, pageProps }: AppProps) {
     }
   }, [darkMode]);
 
+  // Lógica para inicializar e mostrar o banner do AdMob
   useEffect(() => {
     if (Capacitor.isNativePlatform()) {
       initializeAdMob();
@@ -34,7 +37,6 @@ function MyApp({ Component, pageProps }: AppProps) {
 
   const initializeAdMob = async () => {
     try {
-      // CORREÇÃO: Chamada simplificada, que é mais compatível entre plataformas.
       await AdMob.initialize(); 
       console.log('AdMob inicializado com sucesso.');
       showBannerAd();
@@ -48,7 +50,7 @@ function MyApp({ Component, pageProps }: AppProps) {
       adId: 'ca-app-pub-3940256099942544/6300978111', // ID de teste do Google
       adSize: BannerAdSize.ADAPTIVE_BANNER,
       position: BannerAdPosition.BOTTOM_CENTER,
-      margin: 64,
+      margin: 64, // Altura da sua NavBar (h-16)
       isTesting: true,
     };
 
@@ -78,8 +80,12 @@ function MyApp({ Component, pageProps }: AppProps) {
 
       <NavBar />
 
-      <footer className="text-center p-4 pt-0 pb-20 text-sm text-muted-foreground">
-        © {new Date().getFullYear()} BusOnTime
+      {/* RODAPÉ GLOBAL MODIFICADO com o link para a Política de Privacidade */}
+      <footer className="text-center p-4 pt-0 pb-20 text-sm text-muted-foreground space-y-1">
+        <p>© {new Date().getFullYear()} BusOnTime</p>
+        <Link href="/privacy" className="hover:text-primary hover:underline">
+          Política de Privacidade
+        </Link>
       </footer>
     </div>
   );
