@@ -1,100 +1,83 @@
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import axios from "axios";
-import { RefreshCw, Zap, Trash2, CheckCircle, AlertCircle, Loader2 } from "lucide-react";
+import { useState } from 'react';
+import axios from 'axios';
+import { AlertCircle, CheckCircle, Loader2, RefreshCw } from 'lucide-react';
 
-const rotas = [
-  { label: "Ribeirão - Jardinópolis", endpoint: "scrap-ribeirao-jardinopolis" },
-  { label: "Jardinópolis - Ribeirão", endpoint: "scrap-jardinopolis-ribeirao" },
-  { label: "Ribeirão - Brodowski", endpoint: "scrap-ribeirao-brodowski" },
-  { label: "Brodowski - Batatais", endpoint: "scrap-brodowski-batatais" },
-  { label: "Ribeirão - Sertãozinho", endpoint: "scrap-ribeirao-sertaozinho" },
-  { label: "Ribeirão - Serrana", endpoint: "scrap-ribeirao-serrana" },
-  { label: "Ribeirão - Serra Azul", endpoint: "scrap-ribeirao-serra-azul" },
-  { label: "Ribeirão - Batatais", endpoint: "scrap-ribeirao-batatais" },
-  { label: "Ribeirão - Barrinha", endpoint: "scrap-ribeirao-barrinha" },
-  { label: "Ribeirão - Altinópolis", endpoint: "scrap-ribeirao-altinopolis" },
-  { label: "Barrinha - Sertãozinho", endpoint: "scrap-barrinha-sertaozinho" },
-  { label: "Batatais - Altinópolis", endpoint: "scrap-batatais-altinopolis" },
-  { label: "Miguelópolis - Ituverava", endpoint: "scrap-miguelopolis-ituverava" },
-  { label: "São Benedito - Ituverava", endpoint: "scrap-cachoerinha-ituverava" },
-  { label: "Miguelópolis - Barretos", endpoint: "scrap-miguelopolis-baretos" },
-  { label: "Saída de Jaboticabal", endpoint: "scrap-jaboticabal" },
-];
+type ScrapingResult = {
+  id: string;
+  label: string;
+  status: 'success' | 'empty' | 'failed';
+  count: number;
+  error?: string;
+};
 
 export default function RaspagemButtons() {
-  const [loading, setLoading] = useState<string | null>(null);
-
-  const scrap = async (endpoint: string) => {
-    setLoading(endpoint);
-    try {
-      const res = await axios.post(`/api/${endpoint}`);
-      alert(res.data.message);
-    } catch {
-      alert("Erro ao fazer a raspagem.");
-    } finally {
-      setLoading(null);
-    }
-  };
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState('');
+  const [results, setResults] = useState<ScrapingResult[]>([]);
 
   const scrapAll = async () => {
-    for (const rota of rotas) {
-      await scrap(rota.endpoint);
-    }
-  };
+    if (!confirm('Puxar novamente os horários dos sites oficiais? Isso pode demorar alguns minutos.')) return;
 
-  const resetDB = async () => {
-    if (!confirm("Tem certeza que deseja apagar todos os registros e resetar o banco?")) return;
-    setLoading("reset");
+    setLoading(true);
+    setMessage('Puxando horários dos sites oficiais...');
+    setResults([]);
+
     try {
-      const res = await axios.post("/api/reset-db");
-      alert(res.data.message);
-    } catch {
-      alert("Erro ao resetar o banco de dados.");
+      const res = await axios.post('/api/scrap');
+      setMessage(res.data.message || 'Raspagem finalizada.');
+      setResults(res.data.results || []);
+    } catch (error) {
+      const apiMessage = axios.isAxiosError(error) ? error.response?.data?.message : undefined;
+      setMessage(apiMessage || 'Erro ao fazer a raspagem. Se o site oficial mudou, corrija manualmente na tabela abaixo.');
     } finally {
-      setLoading(null);
+      setLoading(false);
     }
   };
 
   return (
-    <div className="p-6 space-y-6 max-w-5xl mx-auto">
-      <h1 className="text-2xl font-bold text-center">Painel de Raspagem de Horários</h1>
-
-      <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3">
-        {rotas.map(({ label, endpoint }) => (
-          <div
-            key={endpoint}
-            className="p-4 border rounded-2xl shadow-md flex flex-col gap-2 transition-all hover:shadow-lg bg-white"
-          >
-            <span className="font-medium">{label}</span>
-            <Button
-              onClick={() => scrap(endpoint)}
-              disabled={loading !== null}
-              className="gap-2"
-            >
-              {loading === endpoint ? (
-                <>
-                  <Loader2 className="animate-spin h-4 w-4" /> Raspando...
-                </>
-              ) : (
-                <>
-                  <Zap className="h-4 w-4" /> Raspagem
-                </>
-              )}
-            </Button>
-          </div>
-        ))}
+    <div className="rounded-2xl border bg-white p-5 shadow-sm dark:bg-zinc-900">
+      <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+        <div>
+          <p className="text-sm font-semibold uppercase tracking-wide text-blue-600">Atualização automática</p>
+          <h2 className="text-2xl font-bold">Puxar horários dos sites oficiais</h2>
+          <p className="max-w-3xl text-sm text-muted-foreground">
+            Use este botão para tentar sincronizar tudo novamente. Como alguns horários do Semiurbano/VSB estão em imagem, a leitura automática pode falhar; depois confira e ajuste manualmente logo abaixo.
+          </p>
+        </div>
+        <button
+          type="button"
+          onClick={scrapAll}
+          disabled={loading}
+          className="inline-flex items-center justify-center gap-2 rounded bg-blue-600 px-4 py-2 font-semibold text-white hover:bg-blue-700 disabled:bg-gray-400"
+        >
+          {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <RefreshCw className="h-4 w-4" />}
+          {loading ? 'Puxando...' : 'Puxar horários'}
+        </button>
       </div>
 
-      <div className="flex flex-wrap justify-center gap-4 pt-6">
-        <Button onClick={scrapAll} disabled={loading !== null} variant="outline" className="gap-2">
-          <RefreshCw className="h-4 w-4" /> Raspagem Completa
-        </Button>
-        <Button onClick={resetDB} disabled={loading !== null} variant="destructive" className="gap-2">
-          <Trash2 className="h-4 w-4" />
-          {loading === "reset" ? "Limpando..." : "Zerar Banco"}
-        </Button>
-      </div>
+      {message && (
+        <div className="mt-4 rounded-lg bg-gray-50 p-3 text-sm dark:bg-zinc-800">
+          {message}
+        </div>
+      )}
+
+      {results.length > 0 && (
+        <div className="mt-4 grid gap-2 md:grid-cols-2">
+          {results.map((result) => (
+            <div key={result.id} className="flex items-start gap-2 rounded border p-3 text-sm">
+              {result.status === 'failed' ? <AlertCircle className="mt-0.5 h-4 w-4 text-red-600" /> : <CheckCircle className="mt-0.5 h-4 w-4 text-green-600" />}
+              <div>
+                <p className="font-semibold">{result.label}</p>
+                <p className="text-muted-foreground">
+                  {result.status === 'success' && `${result.count} horários sincronizados.`}
+                  {result.status === 'empty' && 'Nenhum horário encontrado nessa origem.'}
+                  {result.status === 'failed' && (result.error || 'Falha ao sincronizar.')}
+                </p>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
