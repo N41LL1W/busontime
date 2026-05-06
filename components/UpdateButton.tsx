@@ -1,4 +1,5 @@
 import React from 'react';
+import { Loader2, RefreshCw } from 'lucide-react';
 
 type Props = {
   onClick: () => void;
@@ -10,9 +11,10 @@ const UpdateButton: React.FC<Props> = ({ onClick, isLoading }) => {
     <button
       onClick={onClick}
       disabled={isLoading}
-      className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 disabled:bg-gray-400"
+      className="inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-700 px-4 py-2 font-semibold text-white shadow-sm transition hover:bg-emerald-800 disabled:cursor-not-allowed disabled:bg-muted disabled:text-muted-foreground"
     >
-      {isLoading ? 'Atualizando...' : 'Atualizar Horários'}
+      {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <RefreshCw className="h-4 w-4" />}
+      {isLoading ? 'Atualizando...' : 'Atualizar horários'}
     </button>
   );
 };
