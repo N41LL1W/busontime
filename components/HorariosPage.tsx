@@ -3,15 +3,24 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import HorarioTable from "./HorarioTable";
 import UpdateButton from "./UpdateButton";
 
+const getResponseError = async (response: Response, fallback: string) => {
+  const body = await response.text();
+  return body ? `${fallback}: ${body}` : fallback;
+};
+
 const fetchHorarios = async () => {
   const response = await fetch("/api/horarios");
-  if (!response.ok) throw new Error("Erro ao buscar horários");
+  if (!response.ok) {
+    throw new Error(await getResponseError(response, "Erro ao buscar horários"));
+  }
   return response.json();
 };
 
 const updateHorarios = async () => {
   const response = await fetch("/api/scrap", { method: "POST" });
-  if (!response.ok) throw new Error("Erro ao atualizar horários");
+  if (!response.ok) {
+    throw new Error(await getResponseError(response, "Erro ao atualizar horários"));
+  }
   return response.json();
 };
 
@@ -20,9 +29,15 @@ const HorariosPage: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(25);
 
-  const { data: horarios = [], isLoading: isFetching } = useQuery({
+  const {
+    data: horarios = [],
+    error: fetchError,
+    isLoading: isFetching,
+    isError: hasFetchError,
+  } = useQuery({
     queryKey: ["horarios"],
     queryFn: fetchHorarios,
+    retry: 1,
   });
 
   const mutation = useMutation({
@@ -70,6 +85,21 @@ const HorariosPage: React.FC = () => {
           isLoading={mutation.status === "pending" || isFetching}
         />
       </div>
+
+      {(hasFetchError || mutation.isError) && (
+        <div className="mb-4 rounded border border-red-300 bg-red-50 p-3 text-sm text-red-800">
+          <p className="font-semibold">Não foi possível carregar os horários.</p>
+          {hasFetchError && <p>{fetchError instanceof Error ? fetchError.message : "Erro desconhecido."}</p>}
+          {mutation.isError && (
+            <p>{mutation.error instanceof Error ? mutation.error.message : "Erro desconhecido ao atualizar."}</p>
+          )}
+          <p className="mt-2">
+            Se esta tela estiver em uma exportação estática ou no app empacotado, as rotas
+            <code className="mx-1 rounded bg-red-100 px-1">/api/*</code>
+            não ficam disponíveis. Use o servidor Next.js com acesso ao banco para consultar e atualizar os dados.
+          </p>
+        </div>
+      )}
 
       <div className="mb-4 flex items-center gap-2">
         <label htmlFor="itemsPerPage">Itens por página:</label>
