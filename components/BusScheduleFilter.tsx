@@ -17,7 +17,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import SourceModal from "./SourceModal";
 
 // Importa o tipo customizado
-import type { HorarioComFonte } from '@/pages/index';
+import type { HorarioComFonte } from '@/types/horario';
 
 // Props do componente
 interface BusScheduleFilterProps {
