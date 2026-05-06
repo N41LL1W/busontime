@@ -3,6 +3,8 @@ import type { AppProps } from 'next/app';
 import NavBar from '@/components/NavBar';
 import { useEffect, useState } from 'react';
 import Link from 'next/link'; // Importação necessária para o link no rodapé
+import { QueryClientProvider } from '@tanstack/react-query';
+import queryClient from '@/lib/reactQuery';
 
 // Importações do Capacitor e AdMob
 import { Capacitor } from '@capacitor/core';
@@ -63,7 +65,8 @@ function MyApp({ Component, pageProps }: AppProps) {
   };
 
   return (
-    <div className="min-h-screen bg-background text-foreground transition-colors">
+    <QueryClientProvider client={queryClient}>
+      <div className="min-h-screen bg-background text-foreground transition-colors">
       <header className="flex justify-between items-center p-4 border-b sticky top-0 bg-background/80 backdrop-blur-sm z-10">
         <h1 className="text-2xl font-bold">BusOnTime</h1>
         <button
@@ -87,7 +90,8 @@ function MyApp({ Component, pageProps }: AppProps) {
           Política de Privacidade
         </Link>
       </footer>
-    </div>
+      </div>
+    </QueryClientProvider>
   );
 }
 
