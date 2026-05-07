@@ -6,7 +6,7 @@ export const config = {
   api: {
     responseLimit: false,
   },
-  maxDuration: 60,
+  maxDuration: 300,
 };
 
 type ScrapResponse = {
@@ -14,11 +14,12 @@ type ScrapResponse = {
   error?: string;
   count?: number;
   endpoint?: string;
+  sourceUrl?: string;
 };
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<ScrapResponse>,
+  res: NextApiResponse<ScrapResponse>
 ) {
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Método não permitido" });
@@ -29,7 +30,9 @@ export default async function handler(
     : req.query.scraper;
 
   if (!endpoint) {
-    return res.status(400).json({ error: "Endpoint de raspagem não informado" });
+    return res
+      .status(400)
+      .json({ error: "Endpoint de raspagem não informado" });
   }
 
   const job = getScrapingJob(endpoint);
@@ -42,7 +45,9 @@ export default async function handler(
   }
 
   try {
-    console.log(`[API Scrap] Executando ${job.id} (${job.label})`);
+    console.log(
+      `[API Scrap] Executando ${job.id} (${job.label}) a partir de ${job.sourceUrl}`
+    );
     const scrapedData = await job.scraper();
 
     if (!scrapedData.length) {
@@ -50,6 +55,7 @@ export default async function handler(
         error: `Nenhum horário foi encontrado para ${job.label}. Verifique se a fonte mudou ou se o OCR falhou.`,
         count: 0,
         endpoint: job.endpoint,
+        sourceUrl: job.sourceUrl,
       });
     }
 
@@ -59,12 +65,14 @@ export default async function handler(
       message: `Raspagem de ${job.label} concluída com ${scrapedData.length} horários sincronizados.`,
       count: scrapedData.length,
       endpoint: job.endpoint,
+      sourceUrl: job.sourceUrl,
     });
   } catch (error) {
     console.error(`[API Scrap] Erro ao executar ${job.id}:`, error);
     return res.status(500).json({
       error: `Erro ao fazer a raspagem de ${job.label}.`,
       endpoint: job.endpoint,
+      sourceUrl: job.sourceUrl,
     });
   }
 }
