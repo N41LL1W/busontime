@@ -1,54 +1,71 @@
 // lib/database-sync.ts
-import prisma from "./prisma"; // Assumindo que você tem um prisma singleton em lib/prisma.ts
-import type { Horario } from "@prisma/client";
+import prisma from './prisma';
+import type { Horario } from '@prisma/client';
 
 // Define um tipo para os dados brutos que vêm dos scrapers
-type ScrapedHorario = Omit<Horario, "id" | "tarifa"> & { tarifa?: number | null };
+type ScrapedHorario = Omit<Horario, 'id' | 'tarifa'> & { tarifa?: number | null };
+
+function uniqueSchedules(scrapedData: ScrapedHorario[]) {
+  const seen = new Set<string>();
+
+  return scrapedData.filter((schedule) => {
+    const key = [schedule.origem, schedule.destino, schedule.diaDaSemana, schedule.horario, schedule.observacao || '', schedule.tarifa ?? ''].join('|');
+
+    if (seen.has(key)) {
+      return false;
+    }
+
+    seen.add(key);
+    return true;
+  });
+}
 
 /**
  * Sincroniza os horários de uma fonte específica com o banco de dados.
- * Esta função realiza um "upsert" transacional:
- * 1. Deleta todos os horários antigos para a combinação origem/destino/dia.
- * 2. Insere os novos horários raspados.
- * Tudo isso em uma única transação para garantir a consistência dos dados.
+ * Esta função remove os registros antigos das rotas/dias raspados e insere a carga nova
+ * em uma única transação, evitando duplicação em reexecuções de scraping.
  *
  * @param sourceIdentifier - Um nome único para a fonte do scraper (ex: "jaboticabal-cheerio")
  * @param scrapedData - Um array de horários raspados da fonte.
  */
 export async function syncSchedules(sourceIdentifier: string, scrapedData: ScrapedHorario[]) {
-  if (scrapedData.length === 0) {
+  const schedules = uniqueSchedules(scrapedData);
+
+  if (schedules.length === 0) {
     console.log(`[${sourceIdentifier}] Nenhum dado recebido para sincronizar. Pulando.`);
     return;
   }
 
-  // Agrupa os dados para identificar unicamente os registros a serem deletados.
-  // Pega a primeira origem, destino e todos os dias da semana dos dados raspados.
-  const representativeData = scrapedData[0];
-  const allWeekDays = Array.from(new Set(scrapedData.map(d => d.diaDaSemana)));
+  const routeDayKeys = Array.from(
+    new Map(
+      schedules.map((schedule) => [
+        `${schedule.origem}|${schedule.destino}|${schedule.diaDaSemana}`,
+        {
+          origem: schedule.origem,
+          destino: schedule.destino,
+          diaDaSemana: schedule.diaDaSemana,
+        },
+      ])
+    ).values()
+  );
 
-  console.log(`[${sourceIdentifier}] Iniciando transação para ${representativeData.origem} -> ${representativeData.destino} nos dias: ${allWeekDays.join(', ')}`);
+  console.log(`[${sourceIdentifier}] Iniciando transação para ${routeDayKeys.length} combinações de rota/dia.`);
 
   try {
     const transaction = await prisma.$transaction([
-      // Passo 1: Deletar os registros antigos para esta rota e dias da semana
       prisma.horario.deleteMany({
         where: {
-          origem: representativeData.origem,
-          destino: representativeData.destino,
-          diaDaSemana: { in: allWeekDays },
+          OR: routeDayKeys,
         },
       }),
-      // Passo 2: Criar os novos registros
       prisma.horario.createMany({
-        data: scrapedData,
-        skipDuplicates: true, // Segurança extra
+        data: schedules,
       }),
     ]);
 
     console.log(`[${sourceIdentifier}] Transação concluída. Deletados: ${transaction[0].count}, Criados: ${transaction[1].count}`);
   } catch (error) {
     console.error(`[${sourceIdentifier}] ERRO na transação do banco de dados:`, error);
-    // A transação será revertida automaticamente em caso de erro.
     throw new Error(`Falha ao sincronizar dados para ${sourceIdentifier}`);
   }
 }
