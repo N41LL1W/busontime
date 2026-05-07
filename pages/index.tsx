@@ -22,14 +22,21 @@ const fontesDasRotas: Record<string, string> = {
   "ribeirão preto-jardinópolis": "https://www.ribetransporte.com.br/ribeirao-preto-a-jardinopolis/",
   "jardinópolis-ribeirão preto": "https://www.ribetransporte.com.br/linha-01/",
   
-  // Rotas de OCR (VSB) - adicione todas aqui. A mesma URL para ida e volta.
-  "barrinha-sertãozinho": "https://suburbano.vsb.com.br/wp-content/uploads/2022/09/03-09-2022-Sertaozinho-x-Barrinha-jpg-1085x1536.jpg",
-  "sertãozinho-barrinha": "https://suburbano.vsb.com.br/wp-content/uploads/2022/09/03-09-2022-Sertaozinho-x-Barrinha-jpg-1085x1536.jpg",
-  "batatais-altinópolis": "https://suburbano.vsb.com.br/wp-content/uploads/2024/10/03-10-2024-Batatais-x-Altinopolis_page-0001-1-1-scaled.jpg",
-  "altinópolis-batatais": "https://suburbano.vsb.com.br/wp-content/uploads/2024/10/03-10-2024-Batatais-x-Altinopolis_page-0001-1-1-scaled.jpg",
-  
-  // ... continue adicionando todas as outras rotas e suas URLs aqui
+  // Rotas de Jaboticabal
+  "jaboticabal-ribeirão preto": "https://www.jaboticabal.sp.gov.br/horario-de-onibus",
 };
+
+const fontePadraoSemiurbanoSaoBento = "https://semiurbano.lovable.app/horarios";
+
+function obterFonteDaRota(horario: PrismaHorario) {
+  const chaveDaRota = `${horario.origem.toLowerCase()}-${horario.destino.toLowerCase()}`;
+  if (fontesDasRotas[chaveDaRota]) return fontesDasRotas[chaveDaRota];
+  if (horario.origem.toLowerCase().includes("jaboticabal")) {
+    return "https://www.jaboticabal.sp.gov.br/horario-de-onibus";
+  }
+
+  return fontePadraoSemiurbanoSaoBento;
+}
 
 // 4. GETSTATICPROPS: Busca os dados no servidor no momento do build
 export const getStaticProps: GetStaticProps<HomePageProps> = async () => {
@@ -40,8 +47,7 @@ export const getStaticProps: GetStaticProps<HomePageProps> = async () => {
 
     // Injeta a URL da fonte em cada objeto de horário
     const horariosComFonteInjetada = horariosDoBanco.map(horario => {
-      const chaveDaRota = `${horario.origem.toLowerCase()}-${horario.destino.toLowerCase()}`;
-      const sourceUrl = fontesDasRotas[chaveDaRota] || ""; // Pega a URL do mapa
+      const sourceUrl = obterFonteDaRota(horario);
       return { ...horario, sourceUrl };
     });
 
