@@ -30,9 +30,15 @@ export async function scrapeOcrFromImage(
     const response = await axios.get(imagemURL, {
       responseType: 'arraybuffer'
     });
-    const contentType = response.headers['content-type'];
-    if (!contentType || !contentType.startsWith('image/')) {
-      console.error(`[OCR] ERRO: A URL ${imagemURL} não retornou uma imagem. Retornou Content-Type: ${contentType}.`);
+    const rawContentType = response.headers['content-type'];
+    const contentType = Array.isArray(rawContentType)
+      ? rawContentType[0]
+      : typeof rawContentType === "string"
+        ? rawContentType
+        : "";
+
+    if (!contentType.startsWith("image/")) {
+      console.error(`[OCR] ERRO: A URL ${imagemURL} não retornou uma imagem. Retornou Content-Type: ${contentType || "desconhecido"}.`);
       return [];
     }
     imageBuffer = Buffer.from(response.data);
