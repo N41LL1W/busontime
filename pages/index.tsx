@@ -1,6 +1,6 @@
 import React from "react";
 import Head from 'next/head';
-import { GetStaticProps } from "next";
+import { GetServerSideProps } from "next";
 
 import BusScheduleFilter from "../components/BusScheduleFilter";
 import prisma from "../lib/prisma";
@@ -21,18 +21,18 @@ const fontesDasRotas: Record<string, string> = {
   // Rotas da RibeTransporte
   "ribeirão preto-jardinópolis": "https://www.ribetransporte.com.br/ribeirao-preto-a-jardinopolis/",
   "jardinópolis-ribeirão preto": "https://www.ribetransporte.com.br/linha-01/",
-  
+
   // Rotas de OCR (VSB) - adicione todas aqui. A mesma URL para ida e volta.
   "barrinha-sertãozinho": "https://suburbano.vsb.com.br/wp-content/uploads/2022/09/03-09-2022-Sertaozinho-x-Barrinha-jpg-1085x1536.jpg",
   "sertãozinho-barrinha": "https://suburbano.vsb.com.br/wp-content/uploads/2022/09/03-09-2022-Sertaozinho-x-Barrinha-jpg-1085x1536.jpg",
   "batatais-altinópolis": "https://suburbano.vsb.com.br/wp-content/uploads/2024/10/03-10-2024-Batatais-x-Altinopolis_page-0001-1-1-scaled.jpg",
   "altinópolis-batatais": "https://suburbano.vsb.com.br/wp-content/uploads/2024/10/03-10-2024-Batatais-x-Altinopolis_page-0001-1-1-scaled.jpg",
-  
+
   // ... continue adicionando todas as outras rotas e suas URLs aqui
 };
 
-// 4. GETSTATICPROPS: Busca os dados no servidor no momento do build
-export const getStaticProps: GetStaticProps<HomePageProps> = async () => {
+// 4. GETSERVERSIDEPROPS: Busca os dados no servidor a cada requisição, evitando acessar o banco durante o build na Vercel
+export const getServerSideProps: GetServerSideProps<HomePageProps> = async () => {
   try {
     const horariosDoBanco = await prisma.horario.findMany({
       orderBy: { horario: 'asc' },
@@ -50,24 +50,22 @@ export const getStaticProps: GetStaticProps<HomePageProps> = async () => {
       props: {
         horarios: horariosComFonteInjetada,
       },
-      //revalidate: 3600, // Revalida (tenta recriar a página) a cada 1 hora
     };
   } catch (error) {
-    console.error("Erro em getStaticProps:", error);
+    console.error("Erro em getServerSideProps:", error);
     // Em caso de erro, retorna um array vazio e uma mensagem de erro
-    return { 
-      props: { 
-        horarios: [], 
-        error: "Não foi possível carregar os dados do servidor. Tente novamente mais tarde." 
-      }, 
-      //revalidate: 60 // Tenta de novo em 1 minuto
+    return {
+      props: {
+        horarios: [],
+        error: "Não foi possível carregar os dados do servidor. Tente novamente mais tarde."
+      },
     };
   }
 };
 
 // 5. COMPONENTE DA PÁGINA: O conteúdo da aba "Horários"
 export default function HomePage({ horarios, error }: HomePageProps) {
-  // Se getStaticProps retornou um erro, exibe uma mensagem
+  // Se getServerSideProps retornou um erro, exibe uma mensagem
   if (error) {
     return (
       <div className="p-4 text-center">
