@@ -2,12 +2,13 @@ import React, { useEffect, useState } from "react";
 import BusScheduleFilter from "../components/BusScheduleFilter";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
+import type { HorarioComFonte } from "@/types/horario";
 
 const HomePage: React.FC = () => {
-  const [horarios, setHorarios] = useState([]);
+  const [horarios, setHorarios] = useState<HorarioComFonte[]>([]);
 
   useEffect(() => {
-    fetch("/api/horarios")
+    fetch("/horarios.json")
       .then((res) => res.json())
       .then((data) => setHorarios(data))
       .catch((err) => console.error("Erro ao buscar horários:", err));
