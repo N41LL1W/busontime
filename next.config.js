@@ -1,6 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-    output: 'export',
-}
+  // API routes are required for admin login, table refresh and scraping actions.
+};
 
 module.exports = nextConfig;

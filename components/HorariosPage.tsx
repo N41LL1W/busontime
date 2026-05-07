@@ -1,7 +1,6 @@
-import React, { useState } from "react";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import React, { useEffect, useState } from "react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import HorarioTable from "./HorarioTable";
-import UpdateButton from "./UpdateButton";
 
 const fetchHorarios = async () => {
   const response = await fetch("/api/horarios");
@@ -9,11 +8,6 @@ const fetchHorarios = async () => {
   return response.json();
 };
 
-const updateHorarios = async () => {
-  const response = await fetch("/api/scrap", { method: "POST" });
-  if (!response.ok) throw new Error("Erro ao atualizar horários");
-  return response.json();
-};
 
 const HorariosPage: React.FC = () => {
   const queryClient = useQueryClient();
@@ -25,12 +19,11 @@ const HorariosPage: React.FC = () => {
     queryFn: fetchHorarios,
   });
 
-  const mutation = useMutation({
-    mutationFn: updateHorarios,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["horarios"] });
-    },
-  });
+  useEffect(() => {
+    const refresh = () => queryClient.invalidateQueries({ queryKey: ["horarios"] });
+    window.addEventListener("busontime:refresh-horarios", refresh);
+    return () => window.removeEventListener("busontime:refresh-horarios", refresh);
+  }, [queryClient]);
 
   const totalItems = horarios.length;
   const totalPages = itemsPerPage === 0 ? 1 : Math.ceil(totalItems / itemsPerPage);
@@ -64,11 +57,18 @@ const HorariosPage: React.FC = () => {
     <div className="p-4">
       <h1 className="text-2xl font-bold mb-4">Horários de Transporte Suburbano</h1>
 
-      <div className="mb-4">
-        <UpdateButton
-          onClick={() => mutation.mutate()}
-          isLoading={mutation.status === "pending" || isFetching}
-        />
+      <div className="mb-4 flex items-center justify-between gap-3 rounded-2xl border bg-white p-4 shadow-sm">
+        <div>
+          <p className="font-semibold text-gray-950">Tabela de horários cadastrados</p>
+          <p className="text-sm text-muted-foreground">Use os controles acima para raspar dados e depois atualize esta listagem.</p>
+        </div>
+        <button
+          onClick={() => queryClient.invalidateQueries({ queryKey: ["horarios"] })}
+          disabled={isFetching}
+          className="rounded-xl bg-green-700 px-4 py-2 text-sm font-semibold text-white hover:bg-green-800 disabled:bg-gray-400"
+        >
+          {isFetching ? "Atualizando..." : "Recarregar tabela"}
+        </button>
       </div>
 
       <div className="mb-4 flex items-center gap-2">

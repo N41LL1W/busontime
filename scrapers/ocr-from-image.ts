@@ -28,7 +28,11 @@ export async function scrapeOcrFromImage(
 
   try {
     const response = await axios.get(imagemURL, {
-      responseType: 'arraybuffer'
+      responseType: 'arraybuffer',
+      headers: {
+        Accept: 'image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8',
+        'User-Agent': 'Mozilla/5.0 (compatible; BusOnTimeBot/1.0)',
+      },
     });
     const contentType = response.headers['content-type'];
     if (!contentType || !contentType.startsWith('image/')) {
