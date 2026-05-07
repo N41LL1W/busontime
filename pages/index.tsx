@@ -1,6 +1,6 @@
 import React from "react";
 import Head from 'next/head';
-import { GetStaticProps } from "next";
+import { GetServerSideProps } from "next";
 
 import BusScheduleFilter from "../components/BusScheduleFilter";
 import prisma from "../lib/prisma";
@@ -31,8 +31,8 @@ const fontesDasRotas: Record<string, string> = {
   // ... continue adicionando todas as outras rotas e suas URLs aqui
 };
 
-// 4. GETSTATICPROPS: Busca os dados no servidor no momento do build
-export const getStaticProps: GetStaticProps<HomePageProps> = async () => {
+// 4. GETSERVERSIDEPROPS: Busca os dados no servidor a cada acesso para refletir alterações do banco.
+export const getServerSideProps: GetServerSideProps<HomePageProps> = async () => {
   try {
     const horariosDoBanco = await prisma.horario.findMany({
       orderBy: { horario: 'asc' },
@@ -45,29 +45,27 @@ export const getStaticProps: GetStaticProps<HomePageProps> = async () => {
       return { ...horario, sourceUrl };
     });
 
-    // Retorna os dados como props para o componente da página
+    // Retorna os dados atuais como props para o componente da página
     return {
       props: {
         horarios: horariosComFonteInjetada,
       },
-      //revalidate: 3600, // Revalida (tenta recriar a página) a cada 1 hora
     };
   } catch (error) {
-    console.error("Erro em getStaticProps:", error);
+    console.error("Erro em getServerSideProps:", error);
     // Em caso de erro, retorna um array vazio e uma mensagem de erro
     return { 
       props: { 
         horarios: [], 
         error: "Não foi possível carregar os dados do servidor. Tente novamente mais tarde." 
-      }, 
-      //revalidate: 60 // Tenta de novo em 1 minuto
+      },
     };
   }
 };
 
 // 5. COMPONENTE DA PÁGINA: O conteúdo da aba "Horários"
 export default function HomePage({ horarios, error }: HomePageProps) {
-  // Se getStaticProps retornou um erro, exibe uma mensagem
+  // Se getServerSideProps retornou um erro, exibe uma mensagem
   if (error) {
     return (
       <div className="p-4 text-center">
