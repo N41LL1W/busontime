@@ -1,6 +1,8 @@
 /** @type {import('next').NextConfig} */
+const isStaticExport = process.env.CAPACITOR_BUILD === 'true';
+
 const nextConfig = {
-    output: 'export',
-}
+  ...(isStaticExport ? { output: 'export' } : {}),
+};
 
 module.exports = nextConfig;
