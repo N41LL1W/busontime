@@ -6,7 +6,8 @@ export const config = {
   api: {
     responseLimit: false,
   },
-  maxDuration: 300,
+  // Vercel Hobby serverless functions allow at most 60 seconds.
+  maxDuration: 60,
 };
 
 type ScrapResponse = {
