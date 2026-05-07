@@ -1,8 +1,6 @@
 // components/NavBar.tsx
-"use client";
-
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { useRouter } from 'next/router';
 import { Home, Info, MessageSquarePlus } from 'lucide-react'; // Importa o novo ícone
 
 const navItems = [
@@ -12,7 +10,7 @@ const navItems = [
 ];
 
 export default function NavBar() {
-  const pathname = usePathname();
+  const { pathname } = useRouter();
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 h-16 bg-background/95 backdrop-blur-sm border-t shadow-t-lg z-20">
