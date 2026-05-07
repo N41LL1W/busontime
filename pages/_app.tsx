@@ -2,7 +2,9 @@ import '@/styles/globals.css';
 import type { AppProps } from 'next/app';
 import NavBar from '@/components/NavBar';
 import { useEffect, useState } from 'react';
-import Link from 'next/link'; // Importação necessária para o link no rodapé
+import Link from 'next/link'; 
+import { QueryClientProvider } from '@tanstack/react-query';
+import queryClient from '@/lib/reactQuery';
 
 // Importações do Capacitor e AdMob
 import { Capacitor } from '@capacitor/core';
@@ -63,31 +65,33 @@ function MyApp({ Component, pageProps }: AppProps) {
   };
 
   return (
-    <div className="min-h-screen bg-background text-foreground transition-colors">
-      <header className="flex justify-between items-center p-4 border-b sticky top-0 bg-background/80 backdrop-blur-sm z-10">
-        <h1 className="text-2xl font-bold">BusOnTime</h1>
-        <button
-          onClick={() => setDarkMode(!darkMode)}
-          className="px-4 py-2 rounded-lg bg-secondary text-secondary-foreground hover:bg-secondary/80 transition-colors"
-        >
-          {darkMode ? "Claro" : "Escuro"}
-        </button>
-      </header>
-      
-      <main>
-        <Component {...pageProps} />
-      </main>
+    <QueryClientProvider client={queryClient}>
+      <div className="min-h-screen bg-background text-foreground transition-colors">
+        <header className="flex justify-between items-center p-4 border-b sticky top-0 bg-background/80 backdrop-blur-sm z-10">
+          <h1 className="text-2xl font-bold">BusOnTime</h1>
+          <button
+            onClick={() => setDarkMode(!darkMode)}
+            className="px-4 py-2 rounded-lg bg-secondary text-secondary-foreground hover:bg-secondary/80 transition-colors"
+          >
+            {darkMode ? "Claro" : "Escuro"}
+          </button>
+        </header>
+        
+        <main>
+          <Component {...pageProps} />
+        </main>
 
       <NavBar />
 
-      {/* RODAPÉ GLOBAL MODIFICADO com o link para a Política de Privacidade */}
-      <footer className="text-center p-4 pt-0 pb-20 text-sm text-muted-foreground space-y-1">
-        <p>© {new Date().getFullYear()} BusOnTime</p>
-        <Link href="/privacy" className="hover:text-primary hover:underline">
-          Política de Privacidade
-        </Link>
-      </footer>
-    </div>
+        {/* RODAPÉ GLOBAL MODIFICADO com o link para a Política de Privacidade */}
+        <footer className="text-center p-4 pt-0 pb-20 text-sm text-muted-foreground space-y-1">
+          <p>© {new Date().getFullYear()} BusOnTime</p>
+          <Link href="/privacy" className="hover:text-primary hover:underline">
+            Política de Privacidade
+          </Link>
+        </footer>
+      </div>
+    </QueryClientProvider>
   );
 }
 
