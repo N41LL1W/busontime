@@ -1,6 +1,6 @@
 import { scrapeCheerioJaboticabal } from "../scrapers/cheerio-jaboticabal";
 import { scrapeRibeTransporte } from "../scrapers/cheerio-ribetransporte";
-import { scrapeOcrFromImage } from "../scrapers/ocr-from-image";
+import { scrapeSemiurbanoSaoBento } from "../scrapers/semiurbano-sao-bento";
 import type { ScrapedHorario } from "../types/scrapers";
 
 export type ScrapingJob = {
@@ -14,23 +14,6 @@ export type ScrapingJob = {
   scraper: () => Promise<ScrapedHorario[]>;
 };
 
-function ocrJob(
-  endpoint: string,
-  id: string,
-  label: string,
-  sourceUrl: string,
-  origem: string,
-  destino: string
-): ScrapingJob {
-  return {
-    endpoint,
-    id,
-    label,
-    sourceUrl,
-    scraper: () => scrapeOcrFromImage(sourceUrl, origem, destino),
-  };
-}
-
 function cheerioJob(
   endpoint: string,
   id: string,
@@ -41,7 +24,18 @@ function cheerioJob(
   return { endpoint, id, label, sourceUrl, scraper };
 }
 
+const SEMIURBANO_SAO_BENTO_URL = "https://semiurbano.lovable.app/horarios";
+
+const saoBentoSemiurbanoJob = cheerioJob(
+  "scrap-semiurbano-sao-bento",
+  "vsb-semiurbano-site-oficial",
+  "Viação São Bento — todas as linhas semiurbanas",
+  SEMIURBANO_SAO_BENTO_URL,
+  () => scrapeSemiurbanoSaoBento(SEMIURBANO_SAO_BENTO_URL)
+);
+
 const jobs: ScrapingJob[] = [
+  saoBentoSemiurbanoJob,
   cheerioJob(
     "scrap-ribeirao-jardinopolis",
     "ribetransporte-rp-jardinopolis",
@@ -66,110 +60,6 @@ const jobs: ScrapingJob[] = [
         "Ribeirão Preto"
       )
   ),
-  ocrJob(
-    "scrap-ribeirao-brodowski",
-    "vsb-ribeirao-brodowski",
-    "Ribeirão - Brodowski",
-    "https://suburbano.vsb.com.br/wp-content/uploads/2024/12/Ribeirao-Preto-x-Brodowski_page-0001-scaled.jpg",
-    "Ribeirão Preto",
-    "Brodowski"
-  ),
-  ocrJob(
-    "scrap-brodowski-batatais",
-    "vsb-brodowski-batatais",
-    "Brodowski - Batatais",
-    "https://suburbano.vsb.com.br/wp-content/uploads/2022/05/16-05-2022-Batatais-x-Brodowski_page-0001.jpg",
-    "Brodowski",
-    "Batatais"
-  ),
-  ocrJob(
-    "scrap-ribeirao-sertaozinho",
-    "vsb-ribeirao-sertaozinho",
-    "Ribeirão - Sertãozinho",
-    "https://suburbano.vsb.com.br/wp-content/uploads/2025/01/Ribeirao-Preto-x-Sertaozinho-10-01-2025_page-0001-2.jpg",
-    "Ribeirão Preto",
-    "Sertãozinho"
-  ),
-  ocrJob(
-    "scrap-ribeirao-serrana",
-    "vsb-ribeirao-serrana",
-    "Ribeirão - Serrana",
-    "https://suburbano.vsb.com.br/wp-content/uploads/2024/12/25-12-24-Ribeirao-Preto-x-Serrana-Atual.jpg",
-    "Ribeirão Preto",
-    "Serrana"
-  ),
-  ocrJob(
-    "scrap-ribeirao-serra-azul",
-    "vsb-ribeirao-serra-azul",
-    "Ribeirão - Serra Azul",
-    "https://suburbano.vsb.com.br/wp-content/uploads/2024/02/Untitled1_page-00011.jpg",
-    "Ribeirão Preto",
-    "Serra Azul"
-  ),
-  ocrJob(
-    "scrap-ribeirao-batatais",
-    "vsb-ribeirao-batatais",
-    "Ribeirão - Batatais",
-    "https://suburbano.vsb.com.br/wp-content/uploads/2024/10/03-10-2024-Ribeirao-Preto-x-Batatais.jpg",
-    "Ribeirão Preto",
-    "Batatais"
-  ),
-  ocrJob(
-    "scrap-ribeirao-barrinha",
-    "vsb-ribeirao-barrinha",
-    "Ribeirão - Barrinha",
-    "https://suburbano.vsb.com.br/wp-content/uploads/2025/02/18-02-2025-Ribeirao-Preto-x-Barrinha_page-0001-2.jpg",
-    "Ribeirão Preto",
-    "Barrinha"
-  ),
-  ocrJob(
-    "scrap-ribeirao-altinopolis",
-    "vsb-ribeirao-altinopolis",
-    "Ribeirão - Altinópolis",
-    "https://suburbano.vsb.com.br/wp-content/uploads/2024/10/03-10-2024-Ribeirao-Preto-x-Altinopolis.jpg",
-    "Ribeirão Preto",
-    "Altinópolis"
-  ),
-  ocrJob(
-    "scrap-barrinha-sertaozinho",
-    "vsb-barrinha-sertaozinho",
-    "Barrinha - Sertãozinho",
-    "https://suburbano.vsb.com.br/wp-content/uploads/2022/09/03-09-2022-Sertaozinho-x-Barrinha-jpg-1085x1536.jpg",
-    "Barrinha",
-    "Sertãozinho"
-  ),
-  ocrJob(
-    "scrap-batatais-altinopolis",
-    "vsb-batatais-altinopolis",
-    "Batatais - Altinópolis",
-    "https://suburbano.vsb.com.br/wp-content/uploads/2024/10/03-10-2024-Batatais-x-Altinopolis_page-0001-1-1-scaled.jpg",
-    "Batatais",
-    "Altinópolis"
-  ),
-  ocrJob(
-    "scrap-miguelopolis-ituverava",
-    "vsb-miguelopolis-ituverava",
-    "Miguelópolis - Ituverava",
-    "https://suburbano.vsb.com.br/wp-content/uploads/2021/12/08-12-2021-Ituverava-X-Miguelopolis_page-0001.jpg",
-    "Miguelópolis",
-    "Ituverava"
-  ),
-  ocrJob(
-    "scrap-cachoeirinha-ituverava",
-    "vsb-cachoeirinha-ituverava",
-    "São Benedito - Ituverava",
-    "https://suburbano.vsb.com.br/wp-content/uploads/2021/12/08-12-2021-Ituverava-X-Sao-Benedito-da-Cachoeirinha_page-0001.jpg",
-    "São Benedito da Cachoeirinha",
-    "Ituverava"
-  ),
-  ocrJob(
-    "scrap-miguelopolis-barretos",
-    "vsb-miguelopolis-barretos",
-    "Miguelópolis - Barretos",
-    "https://suburbano.vsb.com.br/wp-content/uploads/2024/01/Barretos-Miguelopolis_page-0001-1.jpg",
-    "Miguelópolis",
-    "Barretos"
-  ),
   cheerioJob(
     "scrap-jaboticabal",
     "jaboticabal-cheerio",
@@ -184,8 +74,21 @@ const jobs: ScrapingJob[] = [
 ];
 
 const aliases: Record<string, string> = {
-  "scrap-cachoerinha-ituverava": "scrap-cachoeirinha-ituverava",
-  "scrap-miguelopolis-baretos": "scrap-miguelopolis-barretos",
+  "scrap-cachoerinha-ituverava": "scrap-semiurbano-sao-bento",
+  "scrap-miguelopolis-baretos": "scrap-semiurbano-sao-bento",
+  "scrap-ribeirao-brodowski": "scrap-semiurbano-sao-bento",
+  "scrap-brodowski-batatais": "scrap-semiurbano-sao-bento",
+  "scrap-ribeirao-sertaozinho": "scrap-semiurbano-sao-bento",
+  "scrap-ribeirao-serrana": "scrap-semiurbano-sao-bento",
+  "scrap-ribeirao-serra-azul": "scrap-semiurbano-sao-bento",
+  "scrap-ribeirao-batatais": "scrap-semiurbano-sao-bento",
+  "scrap-ribeirao-barrinha": "scrap-semiurbano-sao-bento",
+  "scrap-ribeirao-altinopolis": "scrap-semiurbano-sao-bento",
+  "scrap-barrinha-sertaozinho": "scrap-semiurbano-sao-bento",
+  "scrap-batatais-altinopolis": "scrap-semiurbano-sao-bento",
+  "scrap-miguelopolis-ituverava": "scrap-semiurbano-sao-bento",
+  "scrap-cachoeirinha-ituverava": "scrap-semiurbano-sao-bento",
+  "scrap-miguelopolis-barretos": "scrap-semiurbano-sao-bento",
 };
 
 export const scrapingJobs = jobs;

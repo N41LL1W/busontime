@@ -5,33 +5,16 @@ import {
   RefreshCw,
   Zap,
   Trash2,
-  CheckCircle,
-  AlertCircle,
   Loader2,
 } from "lucide-react";
 
 const rotas = [
+  {
+    label: "Viação São Bento — todas as linhas semiurbanas",
+    endpoint: "scrap-semiurbano-sao-bento",
+  },
   { label: "Ribeirão - Jardinópolis", endpoint: "scrap-ribeirao-jardinopolis" },
   { label: "Jardinópolis - Ribeirão", endpoint: "scrap-jardinopolis-ribeirao" },
-  { label: "Ribeirão - Brodowski", endpoint: "scrap-ribeirao-brodowski" },
-  { label: "Brodowski - Batatais", endpoint: "scrap-brodowski-batatais" },
-  { label: "Ribeirão - Sertãozinho", endpoint: "scrap-ribeirao-sertaozinho" },
-  { label: "Ribeirão - Serrana", endpoint: "scrap-ribeirao-serrana" },
-  { label: "Ribeirão - Serra Azul", endpoint: "scrap-ribeirao-serra-azul" },
-  { label: "Ribeirão - Batatais", endpoint: "scrap-ribeirao-batatais" },
-  { label: "Ribeirão - Barrinha", endpoint: "scrap-ribeirao-barrinha" },
-  { label: "Ribeirão - Altinópolis", endpoint: "scrap-ribeirao-altinopolis" },
-  { label: "Barrinha - Sertãozinho", endpoint: "scrap-barrinha-sertaozinho" },
-  { label: "Batatais - Altinópolis", endpoint: "scrap-batatais-altinopolis" },
-  {
-    label: "Miguelópolis - Ituverava",
-    endpoint: "scrap-miguelopolis-ituverava",
-  },
-  {
-    label: "São Benedito - Ituverava",
-    endpoint: "scrap-cachoeirinha-ituverava",
-  },
-  { label: "Miguelópolis - Barretos", endpoint: "scrap-miguelopolis-barretos" },
   { label: "Saída de Jaboticabal", endpoint: "scrap-jaboticabal" },
 ];
 
