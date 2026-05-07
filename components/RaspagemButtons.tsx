@@ -17,8 +17,8 @@ const rotas = [
   { label: "Barrinha - Sertãozinho", endpoint: "scrap-barrinha-sertaozinho" },
   { label: "Batatais - Altinópolis", endpoint: "scrap-batatais-altinopolis" },
   { label: "Miguelópolis - Ituverava", endpoint: "scrap-miguelopolis-ituverava" },
-  { label: "São Benedito - Ituverava", endpoint: "scrap-cachoerinha-ituverava" },
-  { label: "Miguelópolis - Barretos", endpoint: "scrap-miguelopolis-baretos" },
+  { label: "São Benedito - Ituverava", endpoint: "scrap-cachoeirinha-ituverava" },
+  { label: "Miguelópolis - Barretos", endpoint: "scrap-miguelopolis-barretos" },
   { label: "Saída de Jaboticabal", endpoint: "scrap-jaboticabal" },
 ];
 
@@ -30,8 +30,11 @@ export default function RaspagemButtons() {
     try {
       const res = await axios.post(`/api/${endpoint}`);
       alert(res.data.message);
-    } catch {
-      alert("Erro ao fazer a raspagem.");
+    } catch (error) {
+      const message = axios.isAxiosError(error)
+        ? error.response?.data?.error || error.response?.data?.message || "Erro ao fazer a raspagem."
+        : "Erro ao fazer a raspagem.";
+      alert(message);
     } finally {
       setLoading(null);
     }

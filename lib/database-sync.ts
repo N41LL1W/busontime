@@ -21,31 +21,42 @@ export async function syncSchedules(sourceIdentifier: string, scrapedData: Scrap
     return;
   }
 
-  // Agrupa os dados para identificar unicamente os registros a serem deletados.
-  // Pega a primeira origem, destino e todos os dias da semana dos dados raspados.
-  const representativeData = scrapedData[0];
-  const allWeekDays = Array.from(new Set(scrapedData.map(d => d.diaDaSemana)));
+  const routeGroups = Array.from(
+    scrapedData.reduce((groups, item) => {
+      const key = `${item.origem}|||${item.destino}|||${item.diaDaSemana}`;
+      groups.set(key, {
+        origem: item.origem,
+        destino: item.destino,
+        diaDaSemana: item.diaDaSemana,
+      });
+      return groups;
+    }, new Map<string, { origem: string; destino: string; diaDaSemana: string }>()),
+  ).map(([, group]) => group);
 
-  console.log(`[${sourceIdentifier}] Iniciando transação para ${representativeData.origem} -> ${representativeData.destino} nos dias: ${allWeekDays.join(', ')}`);
+  console.log(
+    `[${sourceIdentifier}] Iniciando transação para ${routeGroups.length} combinação(ões) de origem/destino/dia.`,
+  );
 
   try {
     const transaction = await prisma.$transaction([
-      // Passo 1: Deletar os registros antigos para esta rota e dias da semana
-      prisma.horario.deleteMany({
-        where: {
-          origem: representativeData.origem,
-          destino: representativeData.destino,
-          diaDaSemana: { in: allWeekDays },
-        },
-      }),
-      // Passo 2: Criar os novos registros
+      ...routeGroups.map((group) =>
+        prisma.horario.deleteMany({
+          where: group,
+        }),
+      ),
+      // Passo final: Criar os novos registros
       prisma.horario.createMany({
         data: scrapedData,
         skipDuplicates: true, // Segurança extra
       }),
     ]);
 
-    console.log(`[${sourceIdentifier}] Transação concluída. Deletados: ${transaction[0].count}, Criados: ${transaction[1].count}`);
+    const deletedCount = transaction
+      .slice(0, routeGroups.length)
+      .reduce((total, result) => total + result.count, 0);
+    const createdCount = transaction[transaction.length - 1].count;
+
+    console.log(`[${sourceIdentifier}] Transação concluída. Deletados: ${deletedCount}, Criados: ${createdCount}`);
   } catch (error) {
     console.error(`[${sourceIdentifier}] ERRO na transação do banco de dados:`, error);
     // A transação será revertida automaticamente em caso de erro.
