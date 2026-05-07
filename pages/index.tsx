@@ -22,13 +22,33 @@ const fontesDasRotas: Record<string, string> = {
   "ribeirão preto-jardinópolis": "https://www.ribetransporte.com.br/ribeirao-preto-a-jardinopolis/",
   "jardinópolis-ribeirão preto": "https://www.ribetransporte.com.br/linha-01/",
   
-  // Rotas de OCR (VSB) - adicione todas aqui. A mesma URL para ida e volta.
-  "barrinha-sertãozinho": "https://suburbano.vsb.com.br/wp-content/uploads/2022/09/03-09-2022-Sertaozinho-x-Barrinha-jpg-1085x1536.jpg",
-  "sertãozinho-barrinha": "https://suburbano.vsb.com.br/wp-content/uploads/2022/09/03-09-2022-Sertaozinho-x-Barrinha-jpg-1085x1536.jpg",
-  "batatais-altinópolis": "https://suburbano.vsb.com.br/wp-content/uploads/2024/10/03-10-2024-Batatais-x-Altinopolis_page-0001-1-1-scaled.jpg",
-  "altinópolis-batatais": "https://suburbano.vsb.com.br/wp-content/uploads/2024/10/03-10-2024-Batatais-x-Altinopolis_page-0001-1-1-scaled.jpg",
-  
-  // ... continue adicionando todas as outras rotas e suas URLs aqui
+  // Rotas do Semiurbano São Bento. A mesma fonte atende ida e volta.
+  "barrinha-sertãozinho": "https://semiurbano.lovable.app/",
+  "sertãozinho-barrinha": "https://semiurbano.lovable.app/",
+  "batatais-altinópolis": "https://semiurbano.lovable.app/",
+  "altinópolis-batatais": "https://semiurbano.lovable.app/",
+  "ribeirão preto-brodowski": "https://semiurbano.lovable.app/",
+  "brodowski-ribeirão preto": "https://semiurbano.lovable.app/",
+  "brodowski-batatais": "https://semiurbano.lovable.app/",
+  "batatais-brodowski": "https://semiurbano.lovable.app/",
+  "ribeirão preto-sertãozinho": "https://semiurbano.lovable.app/",
+  "sertãozinho-ribeirão preto": "https://semiurbano.lovable.app/",
+  "ribeirão preto-serrana": "https://semiurbano.lovable.app/",
+  "serrana-ribeirão preto": "https://semiurbano.lovable.app/",
+  "ribeirão preto-serra azul": "https://semiurbano.lovable.app/",
+  "serra azul-ribeirão preto": "https://semiurbano.lovable.app/",
+  "ribeirão preto-batatais": "https://semiurbano.lovable.app/",
+  "batatais-ribeirão preto": "https://semiurbano.lovable.app/",
+  "ribeirão preto-barrinha": "https://semiurbano.lovable.app/",
+  "barrinha-ribeirão preto": "https://semiurbano.lovable.app/",
+  "ribeirão preto-altinópolis": "https://semiurbano.lovable.app/",
+  "altinópolis-ribeirão preto": "https://semiurbano.lovable.app/",
+  "miguelópolis-ituverava": "https://semiurbano.lovable.app/",
+  "ituverava-miguelópolis": "https://semiurbano.lovable.app/",
+  "são benedito da cachoeirinha-ituverava": "https://semiurbano.lovable.app/",
+  "ituverava-são benedito da cachoeirinha": "https://semiurbano.lovable.app/",
+  "miguelópolis-barretos": "https://semiurbano.lovable.app/",
+  "barretos-miguelópolis": "https://semiurbano.lovable.app/",
 };
 
 // 4. GETSTATICPROPS: Busca os dados no servidor no momento do build

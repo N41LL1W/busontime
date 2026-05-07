@@ -52,7 +52,7 @@ export default async function handler(
 
     if (!scrapedData.length) {
       return res.status(502).json({
-        error: `Nenhum horário foi encontrado para ${job.label}. Verifique se a fonte mudou ou se o OCR falhou.`,
+        error: `Nenhum horário foi encontrado para ${job.label}. Verifique se a fonte mudou ou se a raspagem não encontrou dados textuais.`,
         count: 0,
         endpoint: job.endpoint,
         sourceUrl: job.sourceUrl,

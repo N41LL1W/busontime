@@ -29,6 +29,7 @@ const Header: React.FC = () => {
               <nav className="flex gap-6 text-white text-lg ml-12">
                 <a href="/" className="hover:underline">HOME</a>
                 <a href="/admin" className="hover:underline">ADMIN</a>
+                <a href="/config" className="hover:underline">CONFIG</a>
               </nav>
           </div>
         )}
@@ -44,6 +45,7 @@ const Header: React.FC = () => {
             <nav className="flex justify-center gap-6 text-lg mt-2">
               <a href="/" className="hover:underline">HOME</a>
               <a href="/admin" className="hover:underline">ADMIN</a>
+              <a href="/config" className="hover:underline">CONFIG</a>
             </nav>
           </div>
         )}
