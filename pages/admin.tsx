@@ -1,7 +1,5 @@
 import React, { useState } from 'react';
 import HorariosPage from '../components/HorariosPage';
-import Footer from '../components/Footer';
-import Header from '../components/Header';
 import RaspagemButtons from '../components/RaspagemButtons';
 
 const Page = () => {
@@ -19,10 +17,6 @@ const Page = () => {
 
   return (
     <div>
-      <div className='mb-10 pb-10'>
-        <Header />
-      </div>
-
       {!autenticado ? (
         <div className="flex flex-col items-center mt-10 space-y-4">
           <h2 className="text-xl font-semibold">Login de Administrador</h2>
@@ -68,9 +62,6 @@ const Page = () => {
         </>
       )}
 
-      <div>
-        <Footer />
-      </div>
     </div>
   );
 };

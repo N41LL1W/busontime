@@ -2,6 +2,8 @@ import '@/styles/globals.css';
 import type { AppProps } from 'next/app';
 import NavBar from '@/components/NavBar';
 import { useEffect, useState } from 'react';
+import { QueryClientProvider } from '@tanstack/react-query';
+import queryClient from '@/lib/reactQuery';
 import Link from 'next/link'; // Importação necessária para o link no rodapé
 
 // Importações do Capacitor e AdMob
@@ -11,10 +13,12 @@ import { AdMob, BannerAdOptions, BannerAdSize, BannerAdPosition } from '@capacit
 function MyApp({ Component, pageProps }: AppProps) {
   // Lógica do Dark Mode
   const [darkMode, setDarkMode] = useState(false);
+  const [currentYear, setCurrentYear] = useState<number | null>(null);
 
   useEffect(() => {
     const isDarkModePreferred = window.localStorage.getItem('darkMode') === 'true';
     setDarkMode(isDarkModePreferred);
+    setCurrentYear(new Date().getFullYear());
   }, []);
 
   useEffect(() => {
@@ -63,31 +67,33 @@ function MyApp({ Component, pageProps }: AppProps) {
   };
 
   return (
-    <div className="min-h-screen bg-background text-foreground transition-colors">
-      <header className="flex justify-between items-center p-4 border-b sticky top-0 bg-background/80 backdrop-blur-sm z-10">
-        <h1 className="text-2xl font-bold">BusOnTime</h1>
-        <button
-          onClick={() => setDarkMode(!darkMode)}
-          className="px-4 py-2 rounded-lg bg-secondary text-secondary-foreground hover:bg-secondary/80 transition-colors"
-        >
-          {darkMode ? "Claro" : "Escuro"}
-        </button>
-      </header>
-      
-      <main>
-        <Component {...pageProps} />
-      </main>
+    <QueryClientProvider client={queryClient}>
+      <div className="min-h-screen bg-background text-foreground transition-colors">
+        <header className="flex justify-between items-center p-4 border-b sticky top-0 bg-background/80 backdrop-blur-sm z-10">
+          <h1 className="text-2xl font-bold">BusOnTime</h1>
+          <button
+            onClick={() => setDarkMode(!darkMode)}
+            className="px-4 py-2 rounded-lg bg-secondary text-secondary-foreground hover:bg-secondary/80 transition-colors"
+          >
+            {darkMode ? "Claro" : "Escuro"}
+          </button>
+        </header>
 
-      <NavBar />
+        <main>
+          <Component {...pageProps} />
+        </main>
 
-      {/* RODAPÉ GLOBAL MODIFICADO com o link para a Política de Privacidade */}
-      <footer className="text-center p-4 pt-0 pb-20 text-sm text-muted-foreground space-y-1">
-        <p>© {new Date().getFullYear()} BusOnTime</p>
-        <Link href="/privacy" className="hover:text-primary hover:underline">
-          Política de Privacidade
-        </Link>
-      </footer>
-    </div>
+        <NavBar />
+
+        {/* RODAPÉ GLOBAL MODIFICADO com o link para a Política de Privacidade */}
+        <footer className="text-center p-4 pt-0 pb-20 text-sm text-muted-foreground space-y-1">
+          <p>© {currentYear ?? ''} BusOnTime</p>
+          <Link href="/privacy" className="hover:text-primary hover:underline">
+            Política de Privacidade
+          </Link>
+        </footer>
+      </div>
+    </QueryClientProvider>
   );
 }
 

@@ -33,15 +33,23 @@ const getCategoriaDia = (date: Date): string => {
 };
 
 // Componente principal
+const DEFAULT_DATE = new Date("2000-01-03T00:00:00");
+
 const BusScheduleFilter: React.FC<BusScheduleFilterProps> = ({ schedules }) => {
-  // ... (Estados e lógica de useMemo, etc. - sem mudanças)
-  const [selectedDate, setSelectedDate] = useState<Date>(() => new Date());
-  const [selectedTime, setSelectedTime] = useState(() => format(new Date(), "HH:mm"));
+  // Os valores iniciais precisam ser estáveis no servidor e no cliente para evitar erro de hidratação.
+  const [selectedDate, setSelectedDate] = useState<Date>(DEFAULT_DATE);
+  const [selectedTime, setSelectedTime] = useState("00:00");
   const [origin, setOrigin] = useState("");
   const [destination, setDestination] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [modalUrl, setModalUrl] = useState<string | null>(null);
   const itensPorPagina = 10;
+
+  useEffect(() => {
+    const now = new Date();
+    setSelectedDate(now);
+    setSelectedTime(format(now, "HH:mm"));
+  }, []);
   const { filteredSchedules, availableOrigins, availableDestinations } = useMemo(() => {
     const now = new Date();
     const categoriaDiaAtual = getCategoriaDia(selectedDate);
