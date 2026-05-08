@@ -6,7 +6,7 @@ export const config = {
   api: {
     responseLimit: false,
   },
-  maxDuration: 300,
+  maxDuration: 60,
 };
 
 type ScrapResponse = {
