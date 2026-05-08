@@ -1,5 +1,11 @@
 import React, { useState, useEffect } from "react";
 
+const navLinks = [
+  { href: "/", label: "HOME" },
+  { href: "/admin", label: "ADMIN" },
+  { href: "/config", label: "CONFIG" },
+];
+
 const Header: React.FC = () => {
   const [scrollY, setScrollY] = useState(0);
   const [isCollapsed, setIsCollapsed] = useState(false);
@@ -29,7 +35,6 @@ const Header: React.FC = () => {
               <nav className="flex gap-6 text-white text-lg ml-12">
                 <a href="/" className="hover:underline">HOME</a>
                 <a href="/admin" className="hover:underline">ADMIN</a>
-                <a href="/config" className="hover:underline">CONFIG</a>
               </nav>
           </div>
         )}
@@ -45,7 +50,6 @@ const Header: React.FC = () => {
             <nav className="flex justify-center gap-6 text-lg mt-2">
               <a href="/" className="hover:underline">HOME</a>
               <a href="/admin" className="hover:underline">ADMIN</a>
-              <a href="/config" className="hover:underline">CONFIG</a>
             </nav>
           </div>
         )}
