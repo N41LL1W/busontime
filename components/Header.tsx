@@ -1,5 +1,11 @@
 import React, { useState, useEffect } from "react";
 
+const navLinks = [
+  { href: "/", label: "HOME" },
+  { href: "/admin", label: "ADMIN" },
+  { href: "/config", label: "CONFIG" },
+];
+
 const Header: React.FC = () => {
   const [scrollY, setScrollY] = useState(0);
   const [isCollapsed, setIsCollapsed] = useState(false);
@@ -27,8 +33,11 @@ const Header: React.FC = () => {
           <div className="flex items-center w-full">
               <img src="/images/logoBusontime-rbg.png" alt="Logo BUSONTIME" className="h-8 md:h-12" />
               <nav className="flex gap-6 text-white text-lg ml-12">
-                <a href="/" className="hover:underline">HOME</a>
-                <a href="/admin" className="hover:underline">ADMIN</a>
+                {navLinks.map((link) => (
+                  <a key={link.href} href={link.href} className="hover:underline">
+                    {link.label}
+                  </a>
+                ))}
               </nav>
           </div>
         )}
@@ -42,8 +51,11 @@ const Header: React.FC = () => {
             </div>
             <p className="text-sm mt-10">SISTEMA DE HORÁRIOS DO TRANSPORTE SUBURBANO</p>
             <nav className="flex justify-center gap-6 text-lg mt-2">
-              <a href="/" className="hover:underline">HOME</a>
-              <a href="/admin" className="hover:underline">ADMIN</a>
+              {navLinks.map((link) => (
+                <a key={link.href} href={link.href} className="hover:underline">
+                  {link.label}
+                </a>
+              ))}
             </nav>
           </div>
         )}
