@@ -17,6 +17,8 @@ type SupabaseConfig = {
 
 type SupabaseRow = Record<string, unknown>;
 
+let discoveredConfigPromise: Promise<SupabaseConfig> | null = null;
+
 type RouteOptions = {
   origem: string;
   destino: string;
@@ -191,7 +193,7 @@ function extrairConfigSupabase(texto: string): SupabaseConfig | null {
   return { url: supabaseUrl, anonKey };
 }
 
-export async function discoverSemiurbanoSupabaseConfig(): Promise<SupabaseConfig> {
+async function loadSemiurbanoSupabaseConfig(): Promise<SupabaseConfig> {
   if (process.env.SEMIURBANO_SUPABASE_URL && process.env.SEMIURBANO_SUPABASE_ANON_KEY) {
     return {
       url: process.env.SEMIURBANO_SUPABASE_URL,
@@ -212,6 +214,17 @@ export async function discoverSemiurbanoSupabaseConfig(): Promise<SupabaseConfig
   throw new Error(
     "Não foi possível descobrir a chave pública anon do Supabase do Semiurbano. Configure SEMIURBANO_SUPABASE_ANON_KEY.",
   );
+}
+
+export async function discoverSemiurbanoSupabaseConfig(): Promise<SupabaseConfig> {
+  if (!discoveredConfigPromise) {
+    discoveredConfigPromise = loadSemiurbanoSupabaseConfig().catch((error) => {
+      discoveredConfigPromise = null;
+      throw error;
+    });
+  }
+
+  return discoveredConfigPromise;
 }
 
 function createSupabaseRestClient(config: SupabaseConfig) {

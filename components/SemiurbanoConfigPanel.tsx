@@ -28,6 +28,24 @@ type Status = {
   sourceUrl?: string;
 };
 
+const stringifyErrorMessage = (value: unknown): string => {
+  if (typeof value === "string") return value;
+  if (value && typeof value === "object") {
+    const objectValue = value as Record<string, unknown>;
+    if (typeof objectValue.message === "string") return objectValue.message;
+    if (typeof objectValue.error === "string") return objectValue.error;
+    if (typeof objectValue.code === "string") return `Erro ${objectValue.code}`;
+  }
+
+  return "";
+};
+
+const getAxiosErrorData = (error: unknown): Record<string, unknown> => {
+  if (!axios.isAxiosError(error) || !error.response?.data) return {};
+  const data = error.response.data;
+  return data && typeof data === "object" ? (data as Record<string, unknown>) : { message: data };
+};
+
 export default function SemiurbanoConfigPanel() {
   const [loading, setLoading] = useState<string | null>(null);
   const [statuses, setStatuses] = useState<Status[]>([]);
@@ -53,13 +71,20 @@ export default function SemiurbanoConfigPanel() {
       setStatuses((current) => [status, ...current.filter((item) => item.endpoint !== route.endpoint)]);
       return status;
     } catch (error) {
-      const data = axios.isAxiosError(error) ? error.response?.data : undefined;
+      const data = getAxiosErrorData(error);
+      const message =
+        stringifyErrorMessage(data.error) ||
+        stringifyErrorMessage(data.message) ||
+        (axios.isAxiosError(error) && error.response?.status === 504
+          ? "A raspagem demorou demais e o servidor encerrou a requisição. Tente novamente esta linha ou execute o script de raspagem fora da Vercel."
+          : "Erro ao fazer a raspagem.");
+      const sourceUrl = stringifyErrorMessage(data.sourceUrl);
       const status: Status = {
         label: route.label,
         endpoint: route.endpoint,
         state: "error",
-        message: data?.error || data?.message || "Erro ao fazer a raspagem.",
-        sourceUrl: data?.sourceUrl,
+        message,
+        sourceUrl: sourceUrl || undefined,
       };
       setStatuses((current) => [status, ...current.filter((item) => item.endpoint !== route.endpoint)]);
       return status;

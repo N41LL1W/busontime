@@ -53,12 +53,12 @@ export default async function handler(
     let sourceUrl = job.sourceUrl;
     let usedFallback = false;
 
-    if (!scrapedData.length) {
+    if (!scrapedData.length && req.query.fallback === "legacy") {
       const fallbackJob = getLegacySemiurbanoFallbackJob(job);
 
       if (fallbackJob) {
         console.warn(
-          `[API Scrap] ${job.id} não retornou horários. Tentando fallback ${fallbackJob.id} (${fallbackJob.sourceUrl}).`
+          `[API Scrap] ${job.id} não retornou horários. Tentando fallback legado ${fallbackJob.id} (${fallbackJob.sourceUrl}).`
         );
         scrapedData = await fallbackJob.scraper();
         sourceUrl = fallbackJob.sourceUrl;
@@ -68,7 +68,7 @@ export default async function handler(
 
     if (!scrapedData.length) {
       return res.status(200).json({
-        message: `Nenhum horário novo foi encontrado para ${job.label}. A fonte pode estar temporariamente indisponível ou sem dados textuais para esta linha.`,
+        message: `Nenhum horário novo foi encontrado para ${job.label}. A fonte textual pode estar temporariamente indisponível ou sem dados para esta linha. Para tentar a fonte antiga com OCR, chame /api/${job.endpoint}?fallback=legacy.`,
         warning: `Nenhum horário foi encontrado para ${job.label}.`,
         count: 0,
         endpoint: job.endpoint,
