@@ -2,6 +2,7 @@ import axios from "axios";
 import * as cheerio from "cheerio";
 import type { ScrapedHorario } from "../types/scrapers";
 import { scrapeSemiurbanoSupabaseRoute } from "./supabase-semiurbano";
+import { scrapeSemiurbanoPuppeteerRoute } from "./puppeteer-semiurbano";
 
 const SEMIURBANO_APP_URL = "https://semiurbano.lovable.app/horarios";
 
@@ -252,11 +253,15 @@ export async function scrapeSemiurbanoRoute({
       console.log(`[Semiurbano] Raspagem finalizada para ${origem} -> ${destino}: ${horarios.length} horário(s).`);
     }
 
-    return horarios;
+    if (horarios.length > 0) {
+      return horarios;
+    }
   } catch (error) {
     console.error(`[Semiurbano] Erro ao raspar ${origem} -> ${destino}:`, error);
-    return [];
   }
+  
+  console.warn(`[Semiurbano] Fallback textual não encontrou dados para ${origem} -> ${destino}; pesquisando com navegador automatizado.`);
+  return scrapeSemiurbanoPuppeteerRoute({ url, origem, destino, label });
 }
 
 export { SEMIURBANO_APP_URL };
