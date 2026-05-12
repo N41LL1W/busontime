@@ -97,8 +97,8 @@ export default function SemiurbanoConfigPanel() {
           <div className="flex items-center gap-2 font-semibold">
             <RefreshCw className="h-4 w-4" /> Fonte atual
           </div>
-          <a className="mt-1 block break-all underline" href="https://semiurbano.lovable.app/" target="_blank" rel="noreferrer">
-            https://semiurbano.lovable.app/
+          <a className="mt-1 block break-all underline" href="https://semiurbano.lovable.app/horarios" target="_blank" rel="noreferrer">
+            https://semiurbano.lovable.app/horarios
           </a>
         </div>
       </section>

@@ -1,6 +1,7 @@
 import { syncSchedules } from './database-sync';
 import { scrapeRibeTransporte } from '../scrapers/cheerio-ribetransporte';
 import { scrapeOcrFromImage } from '../scrapers/ocr-from-image';
+import { SEMIURBANO_APP_URL, scrapeSemiurbanoRoute } from '../scrapers/cheerio-semiurbano';
 import type { ScrapedHorario } from '../types/scrapers';
 
 export type ScrapingJobResult = {
@@ -19,7 +20,103 @@ export type ScrapingJob = {
   scraper: () => Promise<ScrapedHorario[]>;
 };
 
+
+const semiurbanoRouteJobs: ScrapingJob[] = [
+  {
+    id: 'semiurbano-ribeirao-brodowski',
+    endpoint: 'scrap-ribeirao-brodowski',
+    label: 'Ribeirão Preto → Brodowski',
+    sourceUrl: SEMIURBANO_APP_URL,
+    scraper: () => scrapeSemiurbanoRoute({ origem: 'Ribeirão Preto', destino: 'Brodowski', label: 'Ribeirão - Brodowski' }),
+  },
+  {
+    id: 'semiurbano-brodowski-batatais',
+    endpoint: 'scrap-brodowski-batatais',
+    label: 'Brodowski → Batatais',
+    sourceUrl: SEMIURBANO_APP_URL,
+    scraper: () => scrapeSemiurbanoRoute({ origem: 'Brodowski', destino: 'Batatais', label: 'Brodowski - Batatais' }),
+  },
+  {
+    id: 'semiurbano-ribeirao-sertaozinho',
+    endpoint: 'scrap-ribeirao-sertaozinho',
+    label: 'Ribeirão Preto → Sertãozinho',
+    sourceUrl: SEMIURBANO_APP_URL,
+    scraper: () => scrapeSemiurbanoRoute({ origem: 'Ribeirão Preto', destino: 'Sertãozinho', label: 'Ribeirão - Sertãozinho' }),
+  },
+  {
+    id: 'semiurbano-ribeirao-serrana',
+    endpoint: 'scrap-ribeirao-serrana',
+    label: 'Ribeirão Preto → Serrana',
+    sourceUrl: SEMIURBANO_APP_URL,
+    scraper: () => scrapeSemiurbanoRoute({ origem: 'Ribeirão Preto', destino: 'Serrana', label: 'Ribeirão - Serrana' }),
+  },
+  {
+    id: 'semiurbano-ribeirao-serra-azul',
+    endpoint: 'scrap-ribeirao-serra-azul',
+    label: 'Ribeirão Preto → Serra Azul',
+    sourceUrl: SEMIURBANO_APP_URL,
+    scraper: () => scrapeSemiurbanoRoute({ origem: 'Ribeirão Preto', destino: 'Serra Azul', label: 'Ribeirão - Serra Azul' }),
+  },
+  {
+    id: 'semiurbano-ribeirao-batatais',
+    endpoint: 'scrap-ribeirao-batatais',
+    label: 'Ribeirão Preto → Batatais',
+    sourceUrl: SEMIURBANO_APP_URL,
+    scraper: () => scrapeSemiurbanoRoute({ origem: 'Ribeirão Preto', destino: 'Batatais', label: 'Ribeirão - Batatais' }),
+  },
+  {
+    id: 'semiurbano-ribeirao-barrinha',
+    endpoint: 'scrap-ribeirao-barrinha',
+    label: 'Ribeirão Preto → Barrinha',
+    sourceUrl: SEMIURBANO_APP_URL,
+    scraper: () => scrapeSemiurbanoRoute({ origem: 'Ribeirão Preto', destino: 'Barrinha', label: 'Ribeirão - Barrinha' }),
+  },
+  {
+    id: 'semiurbano-ribeirao-altinopolis',
+    endpoint: 'scrap-ribeirao-altinopolis',
+    label: 'Ribeirão Preto → Altinópolis',
+    sourceUrl: SEMIURBANO_APP_URL,
+    scraper: () => scrapeSemiurbanoRoute({ origem: 'Ribeirão Preto', destino: 'Altinópolis', label: 'Ribeirão - Altinópolis' }),
+  },
+  {
+    id: 'semiurbano-barrinha-sertaozinho',
+    endpoint: 'scrap-barrinha-sertaozinho',
+    label: 'Barrinha → Sertãozinho',
+    sourceUrl: SEMIURBANO_APP_URL,
+    scraper: () => scrapeSemiurbanoRoute({ origem: 'Barrinha', destino: 'Sertãozinho', label: 'Barrinha - Sertãozinho' }),
+  },
+  {
+    id: 'semiurbano-batatais-altinopolis',
+    endpoint: 'scrap-batatais-altinopolis',
+    label: 'Batatais → Altinópolis',
+    sourceUrl: SEMIURBANO_APP_URL,
+    scraper: () => scrapeSemiurbanoRoute({ origem: 'Batatais', destino: 'Altinópolis', label: 'Batatais - Altinópolis' }),
+  },
+  {
+    id: 'semiurbano-miguelopolis-ituverava',
+    endpoint: 'scrap-miguelopolis-ituverava',
+    label: 'Miguelópolis → Ituverava',
+    sourceUrl: SEMIURBANO_APP_URL,
+    scraper: () => scrapeSemiurbanoRoute({ origem: 'Miguelópolis', destino: 'Ituverava', label: 'Miguelópolis - Ituverava' }),
+  },
+  {
+    id: 'semiurbano-cachoeirinha-ituverava',
+    endpoint: 'scrap-cachoeirinha-ituverava',
+    label: 'São Benedito da Cachoeirinha → Ituverava',
+    sourceUrl: SEMIURBANO_APP_URL,
+    scraper: () => scrapeSemiurbanoRoute({ origem: 'São Benedito da Cachoeirinha', destino: 'Ituverava', label: 'São Benedito - Ituverava' }),
+  },
+  {
+    id: 'semiurbano-miguelopolis-barretos',
+    endpoint: 'scrap-miguelopolis-barretos',
+    label: 'Miguelópolis → Barretos',
+    sourceUrl: SEMIURBANO_APP_URL,
+    scraper: () => scrapeSemiurbanoRoute({ origem: 'Miguelópolis', destino: 'Barretos', label: 'Miguelópolis - Barretos' }),
+  },
+];
+
 export const scrapingJobs: ScrapingJob[] = [
+  ...semiurbanoRouteJobs,
   {
     id: 'ribetransporte-rp-jardinopolis',
     endpoint: 'ribetransporte-rp-jardinopolis',

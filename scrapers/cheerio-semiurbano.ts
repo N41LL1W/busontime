@@ -2,7 +2,7 @@ import axios from "axios";
 import * as cheerio from "cheerio";
 import type { ScrapedHorario } from "../types/scrapers";
 
-const SEMIURBANO_APP_URL = "https://semiurbano.lovable.app/";
+const SEMIURBANO_APP_URL = "https://semiurbano.lovable.app/horarios";
 
 const REQUEST_HEADERS = {
   "User-Agent":
