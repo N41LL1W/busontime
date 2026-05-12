@@ -1,6 +1,7 @@
 import axios from "axios";
 import * as cheerio from "cheerio";
 import type { ScrapedHorario } from "../types/scrapers";
+import { scrapeSemiurbanoSupabaseRoute } from "./supabase-semiurbano";
 
 const SEMIURBANO_APP_URL = "https://semiurbano.lovable.app/horarios";
 
@@ -229,7 +230,14 @@ export async function scrapeSemiurbanoRoute({
   destino,
   label,
 }: RouteOptions): Promise<ScrapedHorario[]> {
-  console.log(`[Semiurbano] Iniciando raspagem textual para ${origem} -> ${destino} em ${url}`);
+  console.log(`[Semiurbano] Iniciando coleta para ${origem} -> ${destino} em ${url}`);
+
+  const supabaseHorarios = await scrapeSemiurbanoSupabaseRoute({ origem, destino, label });
+  if (supabaseHorarios.length > 0) {
+    return supabaseHorarios;
+  }
+
+  console.warn(`[Semiurbano] API pública não retornou dados para ${origem} -> ${destino}; usando fallback textual.`);
 
   try {
     const documento = await carregarDocumentoComBundles(url);
