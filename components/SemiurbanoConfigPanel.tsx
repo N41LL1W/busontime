@@ -22,7 +22,7 @@ const semiurbanoRoutes = [
 type Status = {
   label: string;
   endpoint: string;
-  state: "success" | "error";
+  state: "success" | "warning" | "error";
   message: string;
   count?: number;
   sourceUrl?: string;
@@ -45,7 +45,7 @@ export default function SemiurbanoConfigPanel() {
       const status: Status = {
         label: route.label,
         endpoint: route.endpoint,
-        state: "success",
+        state: res.data.warning ? "warning" : "success",
         message: res.data.message || "Raspagem concluída.",
         count: res.data.count,
         sourceUrl: res.data.sourceUrl,
@@ -147,12 +147,18 @@ export default function SemiurbanoConfigPanel() {
               <div
                 key={status.endpoint}
                 className={`rounded-2xl border p-4 ${
-                  status.state === "success" ? "border-green-200 bg-green-50" : "border-red-200 bg-red-50"
+                  status.state === "success"
+                    ? "border-green-200 bg-green-50"
+                    : status.state === "warning"
+                      ? "border-amber-200 bg-amber-50"
+                      : "border-red-200 bg-red-50"
                 }`}
               >
                 <div className="flex items-start gap-3">
                   {status.state === "success" ? (
                     <CheckCircle className="mt-0.5 h-5 w-5 text-green-700" />
+                  ) : status.state === "warning" ? (
+                    <AlertCircle className="mt-0.5 h-5 w-5 text-amber-700" />
                   ) : (
                     <AlertCircle className="mt-0.5 h-5 w-5 text-red-700" />
                   )}

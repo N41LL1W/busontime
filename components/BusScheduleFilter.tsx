@@ -33,15 +33,25 @@ const getCategoriaDia = (date: Date): string => {
 };
 
 // Componente principal
+const INITIAL_SELECTED_DATE = new Date(2000, 0, 1);
+const INITIAL_SELECTED_TIME = "00:00";
+
 const BusScheduleFilter: React.FC<BusScheduleFilterProps> = ({ schedules }) => {
-  // ... (Estados e lógica de useMemo, etc. - sem mudanças)
-  const [selectedDate, setSelectedDate] = useState<Date>(() => new Date());
-  const [selectedTime, setSelectedTime] = useState(() => format(new Date(), "HH:mm"));
+  // Usa valores iniciais fixos para que o HTML gerado no servidor seja igual ao
+  // primeiro render do cliente. A data/hora reais entram somente após a hidratação.
+  const [selectedDate, setSelectedDate] = useState<Date>(INITIAL_SELECTED_DATE);
+  const [selectedTime, setSelectedTime] = useState(INITIAL_SELECTED_TIME);
   const [origin, setOrigin] = useState("");
   const [destination, setDestination] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [modalUrl, setModalUrl] = useState<string | null>(null);
   const itensPorPagina = 10;
+  useEffect(() => {
+    const now = new Date();
+    setSelectedDate(now);
+    setSelectedTime(format(now, "HH:mm"));
+  }, []);
+
   const { filteredSchedules, availableOrigins, availableDestinations } = useMemo(() => {
     const now = new Date();
     const categoriaDiaAtual = getCategoriaDia(selectedDate);

@@ -242,6 +242,19 @@ export function getScrapingJob(endpoint: string): ScrapingJob | undefined {
   return scrapingJobs.find((job) => job.endpoint === endpoint || job.id === endpoint);
 }
 
+const legacySemiurbanoFallbacks: Record<string, string> = {
+  'semiurbano-cachoeirinha-ituverava': 'vsb-cachoerinha-ituverava',
+};
+
+export function getLegacySemiurbanoFallbackJob(job: ScrapingJob): ScrapingJob | undefined {
+  if (!job.id.startsWith('semiurbano-')) return undefined;
+
+  const fallbackId =
+    legacySemiurbanoFallbacks[job.id] || job.id.replace('semiurbano-', 'vsb-');
+
+  return scrapingJobs.find((candidate) => candidate.id === fallbackId);
+}
+
 export async function runScrapingJobs(jobIds?: string[]): Promise<ScrapingJobResult[]> {
   const jobs = jobIds?.length ? scrapingJobs.filter((job) => jobIds.includes(job.id)) : scrapingJobs;
 
