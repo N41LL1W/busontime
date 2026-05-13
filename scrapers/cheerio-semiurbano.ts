@@ -17,6 +17,7 @@ type RouteOptions = {
   origem: string;
   destino: string;
   label?: string;
+  enableBrowserFallback?: boolean;
 };
 
 const normalizarTexto = (texto: string) =>
@@ -230,6 +231,7 @@ export async function scrapeSemiurbanoRoute({
   origem,
   destino,
   label,
+  enableBrowserFallback = process.env.ENABLE_SEMIURBANO_BROWSER_FALLBACK === "true",
 }: RouteOptions): Promise<ScrapedHorario[]> {
   console.log(`[Semiurbano] Iniciando coleta para ${origem} -> ${destino} em ${url}`);
 
@@ -259,7 +261,14 @@ export async function scrapeSemiurbanoRoute({
   } catch (error) {
     console.error(`[Semiurbano] Erro ao raspar ${origem} -> ${destino}:`, error);
   }
-  
+
+  if (!enableBrowserFallback) {
+    console.warn(
+      `[Semiurbano] Fallback textual não encontrou dados para ${origem} -> ${destino}; navegador automatizado desativado para evitar timeout.`,
+    );
+    return [];
+  }
+
   console.warn(`[Semiurbano] Fallback textual não encontrou dados para ${origem} -> ${destino}; pesquisando com navegador automatizado.`);
   return scrapeSemiurbanoPuppeteerRoute({ url, origem, destino, label });
 }
