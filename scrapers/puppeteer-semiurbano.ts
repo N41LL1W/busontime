@@ -277,12 +277,14 @@ export async function scrapeSemiurbanoPuppeteerRoute({
   console.log(`[Semiurbano Navegador] Pesquisando ${origem} -> ${destino} em ${url}`);
 
   const responses: string[] = [];
-  const browser = await puppeteer.launch({
-    headless: true,
-    args: ["--no-sandbox", "--disable-setuid-sandbox", "--disable-dev-shm-usage"],
-  });
+  let browser: Awaited<ReturnType<typeof puppeteer.launch>> | null = null;
 
   try {
+    browser = await puppeteer.launch({
+      headless: true,
+      args: ["--no-sandbox", "--disable-setuid-sandbox", "--disable-dev-shm-usage"],
+    });
+
     const page = await browser.newPage();
     page.setDefaultTimeout(NAVIGATION_TIMEOUT_MS);
     await page.setUserAgent(
@@ -317,6 +319,6 @@ export async function scrapeSemiurbanoPuppeteerRoute({
     console.error(`[Semiurbano Navegador] Erro ao pesquisar ${origem} -> ${destino}:`, error);
     return [];
   } finally {
-    await browser.close();
+    await browser?.close().catch(() => undefined);
   }
 }
