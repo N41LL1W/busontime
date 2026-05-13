@@ -1,9 +1,6 @@
-import puppeteer from "puppeteer-extra";
-import StealthPlugin from "puppeteer-extra-plugin-stealth";
+import puppeteer from "puppeteer";
 import type { HTTPResponse, Page } from "puppeteer";
 import type { ScrapedHorario } from "../types/scrapers";
-
-puppeteer.use(StealthPlugin());
 
 const DEFAULT_URL = "https://semiurbano.lovable.app/horarios";
 const NAVIGATION_TIMEOUT_MS = 45_000;
@@ -144,6 +141,22 @@ function deduplicar(horarios: ScrapedHorario[]) {
 
 async function aguardar(ms: number) {
   await new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+async function aplicarEvasoesBasicas(page: Page) {
+  await page.evaluateOnNewDocument(() => {
+    Object.defineProperty(navigator, "webdriver", {
+      get: () => false,
+    });
+
+    Object.defineProperty(navigator, "languages", {
+      get: () => ["pt-BR", "pt", "en"],
+    });
+
+    Object.defineProperty(navigator, "plugins", {
+      get: () => [1, 2, 3, 4, 5],
+    });
+  });
 }
 
 async function coletarResposta(response: HTTPResponse) {
@@ -598,6 +611,7 @@ export async function testarRaspagemSemiurbanoBrodowskiRibeirao(url = DEFAULT_UR
     });
 
     const page = await browser.newPage();
+    await aplicarEvasoesBasicas(page);
     page.setDefaultTimeout(NAVIGATION_TIMEOUT_MS);
     await page.setUserAgent(
       "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36",
@@ -664,6 +678,7 @@ export async function scrapeSemiurbanoPuppeteerRoute({
     });
 
     const page = await browser.newPage();
+    await aplicarEvasoesBasicas(page);
     page.setDefaultTimeout(NAVIGATION_TIMEOUT_MS);
     await page.setUserAgent(
       "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36",
