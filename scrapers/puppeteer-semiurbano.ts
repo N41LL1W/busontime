@@ -432,6 +432,213 @@ async function extrairHorariosDoHtml(page: Page, origem: string, destino: string
   );
 }
 
+
+export type SemiurbanoTesteHorario = {
+  horario: string;
+  tipo: "rodoviaria" | "intermediario";
+  observacao: string;
+};
+
+export type SemiurbanoTesteSentido = {
+  diaDaSemana: string;
+  origem: string;
+  destino: string;
+  totalInformado: number | null;
+  horarios: SemiurbanoTesteHorario[];
+  pontosDeParada: string[];
+};
+
+export type SemiurbanoTesteResultado = {
+  sourceUrl: string;
+  pesquisadoEm: string;
+  origemSelecionada: string;
+  destinoSelecionado: string;
+  linha: string | null;
+  tarifas: Array<{ tipo: string; valor: string }>;
+  sentidos: SemiurbanoTesteSentido[];
+  textoVisivel: string;
+};
+
+async function extrairPainelTeste(page: Page): Promise<Omit<SemiurbanoTesteResultado, "sourceUrl" | "pesquisadoEm" | "origemSelecionada" | "destinoSelecionado">> {
+  return page.evaluate(() => {
+    const limpar = (valor: unknown) => String(valor ?? "").replace(/\s+/g, " ").trim();
+    const normalizar = (valor: unknown) =>
+      limpar(valor)
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .toLowerCase();
+    const parseHorario = (valor: string) => {
+      const match = valor.match(/\b(\d{1,2})\s*(?::|h|H|\.)\s*(\d{2})\b/);
+      if (!match) return "";
+      const hora = Number(match[1]);
+      const minuto = Number(match[2]);
+      if (hora < 0 || hora > 23 || minuto < 0 || minuto > 59) return "";
+      return `${String(hora).padStart(2, "0")}:${String(minuto).padStart(2, "0")}`;
+    };
+    const encontrarPai = (elemento: Element | null, predicado: (item: Element) => boolean) => {
+      let atual = elemento;
+      while (atual) {
+        if (predicado(atual)) return atual;
+        atual = atual.parentElement;
+      }
+      return null;
+    };
+
+    const linha =
+      Array.from(document.querySelectorAll("div, header, section"))
+        .map((item) => limpar(item.textContent))
+        .find((texto) => texto.includes(" X ") && /comum\/vt|estudante/i.test(texto))
+        ?.replace(/Comum\/VT:.*$/i, "")
+        .trim() || null;
+
+    const tarifas: Array<{ tipo: string; valor: string }> = [];
+    const textoCompleto = document.body?.innerText ?? "";
+    for (const match of textoCompleto.matchAll(/(Comum\/VT|Estudante):\s*(R\$\s*\d+[,.]\d{2})/gi)) {
+      const tipo = limpar(match[1]);
+      const valor = limpar(match[2]);
+      if (!tarifas.some((item) => item.tipo === tipo && item.valor === valor)) {
+        tarifas.push({ tipo, valor });
+      }
+    }
+
+    const sentidos: Array<{
+      diaDaSemana: string;
+      origem: string;
+      destino: string;
+      totalInformado: number | null;
+      horarios: Array<{ horario: string; tipo: "rodoviaria" | "intermediario"; observacao: string }>;
+      pontosDeParada: string[];
+    }> = [];
+
+    const headers = Array.from(document.querySelectorAll("div.mb-3, div[class*='mb-3']")) as HTMLElement[];
+    for (const header of headers) {
+      const textoHeader = limpar(header.textContent);
+      if (!normalizar(textoHeader).includes("saindo de") || !textoHeader.includes("→")) continue;
+
+      const spans = Array.from(header.querySelectorAll("span")).map((span) => limpar(span.textContent));
+      const origem = spans.find((texto) => normalizar(texto).startsWith("saindo de"))?.replace(/^Saindo de\s+/i, "").trim() || "";
+      const destino = spans.find((texto) => texto.includes("→"))?.replace(/^→\s*/i, "").replace(/\(.*\)$/g, "").trim() || "";
+      const totalMatch = textoHeader.match(/\((\d+)\s+hor[aá]rios?\)/i);
+      const totalInformado = totalMatch ? Number(totalMatch[1]) : null;
+      if (!origem || !destino) continue;
+
+      const bloco = header.parentElement;
+      if (!bloco) continue;
+
+      const diaContainer = encontrarPai(bloco, (item) => Boolean(item.querySelector("h3")));
+      const diaDaSemana = limpar(diaContainer?.querySelector("h3")?.textContent) || "Não informado";
+      const horarios = Array.from(bloco.querySelectorAll("button"))
+        .map((botao) => {
+          const horario = parseHorario(botao.textContent ?? "");
+          if (!horario) return null;
+          const className = botao.getAttribute("class") ?? "";
+          const intermediario = className.includes("amber");
+          return {
+            horario,
+            tipo: intermediario ? "intermediario" as const : "rodoviaria" as const,
+            observacao: intermediario ? "Passa por ponto intermediário" : "Saída da Rodoviária",
+          };
+        })
+        .filter((item): item is { horario: string; tipo: "rodoviaria" | "intermediario"; observacao: string } => Boolean(item));
+
+      const pontosDeParada = Array.from(bloco.querySelectorAll("label"))
+        .map((label) => limpar(label.textContent))
+        .filter(Boolean);
+
+      sentidos.push({ diaDaSemana, origem, destino, totalInformado, horarios, pontosDeParada });
+    }
+
+    return {
+      linha,
+      tarifas,
+      sentidos,
+      textoVisivel: document.body?.innerText ?? "",
+    };
+  });
+}
+
+function juntarSentidos(sentidos: SemiurbanoTesteSentido[]) {
+  const mapa = new Map<string, SemiurbanoTesteSentido>();
+
+  for (const sentido of sentidos) {
+    const chave = `${sentido.diaDaSemana}|${sentido.origem}|${sentido.destino}`;
+    const atual = mapa.get(chave);
+    if (!atual) {
+      mapa.set(chave, {
+        ...sentido,
+        horarios: [...sentido.horarios],
+        pontosDeParada: [...sentido.pontosDeParada],
+      });
+      continue;
+    }
+
+    for (const horario of sentido.horarios) {
+      if (!atual.horarios.some((item) => item.horario === horario.horario && item.tipo === horario.tipo)) {
+        atual.horarios.push(horario);
+      }
+    }
+    for (const ponto of sentido.pontosDeParada) {
+      if (!atual.pontosDeParada.includes(ponto)) atual.pontosDeParada.push(ponto);
+    }
+    atual.totalInformado = atual.totalInformado ?? sentido.totalInformado;
+  }
+
+  return Array.from(mapa.values()).sort((a, b) => `${a.diaDaSemana}|${a.origem}|${a.destino}`.localeCompare(`${b.diaDaSemana}|${b.origem}|${b.destino}`, "pt-BR"));
+}
+
+export async function testarRaspagemSemiurbanoBrodowskiRibeirao(url = DEFAULT_URL): Promise<SemiurbanoTesteResultado> {
+  const origem = "Brodowski";
+  const destino = "Ribeirão Preto";
+  let browser: Awaited<ReturnType<typeof puppeteer.launch>> | null = null;
+
+  try {
+    browser = await puppeteer.launch({
+      headless: true,
+      args: ["--no-sandbox", "--disable-setuid-sandbox", "--disable-dev-shm-usage"],
+    });
+
+    const page = await browser.newPage();
+    page.setDefaultTimeout(NAVIGATION_TIMEOUT_MS);
+    await page.setUserAgent(
+      "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36",
+    );
+    await page.setExtraHTTPHeaders({ "Accept-Language": "pt-BR,pt;q=0.9,en;q=0.8" });
+
+    await page.goto(url, { waitUntil: "networkidle2", timeout: NAVIGATION_TIMEOUT_MS });
+    await selecionarCidade(page, origem, "origem", 0);
+    await selecionarCidade(page, destino, "destino", 1);
+    await submeterPesquisa(page);
+    await Promise.race([
+      page.waitForNetworkIdle({ idleTime: 1000, timeout: 15_000 }).catch(() => undefined),
+      aguardar(15_000),
+    ]);
+    await aguardar(1_000);
+
+    const ida = await extrairPainelTeste(page);
+    await mostrarHorariosDeVolta(page);
+    await aguardar(1_000);
+    const volta = await extrairPainelTeste(page);
+
+    const tarifas = [...ida.tarifas];
+    for (const tarifa of volta.tarifas) {
+      if (!tarifas.some((item) => item.tipo === tarifa.tipo && item.valor === tarifa.valor)) tarifas.push(tarifa);
+    }
+
+    return {
+      sourceUrl: url,
+      pesquisadoEm: new Date().toISOString(),
+      origemSelecionada: origem,
+      destinoSelecionado: destino,
+      linha: ida.linha ?? volta.linha,
+      tarifas,
+      sentidos: juntarSentidos([...ida.sentidos, ...volta.sentidos]),
+      textoVisivel: volta.textoVisivel || ida.textoVisivel,
+    };
+  } finally {
+    await browser?.close().catch(() => undefined);
+  }
+}
+
 type PuppeteerRouteOptions = {
   url?: string;
   origem: string;
