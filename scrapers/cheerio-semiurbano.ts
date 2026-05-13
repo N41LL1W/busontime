@@ -231,7 +231,7 @@ export async function scrapeSemiurbanoRoute({
   origem,
   destino,
   label,
-  enableBrowserFallback = process.env.ENABLE_SEMIURBANO_BROWSER_FALLBACK === "true",
+  enableBrowserFallback = process.env.ENABLE_SEMIURBANO_BROWSER_FALLBACK === "false",
 }: RouteOptions): Promise<ScrapedHorario[]> {
   console.log(`[Semiurbano] Iniciando coleta para ${origem} -> ${destino} em ${url}`);
 
@@ -264,7 +264,7 @@ export async function scrapeSemiurbanoRoute({
 
   if (!enableBrowserFallback) {
     console.warn(
-      `[Semiurbano] Fallback textual não encontrou dados para ${origem} -> ${destino}; navegador automatizado desativado para evitar timeout.`,
+      `[Semiurbano] Fallback textual não encontrou dados para ${origem} -> ${destino}; navegador automatizado desativado por configuração.`,
     );
     return [];
   }

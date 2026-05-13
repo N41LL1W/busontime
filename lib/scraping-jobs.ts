@@ -257,9 +257,10 @@ export function getLegacySemiurbanoFallbackJob(job: ScrapingJob): ScrapingJob | 
 
 export async function runScrapingJobs(jobIds?: string[]): Promise<ScrapingJobResult[]> {
   const jobs = jobIds?.length ? scrapingJobs.filter((job) => jobIds.includes(job.id)) : scrapingJobs;
+  const results: ScrapingJobResult[] = [];
 
-  const results = await Promise.allSettled(
-    jobs.map(async (job): Promise<ScrapingJobResult> => {
+  for (const job of jobs) {
+    try {
       console.log(`---▶️ Executando job: ${job.id} ---`);
       let scrapedData = await job.scraper();
 
@@ -275,27 +276,22 @@ export async function runScrapingJobs(jobIds?: string[]): Promise<ScrapingJobRes
       }
 
       if (!scrapedData?.length) {
-        return { id: job.id, label: job.label, status: 'empty', count: 0 };
+        results.push({ id: job.id, label: job.label, status: 'empty', count: 0 });
+        continue;
       }
 
       await syncSchedules(job.id, scrapedData);
-      return { id: job.id, label: job.label, status: 'success', count: scrapedData.length };
-    })
-  );
-
-  return results.map((result, index) => {
-    const job = jobs[index];
-
-    if (result.status === 'fulfilled') {
-      return result.value;
+      results.push({ id: job.id, label: job.label, status: 'success', count: scrapedData.length });
+    } catch (error) {
+      results.push({
+        id: job.id,
+        label: job.label,
+        status: 'failed',
+        count: 0,
+        error: error instanceof Error ? error.message : 'Erro desconhecido na raspagem.',
+      });
     }
+  }
 
-    return {
-      id: job.id,
-      label: job.label,
-      status: 'failed',
-      count: 0,
-      error: result.reason instanceof Error ? result.reason.message : 'Erro desconhecido na raspagem.',
-    };
-  });
+return results;
 }

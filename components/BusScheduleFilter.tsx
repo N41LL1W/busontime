@@ -77,6 +77,12 @@ const BusScheduleFilter: React.FC<BusScheduleFilterProps> = ({ schedules }) => {
     finalFiltered.sort((a, b) => a.horario.localeCompare(b.horario));
     return { filteredSchedules: finalFiltered, availableOrigins: finalAvailableOrigins, availableDestinations: finalAvailableDestinations };
   }, [schedules, selectedDate, selectedTime, origin, destination]);
+    useEffect(() => {
+    if (destination && !availableDestinations.includes(destination)) {
+      setDestination("");
+    }
+  }, [availableDestinations, destination]);
+
   const totalPages = Math.ceil(filteredSchedules.length / itensPorPagina);
   const paginatedSchedules = filteredSchedules.slice((currentPage - 1) * itensPorPagina, currentPage * itensPorPagina);
   useEffect(() => { setCurrentPage(1); }, [filteredSchedules]);

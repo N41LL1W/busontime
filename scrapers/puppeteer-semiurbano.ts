@@ -55,6 +55,18 @@ function identificarDia(texto: string) {
   return null;
 }
 
+function rotaCompativel(origemEncontrada: string, destinoEncontrado: string, origem: string, destino: string) {
+  const origemEncontradaNormalizada = normalizarTexto(origemEncontrada);
+  const destinoEncontradoNormalizado = normalizarTexto(destinoEncontrado);
+  const origemNormalizada = normalizarTexto(origem);
+  const destinoNormalizado = normalizarTexto(destino);
+
+  return (
+    (origemEncontradaNormalizada === origemNormalizada && destinoEncontradoNormalizado === destinoNormalizado) ||
+    (origemEncontradaNormalizada === destinoNormalizado && destinoEncontradoNormalizado === origemNormalizada)
+  );
+}
+
 function blocoContemRota(bloco: string, origem: string, destino: string, label?: string) {
   const normalizado = normalizarTexto(bloco);
   const origemNormalizada = normalizarTexto(origem);
@@ -146,6 +158,46 @@ async function coletarResposta(response: HTTPResponse) {
   if (!text || text.length > 500_000) return "";
 
   return `${url}\n${text}`;
+}
+
+async function selecionarCidade(page: Page, termo: string, campo: "origem" | "destino", indiceCampo: number) {
+  const triggerSelector = `button[aria-label*="Selecionar ${campo}" i], [role="combobox"][aria-label*="${campo}" i]`;
+  const trigger = (await page.$(triggerSelector)) ?? (await page.$$("button[aria-haspopup='listbox'], [role='combobox']"))[indiceCampo];
+
+  if (trigger) {
+    await trigger.click().catch(() => undefined);
+    await aguardar(300);
+
+    const selecionou = await page.evaluate((termoAvaliado) => {
+      const normalizar = (valor: string) =>
+        valor
+          .normalize("NFD")
+          .replace(/[\u0300-\u036f]/g, "")
+          .toLowerCase()
+          .trim();
+      const visivel = (elemento: Element) => {
+        const rect = elemento.getBoundingClientRect();
+        const style = window.getComputedStyle(elemento);
+        return rect.width > 0 && rect.height > 0 && style.visibility !== "hidden" && style.display !== "none";
+      };
+      const termoNormalizado = normalizar(termoAvaliado);
+      const candidatos = Array.from(
+        document.querySelectorAll('[role="option"], [role="listbox"] button, [cmdk-item], [data-radix-collection-item], li, button'),
+      ) as HTMLElement[];
+      const opcao = candidatos.find((item) => visivel(item) && normalizar(item.textContent ?? "").includes(termoNormalizado));
+
+      if (!opcao) return false;
+      opcao.click();
+      return true;
+    }, termo);
+
+    if (selecionou) {
+      await aguardar(500);
+      return;
+    }
+  }
+
+  await selecionarOuDigitar(page, termo, campo, indiceCampo);
 }
 
 async function selecionarOuDigitar(page: Page, termo: string, campo: "origem" | "destino", indiceCampo: number) {
@@ -251,6 +303,23 @@ async function submeterPesquisa(page: Page) {
   }
 }
 
+async function mostrarHorariosDeVolta(page: Page) {
+  const clicou = await page.evaluate(() => {
+    const normalizar = (valor: string) =>
+      valor
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .toLowerCase();
+    const botoes = Array.from(document.querySelectorAll("button, [role='button']")) as HTMLElement[];
+    const botao = botoes.find((item) => normalizar(item.textContent ?? "").includes("horarios de volta"));
+    if (!botao) return false;
+    botao.click();
+    return true;
+  });
+
+  if (clicou) await aguardar(800);
+}
+
 async function extrairTextoVisivel(page: Page) {
   return page.evaluate(() => {
     const linhas = [document.body?.innerText ?? ""];
@@ -259,6 +328,108 @@ async function extrairTextoVisivel(page: Page) {
     }
     return linhas.join("\n");
   });
+}
+async function extrairHorariosDoHtml(page: Page, origem: string, destino: string): Promise<ScrapedHorario[]> {
+  return page.evaluate(
+    ({ origem: origemSolicitada, destino: destinoSolicitado }) => {
+      const normalizar = (valor: unknown) =>
+        String(valor ?? "")
+          .normalize("NFD")
+          .replace(/[\u0300-\u036f]/g, "")
+          .toLowerCase()
+          .replace(/[^a-z0-9]+/g, " ")
+          .replace(/brodowsky/g, "brodowski")
+          .replace(/cachoerinha/g, "cachoeirinha")
+          .trim();
+      const parseHorario = (valor: string) => {
+        const match = valor.match(/\b(\d{1,2})\s*(?::|h|H|\.)\s*(\d{2})\b/);
+        if (!match) return "";
+        const hora = Number(match[1]);
+        const minuto = Number(match[2]);
+        if (hora < 0 || hora > 23 || minuto < 0 || minuto > 59) return "";
+        return `${String(hora).padStart(2, "0")}:${String(minuto).padStart(2, "0")}`;
+      };
+      const getDia = (elemento: Element) => {
+        let atual: Element | null = elemento;
+        while (atual) {
+          const titulo = atual.querySelector("h3")?.textContent ?? "";
+          const normalizado = normalizar(titulo || atual.textContent);
+          if (normalizado.includes("sabado")) return "Sábado";
+          if (normalizado.includes("domingo") || normalizado.includes("feriado")) return "Domingo e Feriados";
+          if (normalizado.includes("segunda") || normalizado.includes("sexta") || normalizado.includes("uteis")) {
+            return "Segunda à Sexta";
+          }
+          atual = atual.parentElement;
+        }
+        return "Segunda à Sexta";
+      };
+      const rotaCompativelNoBrowser = (origemEncontrada: string, destinoEncontrado: string) => {
+        const origemEncontradaNormalizada = normalizar(origemEncontrada);
+        const destinoEncontradoNormalizado = normalizar(destinoEncontrado);
+        const origemSolicitadaNormalizada = normalizar(origemSolicitada);
+        const destinoSolicitadoNormalizada = normalizar(destinoSolicitado);
+
+        return (
+          (origemEncontradaNormalizada === origemSolicitadaNormalizada && destinoEncontradoNormalizado === destinoSolicitadoNormalizada) ||
+          (origemEncontradaNormalizada === destinoSolicitadoNormalizada && destinoEncontradoNormalizado === origemSolicitadaNormalizada)
+        );
+      };
+
+      const registros: Array<{
+        origem: string;
+        destino: string;
+        diaDaSemana: string;
+        horario: string;
+        tarifa: null;
+        observacao: string;
+      }> = [];
+      const headers = Array.from(document.querySelectorAll("div.mb-3, div[class*='mb-3']")) as HTMLElement[];
+
+      for (const header of headers) {
+        const textoHeader = header.textContent?.replace(/\s+/g, " ").trim() ?? "";
+        if (!normalizar(textoHeader).includes("saindo de") || !textoHeader.includes("→")) continue;
+
+        const origemTexto = Array.from(header.querySelectorAll("span"))
+          .map((span) => span.textContent?.trim() ?? "")
+          .find((texto) => normalizar(texto).startsWith("saindo de"))
+          ?.replace(/^Saindo de\s+/i, "")
+          .trim();
+        const destinoTexto = Array.from(header.querySelectorAll("span"))
+          .map((span) => span.textContent?.trim() ?? "")
+          .find((texto) => texto.includes("→"))
+          ?.replace(/^→\s*/i, "")
+          .trim();
+
+        if (!origemTexto || !destinoTexto || !rotaCompativelNoBrowser(origemTexto, destinoTexto)) continue;
+
+        const bloco = header.parentElement;
+        if (!bloco) continue;
+
+        const diaDaSemana = getDia(bloco);
+        const botoesHorario = Array.from(bloco.querySelectorAll("button")) as HTMLButtonElement[];
+        for (const botao of botoesHorario) {
+          const horario = parseHorario(botao.textContent ?? "");
+          if (!horario) continue;
+
+          const className = botao.getAttribute("class") ?? "";
+          const passaPorIntermediario = className.includes("amber");
+          registros.push({
+            origem: origemTexto,
+            destino: destinoTexto,
+            diaDaSemana,
+            horario,
+            tarifa: null,
+            observacao: passaPorIntermediario
+              ? "Extraído do HTML do Semiurbano São Bento; passa por ponto intermediário"
+              : "Extraído do HTML do Semiurbano São Bento; saída da rodoviária",
+          });
+        }
+      }
+
+      return registros;
+    },
+    { origem, destino },
+  );
 }
 
 type PuppeteerRouteOptions = {
@@ -301,17 +472,22 @@ export async function scrapeSemiurbanoPuppeteerRoute({
     });
 
     await page.goto(url, { waitUntil: "networkidle2", timeout: NAVIGATION_TIMEOUT_MS });
-    await selecionarOuDigitar(page, origem, "origem", 0);
-    await selecionarOuDigitar(page, destino, "destino", 1);
+    await selecionarCidade(page, origem, "origem", 0);
+    await selecionarCidade(page, destino, "destino", 1);
     await submeterPesquisa(page);
     await Promise.race([
       page.waitForNetworkIdle({ idleTime: 1000, timeout: 15_000 }).catch(() => undefined),
       aguardar(15_000),
     ]);
+    await mostrarHorariosDeVolta(page);
     await aguardar(1_000);
 
+    const horariosDoHtml = await extrairHorariosDoHtml(page, origem, destino);
     const textos = [await extrairTextoVisivel(page), ...responses];
-    const horarios = deduplicar(textos.flatMap((texto) => extrairDoTexto(texto, origem, destino, label)));
+    const horarios = deduplicar([
+      ...textos.flatMap((texto) => extrairDoTexto(texto, origem, destino, label)),
+      ...horariosDoHtml,
+    ]).filter((item) => rotaCompativel(item.origem, item.destino, origem, destino));
 
     console.log(`[Semiurbano Navegador] Coleta finalizada para ${origem} -> ${destino}: ${horarios.length} horário(s).`);
     return horarios;
