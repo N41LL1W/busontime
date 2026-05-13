@@ -1,5 +1,6 @@
 import '@/styles/globals.css';
 import type { AppProps } from 'next/app';
+import Head from 'next/head';
 import NavBar from '@/components/NavBar';
 import { useEffect, useState } from 'react';
 import Link from 'next/link'; 
@@ -66,6 +67,9 @@ function MyApp({ Component, pageProps }: AppProps) {
 
   return (
     <QueryClientProvider client={queryClient}>
+      <Head>
+        <link rel="icon" href="/favicon.ico" />
+      </Head>
       <div className="min-h-screen bg-background text-foreground transition-colors">
         <header className="flex justify-between items-center p-4 border-b sticky top-0 bg-background/80 backdrop-blur-sm z-10">
           <h1 className="text-2xl font-bold">BusOnTime</h1>

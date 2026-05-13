@@ -261,7 +261,18 @@ export async function runScrapingJobs(jobIds?: string[]): Promise<ScrapingJobRes
   const results = await Promise.allSettled(
     jobs.map(async (job): Promise<ScrapingJobResult> => {
       console.log(`---▶️ Executando job: ${job.id} ---`);
-      const scrapedData = await job.scraper();
+      let scrapedData = await job.scraper();
+
+      if (!scrapedData?.length) {
+        const fallbackJob = getLegacySemiurbanoFallbackJob(job);
+
+        if (fallbackJob) {
+          console.warn(
+            `[${job.id}] Fonte atual não retornou horários. Tentando fallback legado ${fallbackJob.id}.`,
+          );
+          scrapedData = await fallbackJob.scraper();
+        }
+      }
 
       if (!scrapedData?.length) {
         return { id: job.id, label: job.label, status: 'empty', count: 0 };

@@ -45,6 +45,7 @@ export default async function handler(
       endpoint,
     });
   }
+
   console.log(
     `[API Scrap] Executando ${job.id} (${job.label}) a partir de ${job.sourceUrl}`
   );
@@ -61,7 +62,7 @@ export default async function handler(
     console.error(`[API Scrap] Erro na coleta de ${job.id}:`, error);
   }
 
-  if (!scrapedData.length && req.query.fallback === "legacy") {
+  if (!scrapedData.length) {
     const fallbackJob = getLegacySemiurbanoFallbackJob(job);
 
     if (fallbackJob) {
@@ -81,12 +82,13 @@ export default async function handler(
         console.error(`[API Scrap] Erro no fallback ${fallbackJob.id}:`, error);
       }
     }
+  }
 
   if (!scrapedData.length) {
     return res.status(200).json({
-      message: `Nenhum horário novo foi encontrado para ${job.label}. A fonte textual pode estar temporariamente indisponível ou sem dados para esta linha. Para tentar a fonte antiga com OCR, chame /api/${job.endpoint}?fallback=legacy.`,
+      message: `Nenhum horário novo foi encontrado para ${job.label}. A fonte atual e a fonte alternativa não retornaram dados para esta linha.`,
       warning: scrapingError
-        ? `A raspagem de ${job.label} falhou na fonte atual: ${scrapingError}`
+        ? `A raspagem de ${job.label} falhou ou voltou vazio: ${scrapingError}`
         : `Nenhum horário foi encontrado para ${job.label}.`,
       count: 0,
       endpoint: job.endpoint,
@@ -105,7 +107,6 @@ export default async function handler(
       sourceUrl,
     });
   }
-}
 
   return res.status(200).json({
     message: `Raspagem de ${job.label} concluída com ${scrapedData.length} horários sincronizados${usedFallback ? " usando a fonte alternativa." : ""}.`,
