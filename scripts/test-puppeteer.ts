@@ -1,23 +1,21 @@
-// scripts/test-puppeteer.ts
-import puppeteer from "puppeteer-extra";
-import StealthPlugin from "puppeteer-extra-plugin-stealth";
-
-puppeteer.use(StealthPlugin());
+import puppeteer, { type Browser } from "puppeteer";
 
 async function runTest() {
   console.log("🚀 Iniciando teste do Puppeteer...");
-  let browser;
+
+  let browser: Browser | undefined;
+
   try {
     browser = await puppeteer.launch({
       headless: false, // GARANTE que a janela apareça
       slowMo: 50, // Deixa as ações um pouco mais lentas para podermos ver
-      args: ['--start-maximized'] // Tenta abrir a janela maximizada
+      args: ["--start-maximized"], // Tenta abrir a janela maximizada
     });
 
     const page = await browser.newPage();
-    
+
     console.log("🖥️  Navegador iniciado. Navegando para o Google...");
-    await page.goto('https://www.google.com', { waitUntil: 'networkidle2' });
+    await page.goto("https://www.google.com", { waitUntil: "networkidle2" });
 
     console.log("✅ Navegação para o Google concluída com sucesso!");
     console.log("---");
@@ -26,8 +24,9 @@ async function runTest() {
     console.log("---");
 
     // Mantém o navegador aberto até que seja fechado manualmente
-    await new Promise(resolve => browser?.on('disconnected', resolve));
-
+    await new Promise<void>((resolve) => {
+      browser?.once("disconnected", resolve);
+    });
   } catch (error) {
     console.error("❌ Erro ao iniciar ou controlar o Puppeteer:", error);
   } finally {
