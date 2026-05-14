@@ -52,6 +52,7 @@
     "lint": "next lint",
     "scrape": "npx ts-node --transpile-only scripts/run-scrapers.ts",
     "test:puppeteer": "npx ts-node --transpile-only scripts/test-puppeteer.ts",
-    "build:mobile": "prisma generate && CAPACITOR_BUILD=true next build"
+    "build:mobile": "prisma generate && CAPACITOR_BUILD=true next build",
+    "postinstall": "puppeteer browsers install chrome"
   }
 }
