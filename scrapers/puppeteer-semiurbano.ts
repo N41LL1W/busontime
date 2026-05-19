@@ -1,10 +1,89 @@
 import puppeteer from "puppeteer";
+import { execFile } from "node:child_process";
+import { existsSync, readdirSync } from "node:fs";
+import { join } from "node:path";
+import { promisify } from "node:util";
 import type { HTTPResponse, Page } from "puppeteer";
 import type { ScrapedHorario } from "../types/scrapers";
+import { scrapeSemiurbanoSupabaseRoute } from "./supabase-semiurbano";
 
 const DEFAULT_URL = "https://semiurbano.lovable.app/horarios";
 const NAVIGATION_TIMEOUT_MS = 45_000;
 const RESPONSE_LIMIT = 80;
+const LOCAL_CHROME_CACHE_DIR = join(process.cwd(), ".cache", "puppeteer", "chrome");
+const executarArquivo = promisify(execFile);
+
+const CHROME_MISSING_MESSAGE = [
+  "Chrome do Puppeteer não foi encontrado no ambiente de execução.",
+  "Confira se o postinstall baixou o navegador (puppeteer browsers install chrome) e se a pasta .cache/puppeteer foi incluída no deploy.",
+  "Também é possível definir PUPPETEER_EXECUTABLE_PATH ou CHROME_EXECUTABLE_PATH apontando para um Chrome/Chromium disponível.",
+].join(" ");
+
+const isChromeMissingError = (error: unknown) => {
+  const message = error instanceof Error ? error.message : String(error ?? "");
+  return /could not find chrome|browser was not found|failed to launch the browser process|executablepath|enoent/i.test(message);
+};
+
+async function instalarChromePuppeteer() {
+  await executarArquivo("npx", ["puppeteer", "browsers", "install", "chrome"], {
+    env: {
+      ...process.env,
+      PUPPETEER_CACHE_DIR: process.env.PUPPETEER_CACHE_DIR || `${process.env.HOME}/.cache/puppeteer`,
+    },
+  });
+}
+
+const findProjectCachedChrome = () => {
+  if (!existsSync(LOCAL_CHROME_CACHE_DIR)) return undefined;
+  const platformDirs = readdirSync(LOCAL_CHROME_CACHE_DIR, { withFileTypes: true })
+    .filter((entry) => entry.isDirectory())
+    .map((entry) => entry.name)
+    .sort()
+    .reverse();
+
+  for (const platformDir of platformDirs) {
+    const chromePath = join(LOCAL_CHROME_CACHE_DIR, platformDir, "chrome-linux64", "chrome");
+    if (existsSync(chromePath)) return chromePath;
+  }
+  return undefined;
+};
+
+const getChromeExecutablePath = () =>
+  process.env.PUPPETEER_EXECUTABLE_PATH || process.env.CHROME_EXECUTABLE_PATH || findProjectCachedChrome() || undefined;
+
+const getPuppeteerLaunchOptions = () => ({
+  headless: true as const,
+  executablePath: getChromeExecutablePath(),
+  args: [
+    "--no-sandbox",
+    "--disable-setuid-sandbox",
+    "--disable-dev-shm-usage",
+    "--disable-gpu",
+    "--no-zygote",
+    "--single-process",
+  ],
+});
+
+async function abrirNavegadorSemiurbano() {
+  try {
+    return await puppeteer.launch(getPuppeteerLaunchOptions());
+  } catch (error) {
+    if (!isChromeMissingError(error)) throw error;
+    console.warn("[Semiurbano Navegador] Chrome não encontrado. Tentando instalar automaticamente...");
+    await instalarChromePuppeteer();
+    try {
+      return await puppeteer.launch(getPuppeteerLaunchOptions());
+    } catch (innerError) {
+      if (!isChromeMissingError(innerError)) throw innerError;
+      throw new Error(`${CHROME_MISSING_MESSAGE} Detalhe original: ${innerError instanceof Error ? innerError.message : String(innerError)}`);
+    }
+  }
+}
+
+const formatarErro = (erro: unknown) => {
+  if (erro instanceof Error) return `${erro.name}: ${erro.message}`;
+  return String(erro);
+};
 
 const normalizarTexto = (texto: unknown) =>
   String(texto ?? "")
@@ -445,7 +524,6 @@ async function extrairHorariosDoHtml(page: Page, origem: string, destino: string
   );
 }
 
-
 export type SemiurbanoTesteHorario = {
   horario: string;
   tipo: "rodoviaria" | "intermediario";
@@ -599,16 +677,59 @@ function juntarSentidos(sentidos: SemiurbanoTesteSentido[]) {
   return Array.from(mapa.values()).sort((a, b) => `${a.diaDaSemana}|${a.origem}|${a.destino}`.localeCompare(`${b.diaDaSemana}|${b.origem}|${b.destino}`, "pt-BR"));
 }
 
+async function criarResultadoFallbackSupabase(
+  url: string,
+  origem: string,
+  destino: string,
+  causa: unknown,
+): Promise<SemiurbanoTesteResultado | null> {
+  const [ida, volta] = await Promise.all([
+    scrapeSemiurbanoSupabaseRoute({ origem, destino }),
+    scrapeSemiurbanoSupabaseRoute({ origem: destino, destino: origem }),
+  ]);
+  const horarios = deduplicar([...ida, ...volta]);
+  if (!horarios.length) return null;
+
+  const sentidos = juntarSentidos(
+    horarios.map((item) => ({
+      diaDaSemana: item.diaDaSemana,
+      origem: item.origem,
+      destino: item.destino,
+      totalInformado: null,
+      horarios: [
+        {
+          horario: item.horario,
+          tipo: "rodoviaria" as const,
+          observacao: item.observacao || "Extraído da API pública do Semiurbano São Bento",
+        },
+      ],
+      pontosDeParada: [],
+    })),
+  ).map((sentido) => ({
+    ...sentido,
+    totalInformado: sentido.totalInformado ?? sentido.horarios.length,
+    horarios: [...sentido.horarios].sort((a, b) => a.horario.localeCompare(b.horario, "pt-BR")),
+  }));
+  const causaTexto = causa instanceof Error ? causa.message : String(causa ?? "erro desconhecido");
+  return {
+    sourceUrl: url,
+    pesquisadoEm: new Date().toISOString(),
+    origemSelecionada: origem,
+    destinoSelecionado: destino,
+    linha: `${origem} X ${destino}`,
+    tarifas: [],
+    sentidos,
+    textoVisivel: `O navegador automatizado não iniciou neste ambiente (${causaTexto}). Os horários foram carregados pela API pública do Semiurbano São Bento como fallback.`,
+  };
+}
+
 export async function testarRaspagemSemiurbanoBrodowskiRibeirao(url = DEFAULT_URL): Promise<SemiurbanoTesteResultado> {
   const origem = "Brodowski";
   const destino = "Ribeirão Preto";
   let browser: Awaited<ReturnType<typeof puppeteer.launch>> | null = null;
 
   try {
-    browser = await puppeteer.launch({
-      headless: true,
-      args: ["--no-sandbox", "--disable-setuid-sandbox", "--disable-dev-shm-usage"],
-    });
+    browser = await abrirNavegadorSemiurbano();
 
     const page = await browser.newPage();
     await aplicarEvasoesBasicas(page);
@@ -648,6 +769,10 @@ export async function testarRaspagemSemiurbanoBrodowskiRibeirao(url = DEFAULT_UR
       sentidos: juntarSentidos([...ida.sentidos, ...volta.sentidos]),
       textoVisivel: volta.textoVisivel || ida.textoVisivel,
     };
+  } catch (error) {
+    const fallback = await criarResultadoFallbackSupabase(url, origem, destino, error);
+    if (fallback) return fallback;
+    throw error;
   } finally {
     await browser?.close().catch(() => undefined);
   }
@@ -672,10 +797,7 @@ export async function scrapeSemiurbanoPuppeteerRoute({
   let browser: Awaited<ReturnType<typeof puppeteer.launch>> | null = null;
 
   try {
-    browser = await puppeteer.launch({
-      headless: true,
-      args: ["--no-sandbox", "--disable-setuid-sandbox", "--disable-dev-shm-usage"],
-    });
+    browser = await abrirNavegadorSemiurbano();
 
     const page = await browser.newPage();
     await aplicarEvasoesBasicas(page);
@@ -713,8 +835,11 @@ export async function scrapeSemiurbanoPuppeteerRoute({
 
     console.log(`[Semiurbano Navegador] Coleta finalizada para ${origem} -> ${destino}: ${horarios.length} horário(s).`);
     return horarios;
-  } catch (error) {
-    console.error(`[Semiurbano Navegador] Erro ao pesquisar ${origem} -> ${destino}:`, error);
+  } catch (erro: unknown) {
+    if (isChromeMissingError(erro)) {
+      return scrapeSemiurbanoSupabaseRoute({ origem, destino, label });
+    }
+    console.error(`[Semiurbano Navegador] Erro ao pesquisar ${origem} -> ${destino}: ${formatarErro(erro)}`);
     return [];
   } finally {
     await browser?.close().catch(() => undefined);
