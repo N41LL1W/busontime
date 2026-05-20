@@ -1,4 +1,5 @@
 import { useState } from "react";
+import SemiurbanoResumoTabela from "../components/SemiurbanoResumoTabela";
 
 type TesteHorario = {
   horario: string;
@@ -83,6 +84,8 @@ export default function TesteSemiurbanoPage() {
             {carregando ? "Rodando automação..." : "Startar teste de raspagem"}
           </button>
         </section>
+
+        <SemiurbanoResumoTabela />
 
         {erro && (
           <section className="rounded-2xl border border-red-500/40 bg-red-950/50 p-5 text-red-100">
