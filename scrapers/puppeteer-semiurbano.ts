@@ -643,6 +643,14 @@ export type SemiurbanoTesteResultado = {
   textoVisivel: string;
 };
 
+export type SemiurbanoTesteLoteResultado = {
+  sourceUrl: string;
+  pesquisadoEm: string;
+  opcoesOrigem: string[];
+  opcoesDestino: string[];
+  consultas: SemiurbanoTesteResultado[];
+};
+
 async function extrairPainelTeste(page: Page): Promise<Omit<SemiurbanoTesteResultado, "sourceUrl" | "pesquisadoEm" | "origemSelecionada" | "destinoSelecionado">> {
   return page.evaluate(() => {
     const limpar = (valor: unknown) => String(valor ?? "").replace(/\s+/g, " ").trim();
@@ -871,6 +879,77 @@ export async function testarRaspagemSemiurbanoBrodowskiRibeirao(url = DEFAULT_UR
     await browser?.close().catch(() => undefined);
   }
 }
+
+export async function testarRaspagemSemiurbanoTodasAsRotas(url = DEFAULT_URL): Promise<SemiurbanoTesteLoteResultado> {
+  let browser: Awaited<ReturnType<typeof puppeteer.launch>> | null = null;
+
+  try {
+    browser = await abrirNavegadorSemiurbano();
+    const page = await browser.newPage();
+    await aplicarEvasoesBasicas(page);
+    page.setDefaultTimeout(NAVIGATION_TIMEOUT_MS);
+    await page.setUserAgent(
+      "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36",
+    );
+    await page.setExtraHTTPHeaders({ "Accept-Language": "pt-BR,pt;q=0.9,en;q=0.8" });
+    await page.goto(url, { waitUntil: "networkidle2", timeout: NAVIGATION_TIMEOUT_MS });
+
+    await selecionarCidade(page, "a", "origem", 0);
+    const opcoesOrigem = await listarOpcoesVisiveis(page);
+
+    await selecionarCidade(page, "a", "destino", 1);
+    const opcoesDestino = await listarOpcoesVisiveis(page);
+
+    const consultas: SemiurbanoTesteResultado[] = [];
+    const pesquisadoEm = new Date().toISOString();
+
+    for (const origem of opcoesOrigem) {
+      for (const destino of opcoesDestino) {
+        if (normalizarTexto(origem) === normalizarTexto(destino)) continue;
+
+        await selecionarCidade(page, origem, "origem", 0);
+        await selecionarCidadePorOpcao(page, origem).catch(() => undefined);
+        await selecionarCidade(page, destino, "destino", 1);
+        await selecionarCidadePorOpcao(page, destino).catch(() => undefined);
+        await submeterPesquisa(page);
+        await Promise.race([
+          page.waitForNetworkIdle({ idleTime: 1000, timeout: 15_000 }).catch(() => undefined),
+          aguardar(15_000),
+        ]);
+        await aguardar(700);
+
+        const ida = await extrairPainelTeste(page);
+        await mostrarHorariosDeVolta(page);
+        await aguardar(700);
+        const volta = await extrairPainelTeste(page);
+
+        const sentidos = juntarSentidos([...ida.sentidos, ...volta.sentidos]);
+        if (sentidos.length === 0) continue;
+
+        const tarifas = [...ida.tarifas];
+        for (const tarifa of volta.tarifas) {
+          if (!tarifas.some((item) => item.tipo === tarifa.tipo && item.valor === tarifa.valor)) tarifas.push(tarifa);
+        }
+
+        consultas.push({
+          sourceUrl: url,
+          pesquisadoEm,
+          origemSelecionada: origem,
+          destinoSelecionado: destino,
+          linha: ida.linha ?? volta.linha,
+          tarifas,
+          sentidos,
+          textoVisivel: volta.textoVisivel || ida.textoVisivel,
+        });
+      }
+    }
+
+    return { sourceUrl: url, pesquisadoEm, opcoesOrigem, opcoesDestino, consultas };
+  } finally {
+    await browser?.close().catch(() => undefined);
+  }
+}
+
 
 type PuppeteerRouteOptions = {
   url?: string;

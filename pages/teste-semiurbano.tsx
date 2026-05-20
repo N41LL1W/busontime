@@ -20,12 +20,16 @@ type TesteResultado = {
   ok: true;
   sourceUrl: string;
   pesquisadoEm: string;
-  origemSelecionada: string;
-  destinoSelecionado: string;
-  linha: string | null;
-  tarifas: Array<{ tipo: string; valor: string }>;
-  sentidos: TesteSentido[];
-  textoVisivel: string;
+  opcoesOrigem: string[];
+  opcoesDestino: string[];
+  consultas: Array<{
+    origemSelecionada: string;
+    destinoSelecionado: string;
+    linha: string | null;
+    tarifas: Array<{ tipo: string; valor: string }>;
+    sentidos: TesteSentido[];
+    textoVisivel: string;
+  }>;
 };
 
 type TesteErro = {
@@ -72,7 +76,7 @@ export default function TesteSemiurbanoPage() {
           <p className="text-sm font-semibold uppercase tracking-[0.2em] text-cyan-300">Teste de raspagem</p>
           <h1 className="mt-2 text-3xl font-bold">Semiurbano: teste automático de rota</h1>
           <p className="mt-3 max-w-3xl text-slate-300">
-            Esta página não grava no banco. Ela abre o site novo, procura opções de cidade nos seletores de <strong>origem</strong> e <strong>destino</strong>, escolhe automaticamente, consulta os horários, clica em <strong>Ver horários de volta</strong> e mostra tudo que foi encontrado na tela.
+            Esta página não grava no banco. Ela abre o site novo, lista as opções de cidade nos seletores de <strong>origem</strong> e <strong>destino</strong>, testa todas as combinações possíveis que geram tabelas de horários e mostra tudo que foi encontrado na tela.
           </p>
 
           <button
@@ -98,11 +102,9 @@ export default function TesteSemiurbanoPage() {
           <section className="space-y-5 rounded-2xl border border-slate-800 bg-slate-900 p-6">
             <div className="flex flex-wrap items-start gap-4 border-b border-slate-800 pb-4">
               <div>
-                <h2 className="text-2xl font-bold">Resultado encontrado</h2>
+                <h2 className="text-2xl font-bold">Resultados encontrados</h2>
                 <p className="text-sm text-slate-400">Fonte: {resultado.sourceUrl}</p>
-                <p className="text-sm text-slate-400">
-                  Consulta: {resultado.origemSelecionada} → {resultado.destinoSelecionado}
-                </p>
+                <p className="text-sm text-slate-400">Combinações com tabela: {resultado.consultas.length}</p>
               </div>
               <div className="ml-auto rounded-xl bg-slate-800 px-4 py-3 text-sm text-slate-200">
                 {new Date(resultado.pesquisadoEm).toLocaleString("pt-BR")}
@@ -110,24 +112,28 @@ export default function TesteSemiurbanoPage() {
             </div>
 
             <div className="rounded-xl border border-slate-800 bg-slate-950 p-4">
-              <h3 className="font-bold text-cyan-300">Linha e tarifas</h3>
-              <p className="mt-2 text-lg font-semibold">{resultado.linha ?? "Linha não encontrada"}</p>
-              <div className="mt-3 flex flex-wrap gap-3">
-                {resultado.tarifas.length > 0 ? (
-                  resultado.tarifas.map((tarifa) => (
-                    <span key={`${tarifa.tipo}-${tarifa.valor}`} className="rounded-full bg-cyan-400/10 px-3 py-1 text-cyan-100">
-                      {tarifa.tipo}: <strong>{tarifa.valor}</strong>
-                    </span>
-                  ))
-                ) : (
-                  <span className="text-slate-400">Nenhuma tarifa encontrada.</span>
-                )}
-              </div>
+              <h3 className="font-bold text-cyan-300">Opções detectadas</h3>
+              <p className="mt-2 text-sm text-slate-300">Origem: {resultado.opcoesOrigem.join(", ") || "Nenhuma"}</p>
+              <p className="mt-1 text-sm text-slate-300">Destino: {resultado.opcoesDestino.join(", ") || "Nenhuma"}</p>
             </div>
+            {resultado.consultas.map((consulta) => (
+              <div key={`${consulta.origemSelecionada}-${consulta.destinoSelecionado}`} className="space-y-4 rounded-xl border border-slate-800 bg-slate-950 p-4">
+                <div>
+                  <p className="text-lg font-bold text-cyan-200">
+                    {consulta.origemSelecionada} → {consulta.destinoSelecionado}
+                  </p>
+                  <p className="text-sm text-slate-400">{consulta.linha ?? "Linha não encontrada"}</p>
+                  <div className="mt-2 flex flex-wrap gap-2">
+                    {consulta.tarifas.map((tarifa) => (
+                      <span key={`${tarifa.tipo}-${tarifa.valor}`} className="rounded-full bg-cyan-400/10 px-3 py-1 text-cyan-100">
+                        {tarifa.tipo}: <strong>{tarifa.valor}</strong>
+                      </span>
+                    ))}
+                  </div>
+                </div>
 
-            <div className="grid gap-4 md:grid-cols-2">
-              {resultado.sentidos.length > 0 ? (
-                resultado.sentidos.map((sentido) => (
+                <div className="grid gap-4 md:grid-cols-2">
+                  {consulta.sentidos.map((sentido) => (
                   <article
                     key={`${sentido.diaDaSemana}-${sentido.origem}-${sentido.destino}`}
                     className="rounded-xl border border-slate-800 bg-slate-950 p-4"
@@ -169,18 +175,15 @@ export default function TesteSemiurbanoPage() {
                       </div>
                     )}
                   </article>
-                ))
-              ) : (
-                <p className="rounded-xl border border-amber-400/40 bg-amber-950/40 p-4 text-amber-100 md:col-span-2">
-                  Nenhum bloco de horários foi capturado. Confira o texto bruto abaixo.
-                </p>
-              )}
-            </div>
+                  ))}
+                </div>
 
-            <details className="rounded-xl border border-slate-800 bg-slate-950 p-4">
-              <summary className="cursor-pointer font-bold text-slate-200">Ver texto bruto capturado da página</summary>
-              <pre className="mt-4 max-h-96 overflow-auto whitespace-pre-wrap text-xs text-slate-300">{resultado.textoVisivel}</pre>
-            </details>
+                <details className="rounded-xl border border-slate-800 bg-slate-900 p-4">
+                  <summary className="cursor-pointer font-bold text-slate-200">Ver texto bruto ({consulta.origemSelecionada} → {consulta.destinoSelecionado})</summary>
+                  <pre className="mt-4 max-h-96 overflow-auto whitespace-pre-wrap text-xs text-slate-300">{consulta.textoVisivel}</pre>
+                </details>
+              </div>
+            ))}
           </section>
         )}
       </div>

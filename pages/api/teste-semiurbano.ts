@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import {
-  testarRaspagemSemiurbanoBrodowskiRibeirao,
-  type SemiurbanoTesteResultado,
+  testarRaspagemSemiurbanoTodasAsRotas,
+  type SemiurbanoTesteLoteResultado,
 } from "../../scrapers/puppeteer-semiurbano";
 
 export const config = {
@@ -12,7 +12,7 @@ export const config = {
 };
 
 type TesteSemiurbanoResponse =
-  | ({ ok: true } & SemiurbanoTesteResultado)
+  | ({ ok: true } & SemiurbanoTesteLoteResultado)
   | { ok: false; error: string };
 
 export default async function handler(
@@ -25,7 +25,7 @@ export default async function handler(
   }
 
   try {
-    const resultado = await testarRaspagemSemiurbanoBrodowskiRibeirao();
+    const resultado = await testarRaspagemSemiurbanoTodasAsRotas();
     return res.status(200).json({ ok: true, ...resultado });
   } catch (error) {
     console.error("[Teste Semiurbano] Erro ao executar automação:", error);
