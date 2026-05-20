@@ -33,15 +33,17 @@ async function instalarChromePuppeteer() {
     PUPPETEER_CACHE_DIR: process.env.PUPPETEER_CACHE_DIR || `${process.env.HOME}/.cache/puppeteer`,
   };
 
+    const puppeteerCliPath = require.resolve("puppeteer/lib/cjs/puppeteer/node/cli.js");
+
+
   try {
-    await executarArquivo("npx", ["--yes", "puppeteer", "browsers", "install", "chrome"], { env });
+    await executarArquivo(process.execPath, [puppeteerCliPath, "browsers", "install", "chrome"], { env });
     return;
   } catch (error) {
-    console.warn(`[Semiurbano Navegador] Falha ao instalar Chrome com npx: ${formatarErro(error)}. Tentando via CLI local do Puppeteer...`);
+    console.warn(`[Semiurbano Navegador] Falha ao instalar Chrome via CLI do Puppeteer: ${formatarErro(error)}.`);
   }
 
-  const puppeteerCliPath = require.resolve("puppeteer/lib/cjs/puppeteer/node/cli.js");
-  await executarArquivo(process.execPath, [puppeteerCliPath, "browsers", "install", "chrome"], { env });
+  throw new Error("Não foi possível instalar o Chrome automaticamente neste ambiente.");
 }
 
 const findProjectCachedChrome = () => {
