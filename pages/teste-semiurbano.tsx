@@ -69,11 +69,9 @@ export default function TesteSemiurbanoPage() {
       <div className="mx-auto max-w-5xl space-y-6">
         <section className="rounded-2xl border border-slate-800 bg-slate-900 p-6 shadow-xl">
           <p className="text-sm font-semibold uppercase tracking-[0.2em] text-cyan-300">Teste de raspagem</p>
-          <h1 className="mt-2 text-3xl font-bold">Semiurbano: Brodowski ⇄ Ribeirão Preto</h1>
+          <h1 className="mt-2 text-3xl font-bold">Semiurbano: teste automático de rota</h1>
           <p className="mt-3 max-w-3xl text-slate-300">
-            Esta página não grava no banco. Ela abre o site novo, seleciona origem <strong>Brodowski</strong> e destino{" "}
-            <strong>Ribeirão Preto</strong>, consulta os horários, clica em <strong>Ver horários de volta</strong> e mostra o
-            que foi encontrado na tela.
+            Esta página não grava no banco. Ela abre o site novo, procura opções de cidade nos seletores de <strong>origem</strong> e <strong>destino</strong>, escolhe automaticamente, consulta os horários, clica em <strong>Ver horários de volta</strong> e mostra tudo que foi encontrado na tela.
           </p>
 
           <button

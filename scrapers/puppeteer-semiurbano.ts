@@ -408,6 +408,86 @@ async function submeterPesquisa(page: Page) {
   }
 }
 
+
+async function listarOpcoesVisiveis(page: Page) {
+  return page.evaluate(() => {
+    const normalizar = (valor: string) =>
+      valor
+        .normalize("NFD")
+        .replace(/[̀-ͯ]/g, "")
+        .toLowerCase()
+        .trim();
+    const visivel = (elemento: Element) => {
+      const rect = elemento.getBoundingClientRect();
+      const style = window.getComputedStyle(elemento);
+      return rect.width > 0 && rect.height > 0 && style.visibility !== "hidden" && style.display !== "none";
+    };
+
+    const candidatos = Array.from(document.querySelectorAll('[role="option"], li[role="option"], [role="listbox"] li, [role="listbox"] button'));
+    const opcoes = candidatos
+      .filter((item) => visivel(item))
+      .map((item) => (item.textContent ?? "").replace(/\s+/g, " ").trim())
+      .filter(Boolean);
+
+    const mapa = new Map<string, string>();
+    for (const opcao of opcoes) {
+      const chave = normalizar(opcao);
+      if (!chave || mapa.has(chave)) continue;
+      mapa.set(chave, opcao);
+    }
+
+    return Array.from(mapa.values());
+  });
+}
+
+async function selecionarCidadePorOpcao(page: Page, cidade: string) {
+  const selecionou = await page.evaluate((cidadeDesejada) => {
+    const normalizar = (valor: string) =>
+      valor
+        .normalize("NFD")
+        .replace(/[̀-ͯ]/g, "")
+        .toLowerCase()
+        .trim();
+    const visivel = (elemento: Element) => {
+      const rect = elemento.getBoundingClientRect();
+      const style = window.getComputedStyle(elemento);
+      return rect.width > 0 && rect.height > 0 && style.visibility !== "hidden" && style.display !== "none";
+    };
+
+    const alvo = normalizar(cidadeDesejada);
+    const candidatos = Array.from(document.querySelectorAll('[role="option"], li[role="option"], [role="listbox"] li, [role="listbox"] button')) as HTMLElement[];
+    const opcao = candidatos.find((item) => visivel(item) && normalizar(item.textContent ?? "") === alvo);
+    if (!opcao) return false;
+    opcao.click();
+    return true;
+  }, cidade);
+
+  if (selecionou) await aguardar(500);
+  return selecionou;
+}
+
+async function selecionarOrigemDestinoAutomatico(page: Page) {
+  const fallbackOrigem = "Brodowski";
+  const fallbackDestino = "Ribeirão Preto";
+
+  await selecionarCidade(page, fallbackOrigem, "origem", 0);
+  await aguardar(300);
+  await selecionarCidade(page, fallbackDestino, "destino", 1);
+  await aguardar(300);
+
+  await selecionarCidade(page, fallbackOrigem, "origem", 0);
+  const opcoesOrigem = await listarOpcoesVisiveis(page);
+  const origem = opcoesOrigem.find((item) => normalizarTexto(item).includes("brodowski")) ?? opcoesOrigem[0] ?? fallbackOrigem;
+  await selecionarCidadePorOpcao(page, origem).catch(() => undefined);
+
+  await selecionarCidade(page, fallbackDestino, "destino", 1);
+  const opcoesDestino = await listarOpcoesVisiveis(page);
+  const destino = opcoesDestino.find((item) => normalizarTexto(item) !== normalizarTexto(origem)) ?? opcoesDestino[0] ?? fallbackDestino;
+  await selecionarCidadePorOpcao(page, destino).catch(() => undefined);
+
+  return { origem, destino };
+}
+
 async function mostrarHorariosDeVolta(page: Page) {
   const clicou = await page.evaluate(() => {
     const normalizar = (valor: string) =>
@@ -737,8 +817,8 @@ async function criarResultadoFallbackSupabase(
 }
 
 export async function testarRaspagemSemiurbanoBrodowskiRibeirao(url = DEFAULT_URL): Promise<SemiurbanoTesteResultado> {
-  const origem = "Brodowski";
-  const destino = "Ribeirão Preto";
+  let origem = "Brodowski";
+  let destino = "Ribeirão Preto";
   let browser: Awaited<ReturnType<typeof puppeteer.launch>> | null = null;
 
   try {
@@ -753,8 +833,9 @@ export async function testarRaspagemSemiurbanoBrodowskiRibeirao(url = DEFAULT_UR
     await page.setExtraHTTPHeaders({ "Accept-Language": "pt-BR,pt;q=0.9,en;q=0.8" });
 
     await page.goto(url, { waitUntil: "networkidle2", timeout: NAVIGATION_TIMEOUT_MS });
-    await selecionarCidade(page, origem, "origem", 0);
-    await selecionarCidade(page, destino, "destino", 1);
+    const selecaoAutomatica = await selecionarOrigemDestinoAutomatico(page);
+    origem = selecaoAutomatica.origem;
+    destino = selecaoAutomatica.destino;
     await submeterPesquisa(page);
     await Promise.race([
       page.waitForNetworkIdle({ idleTime: 1000, timeout: 15_000 }).catch(() => undefined),
@@ -829,8 +910,9 @@ export async function scrapeSemiurbanoPuppeteerRoute({
     });
 
     await page.goto(url, { waitUntil: "networkidle2", timeout: NAVIGATION_TIMEOUT_MS });
-    await selecionarCidade(page, origem, "origem", 0);
-    await selecionarCidade(page, destino, "destino", 1);
+    const selecaoAutomatica = await selecionarOrigemDestinoAutomatico(page);
+    origem = selecaoAutomatica.origem;
+    destino = selecaoAutomatica.destino;
     await submeterPesquisa(page);
     await Promise.race([
       page.waitForNetworkIdle({ idleTime: 1000, timeout: 15_000 }).catch(() => undefined),
