@@ -3,6 +3,7 @@ import { execFile } from "node:child_process";
 import { existsSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 import { promisify } from "node:util";
+import { createRequire } from "node:module";
 import type { HTTPResponse, Page } from "puppeteer";
 import type { ScrapedHorario } from "../types/scrapers";
 import { scrapeSemiurbanoSupabaseRoute } from "./supabase-semiurbano";
@@ -24,13 +25,23 @@ const isChromeMissingError = (error: unknown) => {
   return /could not find chrome|browser was not found|failed to launch the browser process|executablepath|enoent/i.test(message);
 };
 
+const require = createRequire(import.meta.url);
+
 async function instalarChromePuppeteer() {
-  await executarArquivo("npx", ["puppeteer", "browsers", "install", "chrome"], {
-    env: {
-      ...process.env,
-      PUPPETEER_CACHE_DIR: process.env.PUPPETEER_CACHE_DIR || `${process.env.HOME}/.cache/puppeteer`,
-    },
-  });
+  const env = {
+    ...process.env,
+    PUPPETEER_CACHE_DIR: process.env.PUPPETEER_CACHE_DIR || `${process.env.HOME}/.cache/puppeteer`,
+  };
+
+  try {
+    await executarArquivo("npx", ["--yes", "puppeteer", "browsers", "install", "chrome"], { env });
+    return;
+  } catch (error) {
+    console.warn(`[Semiurbano Navegador] Falha ao instalar Chrome com npx: ${formatarErro(error)}. Tentando via CLI local do Puppeteer...`);
+  }
+
+  const puppeteerCliPath = require.resolve("puppeteer/lib/cjs/puppeteer/node/cli.js");
+  await executarArquivo(process.execPath, [puppeteerCliPath, "browsers", "install", "chrome"], { env });
 }
 
 const findProjectCachedChrome = () => {
