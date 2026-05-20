@@ -17,6 +17,32 @@ type RotaResumo = {
   dias: DiaResumo[];
 };
 
+
+const CIDADES_SEMIURBANO = [
+  "Altinópolis",
+  "Aramina",
+  "Barretos",
+  "Barrinha",
+  "Batatais",
+  "Brodowski",
+  "Franca",
+  "Guará",
+  "Guará (Pioneiros)",
+  "Guaíra",
+  "Igarapava",
+  "Ipuã",
+  "Ituverava",
+  "Miguelópolis",
+  "Orlândia",
+  "Ribeirão Preto",
+  "Sales Oliveira",
+  "Serra Azul",
+  "Serrana",
+  "Sertãozinho",
+  "São Benedito da Cachoeirinha",
+  "São Joaquim da Barra",
+] as const;
+
 const ROTAS: RotaResumo[] = [
   {
     origem: "Brodowski",
@@ -50,7 +76,7 @@ export default function SemiurbanoResumoTabela() {
   const [origem, setOrigem] = useState("Brodowski");
   const [destino, setDestino] = useState("Ribeirão Preto");
 
-  const cidades = useMemo(() => Array.from(new Set(ROTAS.flatMap((rota) => [rota.origem, rota.destino]))).sort(), []);
+   const cidades = useMemo(() => [...CIDADES_SEMIURBANO], []);
 
   const resumoSelecionado = useMemo(
     () => ROTAS.find((rota) => rota.origem === origem && rota.destino === destino),
