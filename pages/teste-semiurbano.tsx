@@ -111,10 +111,61 @@ export default function TesteSemiurbanoPage() {
               </div>
             </div>
 
-            <div className="rounded-xl border border-slate-800 bg-slate-950 p-4">
+            <div className="space-y-4 rounded-xl border border-slate-800 bg-slate-950 p-4">
               <h3 className="font-bold text-cyan-300">Opções detectadas</h3>
-              <p className="mt-2 text-sm text-slate-300">Origem: {resultado.opcoesOrigem.join(", ") || "Nenhuma"}</p>
-              <p className="mt-1 text-sm text-slate-300">Destino: {resultado.opcoesDestino.join(", ") || "Nenhuma"}</p>
+              <div className="grid gap-4 md:grid-cols-2">
+                <div className="overflow-hidden rounded-lg border border-slate-800">
+                  <p className="border-b border-slate-800 bg-slate-900 px-3 py-2 text-sm font-semibold text-cyan-200">Origem</p>
+                  <table className="w-full text-left text-sm">
+                    <thead className="bg-slate-900/70 text-xs uppercase tracking-wide text-slate-400">
+                      <tr>
+                        <th className="px-3 py-2">#</th>
+                        <th className="px-3 py-2">Cidade</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {resultado.opcoesOrigem.length > 0 ? (
+                        resultado.opcoesOrigem.map((cidade, index) => (
+                          <tr key={`origem-${cidade}`} className="border-t border-slate-800">
+                            <td className="px-3 py-2 text-slate-400">{index + 1}</td>
+                            <td className="px-3 py-2 text-slate-200">{cidade}</td>
+                          </tr>
+                        ))
+                      ) : (
+                        <tr className="border-t border-slate-800">
+                          <td className="px-3 py-2 text-slate-400" colSpan={2}>Nenhuma opção encontrada.</td>
+                        </tr>
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+
+                <div className="overflow-hidden rounded-lg border border-slate-800">
+                  <p className="border-b border-slate-800 bg-slate-900 px-3 py-2 text-sm font-semibold text-cyan-200">Destino</p>
+                  <table className="w-full text-left text-sm">
+                    <thead className="bg-slate-900/70 text-xs uppercase tracking-wide text-slate-400">
+                      <tr>
+                        <th className="px-3 py-2">#</th>
+                        <th className="px-3 py-2">Cidade</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {resultado.opcoesDestino.length > 0 ? (
+                        resultado.opcoesDestino.map((cidade, index) => (
+                          <tr key={`destino-${cidade}`} className="border-t border-slate-800">
+                            <td className="px-3 py-2 text-slate-400">{index + 1}</td>
+                            <td className="px-3 py-2 text-slate-200">{cidade}</td>
+                          </tr>
+                        ))
+                      ) : (
+                        <tr className="border-t border-slate-800">
+                          <td className="px-3 py-2 text-slate-400" colSpan={2}>Nenhuma opção encontrada.</td>
+                        </tr>
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
             </div>
             {resultado.consultas.map((consulta) => (
               <div key={`${consulta.origemSelecionada}-${consulta.destinoSelecionado}`} className="space-y-4 rounded-xl border border-slate-800 bg-slate-950 p-4">
