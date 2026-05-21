@@ -676,15 +676,26 @@ async function extrairPainelTeste(page: Page): Promise<Omit<SemiurbanoTesteResul
       return null;
     };
 
+        const cardResumo = Array.from(document.querySelectorAll("div, section, article"))
+      .find((item) => {
+        const texto = limpar(item.textContent);
+        return texto.includes(" X ") && /comum\/vt|estudante/i.test(texto);
+      }) ?? null;
+
     const linha =
-      Array.from(document.querySelectorAll("div, header, section"))
-        .map((item) => limpar(item.textContent))
-        .find((texto) => texto.includes(" X ") && /comum\/vt|estudante/i.test(texto))
-        ?.replace(/Comum\/VT:.*$/i, "")
-        .trim() || null;
+      limpar(
+        cardResumo
+          ?.querySelector("svg.lucide-bus")
+          ?.parentElement
+          ?.textContent,
+      ) ||
+      limpar(cardResumo?.textContent)
+        .replace(/Comum\/VT:.*$/i, "")
+        .trim() ||
+      null;
 
     const tarifas: Array<{ tipo: string; valor: string }> = [];
-    const textoCompleto = document.body?.innerText ?? "";
+    const textoCompleto = limpar(cardResumo?.textContent) || document.body?.innerText || "";
     for (const match of textoCompleto.matchAll(/(Comum\/VT|Estudante):\s*(R\$\s*\d+[,.]\d{2})/gi)) {
       const tipo = limpar(match[1]);
       const valor = limpar(match[2]);
