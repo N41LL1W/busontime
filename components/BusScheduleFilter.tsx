@@ -153,33 +153,46 @@ const BusScheduleFilter: React.FC<BusScheduleFilterProps> = ({ schedules }) => {
             <h3 className="font-bold text-lg mb-3">Horários encontrados:</h3>
             {paginatedSchedules.length > 0 ? (
               <>
-                <ul className="divide-y border rounded-md">
-                  {paginatedSchedules.map((schedule) => (
-                    <li key={schedule.id} className="p-3">
-                      <div className="flex justify-between items-start gap-2">
-                        <div className="flex-1">
-                          <div className="font-semibold text-base">
-                            <span className="text-primary">{schedule.horario}</span> - {schedule.origem} ➝ {schedule.destino}
-                          </div>
-                          {schedule.observacao && (
-                            <div className="text-xs text-muted-foreground mt-1">{schedule.observacao}</div>
-                          )}
-                        </div>
-                        {schedule.sourceUrl && (
-                          <button
-                            onClick={() => setModalUrl(schedule.sourceUrl)}
-                            className="p-2 -mr-2 text-muted-foreground hover:text-primary transition-colors rounded-full"
-                            title="Ver fonte do horário"
-                            aria-label="Ver fonte do horário"
-                          >
-                            <LinkIcon size={16} />
-                          </button>
-                        )}
-                      </div>
-                    </li>
-                  ))}
-                </ul>
-                
+                <div className="overflow-x-auto border rounded-md">
+                  <table className="min-w-full text-sm">
+                    <thead className="bg-muted/50">
+                      <tr>
+                        <th className="px-3 py-2 text-left font-semibold">Origem</th>
+                        <th className="px-3 py-2 text-left font-semibold">Destino</th>
+                        <th className="px-3 py-2 text-left font-semibold">Dia da Semana</th>
+                        <th className="px-3 py-2 text-left font-semibold">Horário</th>
+                        <th className="px-3 py-2 text-left font-semibold">Tarifa</th>
+                        <th className="px-3 py-2 text-left font-semibold">Informações adicionais</th>
+                        <th className="px-3 py-2 text-right font-semibold">Fonte</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y">
+                      {paginatedSchedules.map((schedule) => (
+                        <tr key={schedule.id} className="hover:bg-muted/40">
+                          <td className="px-3 py-2">{schedule.origem}</td>
+                          <td className="px-3 py-2">{schedule.destino}</td>
+                          <td className="px-3 py-2">{schedule.diaDaSemana}</td>
+                          <td className="px-3 py-2 font-semibold text-primary">{schedule.horario}</td>
+                          <td className="px-3 py-2">{schedule.tarifa || "—"}</td>
+                          <td className="px-3 py-2 text-xs text-muted-foreground">{schedule.observacao || "—"}</td>
+                          <td className="px-3 py-2 text-right">
+                            {schedule.sourceUrl && (
+                              <button
+                                onClick={() => setModalUrl(schedule.sourceUrl)}
+                                className="inline-flex p-2 text-muted-foreground hover:text-primary transition-colors rounded-full"
+                                title="Ver fonte do horário"
+                                aria-label="Ver fonte do horário"
+                              >
+                                <LinkIcon size={16} />
+                              </button>
+                            )}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+
                 {totalPages > 1 && (
                   <div className="flex justify-center items-center gap-2 mt-4">
                     <Button variant="ghost" size="sm" disabled={currentPage === 1} onClick={() => setCurrentPage(p => p - 1)}>Anterior</Button>
