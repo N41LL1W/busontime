@@ -45,22 +45,61 @@ export default function SemiurbanoResumoTabela() {
   const [destino, setDestino] = useState("");
   const [horarios, setHorarios] = useState<HorarioApi[]>([]);
   const [loading, setLoading] = useState(true);
-    useEffect(() => {
-    const carregar = async () => {
-      setLoading(true);
-      try {
-        const response = await fetch("/api/horarios");
-        const data: HorarioApi[] = await response.json();
-        setHorarios(Array.isArray(data) ? data : []);
-      } catch {
-        setHorarios([]);
-      } finally {
-        setLoading(false);
-      }
-    };
+  const [syncing, setSyncing] = useState(false);
+  const [syncMessage, setSyncMessage] = useState<string | null>(null);
 
-    void carregar();
+  const carregarHorarios = async () => {
+    setLoading(true);
+    try {
+      const response = await fetch("/api/horarios");
+      const data: HorarioApi[] = await response.json();
+      setHorarios(Array.isArray(data) ? data : []);
+    } catch {
+      setHorarios([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+    useEffect(() => {
+    void carregarHorarios();
   }, []);
+
+    const sincronizarSemiurbano = async () => {
+    setSyncing(true);
+    setSyncMessage("Buscando horários atualizados no site Semiurbano...");
+    try {
+      const response = await fetch("/api/scrap", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          jobIds: [
+            "semiurbano-ribeirao-brodowski",
+            "semiurbano-brodowski-batatais",
+            "semiurbano-ribeirao-sertaozinho",
+            "semiurbano-ribeirao-serrana",
+            "semiurbano-ribeirao-serra-azul",
+            "semiurbano-ribeirao-batatais",
+            "semiurbano-ribeirao-barrinha",
+            "semiurbano-ribeirao-altinopolis",
+            "semiurbano-barrinha-sertaozinho",
+            "semiurbano-batatais-altinopolis",
+            "semiurbano-miguelopolis-ituverava",
+            "semiurbano-cachoeirinha-ituverava",
+            "semiurbano-miguelopolis-barretos",
+          ],
+        }),
+      });
+
+      const data = await response.json();
+      setSyncMessage(data?.message ?? "Sincronização finalizada.");
+      await carregarHorarios();
+    } catch {
+      setSyncMessage("Falha ao sincronizar com o site do Semiurbano. Tente novamente.");
+    } finally {
+      setSyncing(false);
+    }
+  };
 
   const cidades = useMemo(() => {
     const set = new Set<string>();
@@ -117,7 +156,18 @@ export default function SemiurbanoResumoTabela() {
     <section className="rounded-2xl border border-slate-800 bg-slate-900 p-6">
       <h2 className="text-2xl font-bold">Consulta rápida por origem e destino</h2>
       <p className="mt-2 text-sm text-slate-300">Selecione a origem e o destino para ver o resumo dos itinerários cadastrados.</p>
-
+      <div className="mt-4 flex flex-wrap items-center gap-3">
+        <button
+          type="button"
+          disabled={syncing}
+          onClick={sincronizarSemiurbano}
+          className="rounded-lg bg-cyan-400 px-4 py-2 text-sm font-bold text-slate-950 transition hover:bg-cyan-300 disabled:cursor-not-allowed disabled:opacity-60"
+        >
+          {syncing ? "Sincronizando dados..." : "Carregar dados do site (Semiurbano)"}
+        </button>
+        {syncMessage ? <p className="text-xs text-slate-300">{syncMessage}</p> : null}
+      </div>
+      
       <div className="mt-5 grid gap-4 md:grid-cols-2">
         <label className="flex flex-col gap-2">
           <span className="text-sm font-semibold text-slate-200">Origem</span>
