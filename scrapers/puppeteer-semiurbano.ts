@@ -7,6 +7,7 @@ import { createRequire } from "node:module";
 import type { HTTPResponse, Page } from "puppeteer";
 import type { ScrapedHorario } from "../types/scrapers";
 import { scrapeSemiurbanoSupabaseRoute } from "./supabase-semiurbano";
+import { launchBrowser } from "./chrome-launcher";
 
 const DEFAULT_URL = "https://semiurbano.lovable.app/horarios";
 const NAVIGATION_TIMEOUT_MS = 45_000;
@@ -27,71 +28,10 @@ const isChromeMissingError = (error: unknown) => {
 
 const require = createRequire(import.meta.url);
 
-async function instalarChromePuppeteer() {
-  const env = {
-    ...process.env,
-    PUPPETEER_CACHE_DIR: process.env.PUPPETEER_CACHE_DIR || `${process.env.HOME}/.cache/puppeteer`,
-  };
 
-    const puppeteerCliPath = require.resolve("puppeteer/lib/cjs/puppeteer/node/cli.js");
-
-
-  try {
-    await executarArquivo(process.execPath, [puppeteerCliPath, "browsers", "install", "chrome"], { env });
-    return;
-  } catch (error) {
-    console.warn(`[Semiurbano Navegador] Falha ao instalar Chrome via CLI do Puppeteer: ${formatarErro(error)}.`);
-  }
-
-  throw new Error("Não foi possível instalar o Chrome automaticamente neste ambiente.");
-}
-
-const findProjectCachedChrome = () => {
-  if (!existsSync(LOCAL_CHROME_CACHE_DIR)) return undefined;
-  const platformDirs = readdirSync(LOCAL_CHROME_CACHE_DIR, { withFileTypes: true })
-    .filter((entry) => entry.isDirectory())
-    .map((entry) => entry.name)
-    .sort()
-    .reverse();
-
-  for (const platformDir of platformDirs) {
-    const chromePath = join(LOCAL_CHROME_CACHE_DIR, platformDir, "chrome-linux64", "chrome");
-    if (existsSync(chromePath)) return chromePath;
-  }
-  return undefined;
-};
-
-const getChromeExecutablePath = () =>
-  process.env.PUPPETEER_EXECUTABLE_PATH || process.env.CHROME_EXECUTABLE_PATH || findProjectCachedChrome() || undefined;
-
-const getPuppeteerLaunchOptions = () => ({
-  headless: true as const,
-  executablePath: getChromeExecutablePath(),
-  args: [
-    "--no-sandbox",
-    "--disable-setuid-sandbox",
-    "--disable-dev-shm-usage",
-    "--disable-gpu",
-    "--no-zygote",
-    "--single-process",
-  ],
-});
-
-async function abrirNavegadorSemiurbano() {
-  try {
-    return await puppeteer.launch(getPuppeteerLaunchOptions());
-  } catch (error) {
-    if (!isChromeMissingError(error)) throw error;
-    console.warn("[Semiurbano Navegador] Chrome não encontrado. Tentando instalar automaticamente...");
-    await instalarChromePuppeteer();
-    try {
-      return await puppeteer.launch(getPuppeteerLaunchOptions());
-    } catch (innerError) {
-      if (!isChromeMissingError(innerError)) throw innerError;
-      throw new Error(`${CHROME_MISSING_MESSAGE} Detalhe original: ${innerError instanceof Error ? innerError.message : String(innerError)}`);
-    }
-  }
-}
+   async function abrirNavegadorSemiurbano() {
+     return launchBrowser();
+   }
 
 const formatarErro = (erro: unknown) => {
   if (erro instanceof Error) return `${erro.name}: ${erro.message}`;
