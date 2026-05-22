@@ -26,13 +26,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const emptyCount = results.filter((result) => result.status === 'empty').length;
     const failedCount = results.filter((result) => result.status === 'failed').length;
 
-    return res.status(failedCount ? 207 : 200).json({
+    // ← ERA ISSO QUE FALTAVA: return e chave de abertura do objeto
+    return res.status(200).json({
       message: `Raspagem finalizada: ${successCount} com dados, ${emptyCount} sem dados e ${failedCount} com falha.`,
       results,
     });
   } catch (error) {
     console.error('Erro ao executar raspagem:', error);
     return res.status(500).json({ message: 'Erro ao executar raspagem dos horários.' });
-
   }
 }

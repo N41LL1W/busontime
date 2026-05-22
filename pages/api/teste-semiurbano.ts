@@ -25,6 +25,7 @@ export default async function handler(
   }
 
   try {
+    // ← ERA ISSO QUE FALTAVA: chamar a função antes de usar o resultado
     const resultado = await testarRaspagemSemiurbanoTodasAsRotas();
     return res.status(200).json({ ok: true, ...resultado });
   } catch (error) {
