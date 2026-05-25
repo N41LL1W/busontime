@@ -1,0 +1,193 @@
+{
+  "mapa": {
+    "Altinópolis": [
+      "Batatais",
+      "Ribeirão Preto"
+    ],
+    "Aramina": [
+      "Guará",
+      "Guará (Pioneiros)",
+      "Ituverava",
+      "Orlândia",
+      "Ribeirão Preto",
+      "Sales Oliveira",
+      "São Joaquim da Barra"
+    ],
+    "Barretos": [
+      "Guaíra",
+      "Miguelópolis"
+    ],
+    "Barrinha": [
+      "Ribeirão Preto",
+      "Sertãozinho"
+    ],
+    "Batatais": [
+      "Altinópolis",
+      "Brodowski",
+      "Franca",
+      "Ribeirão Preto"
+    ],
+    "Brodowski": [
+      "Batatais",
+      "Ribeirão Preto"
+    ],
+    "Franca": [
+      "Batatais"
+    ],
+    "Guará": [
+      "Aramina",
+      "Guará (Pioneiros)",
+      "Igarapava",
+      "Ituverava",
+      "Orlândia",
+      "Ribeirão Preto",
+      "Sales Oliveira",
+      "São Joaquim da Barra"
+    ],
+    "Guará (Pioneiros)": [
+      "Aramina",
+      "Guará",
+      "Igarapava",
+      "Ituverava",
+      "Orlândia",
+      "Ribeirão Preto",
+      "Sales Oliveira",
+      "São Joaquim da Barra"
+    ],
+    "Guaíra": [
+      "Barretos",
+      "Miguelópolis",
+      "Orlândia",
+      "Ribeirão Preto",
+      "Sales Oliveira",
+      "São Joaquim da Barra"
+    ],
+    "Igarapava": [
+      "Guará",
+      "Guará (Pioneiros)",
+      "Ituverava",
+      "Orlândia",
+      "Ribeirão Preto",
+      "Sales Oliveira",
+      "São Joaquim da Barra"
+    ],
+    "Ipuã": [
+      "Orlândia",
+      "Ribeirão Preto",
+      "Sales Oliveira",
+      "São Joaquim da Barra"
+    ],
+    "Ituverava": [
+      "Aramina",
+      "Guará",
+      "Guará (Pioneiros)",
+      "Igarapava",
+      "Miguelópolis",
+      "Orlândia",
+      "Ribeirão Preto",
+      "Sales Oliveira",
+      "São Benedito da Cachoeirinha",
+      "São Joaquim da Barra"
+    ],
+    "Miguelópolis": [
+      "Barretos",
+      "Guaíra",
+      "Ituverava"
+    ],
+    "Orlândia": [
+      "Aramina",
+      "Guará",
+      "Guará (Pioneiros)",
+      "Guaíra",
+      "Igarapava",
+      "Ipuã",
+      "Ituverava",
+      "Ribeirão Preto",
+      "Sales Oliveira",
+      "São Joaquim da Barra"
+    ],
+    "Ribeirão Preto": [
+      "Altinópolis",
+      "Aramina",
+      "Barrinha",
+      "Batatais",
+      "Brodowski",
+      "Guará",
+      "Guará (Pioneiros)",
+      "Guaíra",
+      "Igarapava",
+      "Ipuã",
+      "Ituverava",
+      "Orlândia",
+      "Sales Oliveira",
+      "Serra Azul",
+      "Serrana",
+      "Sertãozinho",
+      "São Joaquim da Barra"
+    ],
+    "Sales Oliveira": [
+      "Aramina",
+      "Guará",
+      "Guará (Pioneiros)",
+      "Guaíra",
+      "Igarapava",
+      "Ipuã",
+      "Ituverava",
+      "Orlândia",
+      "Ribeirão Preto",
+      "São Joaquim da Barra"
+    ],
+    "Serra Azul": [
+      "Ribeirão Preto",
+      "Serrana"
+    ],
+    "Serrana": [
+      "Ribeirão Preto",
+      "Serra Azul"
+    ],
+    "Sertãozinho": [
+      "Barrinha",
+      "Ribeirão Preto"
+    ],
+    "São Benedito da Cachoeirinha": [
+      "Ituverava"
+    ],
+    "São Joaquim da Barra": [
+      "Aramina",
+      "Guará",
+      "Guará (Pioneiros)",
+      "Guaíra",
+      "Igarapava",
+      "Ipuã",
+      "Ituverava",
+      "Orlândia",
+      "Ribeirão Preto",
+      "Sales Oliveira"
+    ]
+  },
+  "todas_cidades": [
+    "Altinópolis",
+    "Aramina",
+    "Barretos",
+    "Barrinha",
+    "Batatais",
+    "Brodowski",
+    "Franca",
+    "Guará",
+    "Guará (Pioneiros)",
+    "Guaíra",
+    "Igarapava",
+    "Ipuã",
+    "Ituverava",
+    "Miguelópolis",
+    "Orlândia",
+    "Ribeirão Preto",
+    "Sales Oliveira",
+    "Serra Azul",
+    "Serrana",
+    "Sertãozinho",
+    "São Benedito da Cachoeirinha",
+    "São Joaquim da Barra"
+  ],
+  "gerado_em": "2026-05-25T16:43:24.461159"
+}
