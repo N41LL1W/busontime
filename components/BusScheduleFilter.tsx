@@ -161,11 +161,10 @@ const BusScheduleFilter: React.FC<BusScheduleFilterProps> = ({ schedules }) => {
               {/* Botão swap */}
               <Button
                 variant="outline"
-                size="icon"
                 onClick={handleSwap}
                 disabled={!origin && !destination}
                 title="Inverter origem e destino"
-                className="shrink-0 rounded-full border-primary/30 hover:border-primary/60 transition-colors"
+                className="shrink-0 rounded-full border-primary/30 hover:border-primary/60 transition-colors p-2"
               >
                 <ArrowLeftRight className="h-4 w-4 text-primary" />
               </Button>
