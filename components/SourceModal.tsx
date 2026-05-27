@@ -1,6 +1,4 @@
-"use client";
-
-import { X } from 'lucide-react';
+import { X } from "lucide-react";
 
 interface SourceModalProps {
   url: string;
@@ -8,39 +6,31 @@ interface SourceModalProps {
 }
 
 export default function SourceModal({ url, onClose }: SourceModalProps) {
-  // Verifica se a URL termina com uma extensão de imagem comum
-  const isImage = /\.(jpeg|jpg|gif|png|webp)(\?.*)?$/.test(url.toLowerCase());
-
   return (
-    // Fundo escuro que cobre a tela
-    <div className="fixed inset-0 bg-black/60 z-50 flex justify-center items-center p-4" onClick={onClose}>
-      {/* Contêiner do Modal */}
-      <div 
-        className="bg-background rounded-lg shadow-xl w-full max-w-4xl max-h-[90vh] overflow-hidden flex flex-col" 
-        onClick={(e) => e.stopPropagation()} // Impede que o clique dentro do modal feche o modal
-      >
-        {/* Cabeçalho do Modal */}
-        <div className="flex justify-between items-center p-4 border-b">
-          <h3 className="font-bold text-lg">Fonte do Horário</h3>
-          <button onClick={onClose} className="p-1 rounded-full hover:bg-muted" aria-label="Fechar modal">
-            <X size={20} />
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50" onClick={onClose}>
+      <div className="bg-card rounded-xl shadow-xl p-6 max-w-md w-full mx-4" onClick={(e) => e.stopPropagation()}>
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="font-semibold text-foreground">Fonte do horário</h2>
+          <button onClick={onClose} className="rounded-full p-1 hover:bg-muted transition-colors">
+            <X className="h-4 w-4" />
           </button>
         </div>
-        
-        {/* Conteúdo (Imagem ou Iframe) */}
-        <div className="p-2 md:p-4 flex-1 overflow-auto">
-          {isImage ? (
-            <img src={url} alt="Fonte do horário" className="w-full h-auto object-contain max-h-[75vh]" />
-          ) : (
-            <iframe src={url} title="Fonte do Horário" className="w-full h-[75vh] border-0" />
-          )}
-        </div>
-        
-        {/* Rodapé do Modal */}
-        <div className="p-2 text-center text-xs text-muted-foreground border-t">
-          <a href={url} target="_blank" rel="noopener noreferrer" className="hover:underline">
-            Abrir fonte original em nova aba
-          </a>
+        <p className="text-sm text-muted-foreground mb-3">Os dados foram extraídos de:</p>
+        <a
+          href={url}
+          target="_blank"
+          rel="noreferrer"
+          className="text-sm text-primary underline break-all hover:opacity-80"
+        >
+          {url}
+        </a>
+        <div className="mt-4 flex justify-end">
+          <button
+            onClick={onClose}
+            className="rounded-lg border px-4 py-2 text-sm font-medium hover:bg-muted transition-colors"
+          >
+            Fechar
+          </button>
         </div>
       </div>
     </div>

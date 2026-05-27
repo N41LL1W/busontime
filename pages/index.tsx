@@ -1,116 +1,105 @@
 import React from "react";
-import Head from 'next/head';
+import Head from "next/head";
 import { GetStaticProps } from "next";
-
-import BusScheduleFilter from "../components/BusScheduleFilter";
 import prisma from "../lib/prisma";
-import type { Horario as PrismaHorario } from "@prisma/client";
+import BusScheduleFilter from "../components/BusScheduleFilter";
 
-// 1. TIPO CUSTOMIZADO: Estende o tipo do Prisma com o nosso campo virtual `sourceUrl`
-export type HorarioComFonte = PrismaHorario & { sourceUrl: string };
+// ── Tipos ────────────────────────────────────────────────────────────────
+export type HorarioFlat = {
+  id: number;
+  rotaId: number;
+  horario: string;
+  diaDaSemana: string;
+  sentido: string;
+  tipo: string;
+  observacao: string | null;
+  // campos da rota
+  origem: string;
+  destino: string;
+  linha: string | null;
+  tarifaComum: number | null;
+  tarifaEstudante: number | null;
+  // campos da empresa
+  empresaNome: string;
+  sourceUrl: string | null;
+};
 
-// 2. PROPS DA PÁGINA: Define o que a nossa página `HomePage` vai receber
 interface HomePageProps {
-  horarios: HorarioComFonte[];
+  horarios: HorarioFlat[];
   error?: string;
 }
 
-// 3. MAPA DE FONTES: Nossa "única fonte da verdade" para as URLs de origem
-// A CHAVE deve ser "origem-destino" em letras minúsculas.
-const fontesDasRotas: Record<string, string> = {
-  // Rotas da RibeTransporte
-  "ribeirão preto-jardinópolis": "https://www.ribetransporte.com.br/ribeirao-preto-a-jardinopolis/",
-  "jardinópolis-ribeirão preto": "https://www.ribetransporte.com.br/linha-01/",
-  
-  // Rotas do Semiurbano São Bento. A mesma fonte atende ida e volta.
-  "barrinha-sertãozinho": "https://semiurbano.lovable.app/horarios",
-  "sertãozinho-barrinha": "https://semiurbano.lovable.app/horarios",
-  "batatais-altinópolis": "https://semiurbano.lovable.app/horarios",
-  "altinópolis-batatais": "https://semiurbano.lovable.app/horarios",
-  "ribeirão preto-brodowski": "https://semiurbano.lovable.app/horarios",
-  "brodowski-ribeirão preto": "https://semiurbano.lovable.app/horarios",
-  "brodowski-batatais": "https://semiurbano.lovable.app/horarios",
-  "batatais-brodowski": "https://semiurbano.lovable.app/horarios",
-  "ribeirão preto-sertãozinho": "https://semiurbano.lovable.app/horarios",
-  "sertãozinho-ribeirão preto": "https://semiurbano.lovable.app/horarios",
-  "ribeirão preto-serrana": "https://semiurbano.lovable.app/horarios",
-  "serrana-ribeirão preto": "https://semiurbano.lovable.app/horarios",
-  "ribeirão preto-serra azul": "https://semiurbano.lovable.app/horarios",
-  "serra azul-ribeirão preto": "https://semiurbano.lovable.app/horarios",
-  "ribeirão preto-batatais": "https://semiurbano.lovable.app/horarios",
-  "batatais-ribeirão preto": "https://semiurbano.lovable.app/horarios",
-  "ribeirão preto-barrinha": "https://semiurbano.lovable.app/horarios",
-  "barrinha-ribeirão preto": "https://semiurbano.lovable.app/horarios",
-  "ribeirão preto-altinópolis": "https://semiurbano.lovable.app/horarios",
-  "altinópolis-ribeirão preto": "https://semiurbano.lovable.app/horarios",
-  "miguelópolis-ituverava": "https://semiurbano.lovable.app/horarios",
-  "ituverava-miguelópolis": "https://semiurbano.lovable.app/horarios",
-  "são benedito da cachoeirinha-ituverava": "https://semiurbano.lovable.app/horarios",
-  "ituverava-são benedito da cachoeirinha": "https://semiurbano.lovable.app/horarios",
-  "miguelópolis-barretos": "https://semiurbano.lovable.app/horarios",
-  "barretos-miguelópolis": "https://semiurbano.lovable.app/horarios",
-};
-
-// 4. GETSTATICPROPS: Busca os dados no servidor no momento do build
+// ── getStaticProps ────────────────────────────────────────────────────────
 export const getStaticProps: GetStaticProps<HomePageProps> = async () => {
   try {
-    const horariosDoBanco = await prisma.horario.findMany({
-      orderBy: { horario: 'asc' },
-    });
-
-    // Injeta a URL da fonte em cada objeto de horário
-    const horariosComFonteInjetada = horariosDoBanco.map(horario => {
-      const chaveDaRota = `${horario.origem.toLowerCase()}-${horario.destino.toLowerCase()}`;
-      const sourceUrl = fontesDasRotas[chaveDaRota] || ""; // Pega a URL do mapa
-      return { ...horario, sourceUrl };
-    });
-
-    // Retorna os dados como props para o componente da página
-    return {
-      props: {
-        horarios: horariosComFonteInjetada,
+    const rotas = await prisma.rota.findMany({
+      where: { ativo: true },
+      include: {
+        empresa: { select: { nome: true, sourceUrl: true } },
+        horarios: {
+          where: { ativo: true },
+          orderBy: { horario: 'asc' },
+        },
       },
-      //revalidate: 3600, // Revalida (tenta recriar a página) a cada 1 hora
-    };
+    });
+
+    // Achata rota + horários num array flat para o filtro
+    const horarios: HorarioFlat[] = rotas.flatMap((rota) =>
+      rota.horarios.map((h) => ({
+        id: h.id,
+        rotaId: rota.id,
+        horario: h.horario,
+        diaDaSemana: h.diaDaSemana,
+        sentido: h.sentido,
+        tipo: h.tipo,
+        observacao: h.observacao,
+        origem: rota.origem,
+        destino: rota.destino,
+        linha: rota.linha,
+        tarifaComum: rota.tarifaComum,
+        tarifaEstudante: rota.tarifaEstudante,
+        empresaNome: rota.empresa.nome,
+        sourceUrl: rota.empresa.sourceUrl,
+      }))
+    );
+
+    return { props: { horarios } };
   } catch (error) {
     console.error("Erro em getStaticProps:", error);
-    // Em caso de erro, retorna um array vazio e uma mensagem de erro
-    return { 
-      props: { 
-        horarios: [], 
-        error: "Não foi possível carregar os dados do servidor. Tente novamente mais tarde." 
-      }, 
-      //revalidate: 60 // Tenta de novo em 1 minuto
+    return {
+      props: {
+        horarios: [],
+        error: "Não foi possível carregar os dados. Tente novamente mais tarde.",
+      },
     };
   }
 };
 
-// 5. COMPONENTE DA PÁGINA: O conteúdo da aba "Horários"
+// ── Página ────────────────────────────────────────────────────────────────
 export default function HomePage({ horarios, error }: HomePageProps) {
-  // Se getStaticProps retornou um erro, exibe uma mensagem
   if (error) {
     return (
-      <div className="p-4 text-center">
-        <h2 className="text-lg font-semibold text-destructive">Oops! Algo deu errado.</h2>
-        <p className="text-muted-foreground">{error}</p>
+      <div className="p-8 text-center">
+        <h2 className="text-lg font-semibold text-destructive">Algo deu errado.</h2>
+        <p className="text-muted-foreground mt-1">{error}</p>
       </div>
     );
   }
 
-  // Se tudo deu certo, renderiza a página
   return (
     <>
       <Head>
-        <title>BusOnTime - Horários de Ônibus</title>
+        <title>BusOnTime — Horários de Ônibus</title>
         <meta name="description" content="Encontre os horários de ônibus da sua região de forma fácil e rápida." />
       </Head>
       <div className="flex flex-col items-center w-full p-4 md:p-6 pb-24">
         <div className="w-full max-w-5xl">
           <div className="mb-6 text-center md:text-left">
             <h2 className="text-xl font-semibold text-foreground">Encontre seu próximo ônibus</h2>
-            <p className="text-sm text-muted-foreground">Selecione a data, hora, origem e destino para ver os horários disponíveis.</p>
+            <p className="text-sm text-muted-foreground">
+              Selecione a data, hora, origem e destino para ver os horários disponíveis.
+            </p>
           </div>
-
           <BusScheduleFilter schedules={horarios} />
         </div>
       </div>

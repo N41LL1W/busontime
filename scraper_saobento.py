@@ -3,8 +3,8 @@
 scraper_saobento.py - Coloque na raiz: busontime/scraper_saobento.py
 
 Uso:
-  .venv\Scripts\python.exe scraper_saobento.py
-  .venv\Scripts\python.exe scraper_saobento.py --origem "Brodowski" --destino "Ribeirão Preto"
+  .venv\Scripts\\python.exe scraper_saobento.py
+  .venv\Scripts\\python.exe scraper_saobento.py --origem "Brodowski" --destino "Ribeirão Preto"
 
 Salva em: public/horarios-saobento.json
 """
