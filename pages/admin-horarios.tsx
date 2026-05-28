@@ -30,6 +30,7 @@ type DadosScraper = {
 type LogEntry = {
   origem: string;
   destino: string;
+  empresa: string;
   status: "sucesso" | "erro" | "vazio";
   total: number;
   erro?: string;
@@ -40,20 +41,19 @@ type Props = { rotas: RotasJson };
 
 const ORDEM_DIAS = ["Segunda a Sexta", "Sábado", "Domingo e Feriados"];
 
-// ── getServerSideProps ────────────────────────────────────────────────────
 export const getServerSideProps: GetServerSideProps<Props> = async () => {
   const jsonPath = path.join(process.cwd(), "public", "rotas-saobento.json");
   const raw = fs.readFileSync(jsonPath, "utf-8");
   return { props: { rotas: JSON.parse(raw) } };
 };
 
-// ── Componente principal ──────────────────────────────────────────────────
 export default function AdminHorarios({ rotas }: Props) {
   const [origem, setOrigem] = useState("");
   const [destino, setDestino] = useState("");
   const [dados, setDados] = useState<DadosScraper | null>(null);
   const [diaAtivo, setDiaAtivo] = useState("");
   const [loading, setLoading] = useState(false);
+  const [loadingRibe, setLoadingRibe] = useState(false);
   const [salvando, setSalvando] = useState(false);
   const [erro, setErro] = useState<string | null>(null);
   const [logs, setLogs] = useState<LogEntry[]>([]);
@@ -68,14 +68,13 @@ export default function AdminHorarios({ rotas }: Props) {
     setErro(null);
   }
 
-  // ── Buscar horários via scraper Python (API route) ────────────────────
+  // ── São Bento: buscar rota específica ────────────────────────────────
   async function buscarHorarios() {
     if (!origem || !destino) return;
     setLoading(true);
     setErro(null);
     setDados(null);
     setMsgSalvo(null);
-
     try {
       const res = await fetch("/api/admin/scrape-saobento", {
         method: "POST",
@@ -93,13 +92,12 @@ export default function AdminHorarios({ rotas }: Props) {
     }
   }
 
-  // ── Salvar no banco ───────────────────────────────────────────────────
+  // ── São Bento: salvar no banco ───────────────────────────────────────
   async function salvarNoBanco() {
     if (!dados) return;
     setSalvando(true);
     setMsgSalvo(null);
     setErro(null);
-
     try {
       const res = await fetch("/api/admin/salvar-horarios", {
         method: "POST",
@@ -109,42 +107,26 @@ export default function AdminHorarios({ rotas }: Props) {
       const json = await res.json();
       if (!res.ok) throw new Error(json.error || "Erro ao salvar");
       setMsgSalvo(`✅ ${json.message}`);
-      setLogs((prev) => [
-        {
-          origem,
-          destino,
-          status: "sucesso",
-          total: json.total,
-          executadoEm: new Date().toISOString(),
-        },
-        ...prev,
-      ]);
+      addLog(origem, destino, "São Bento", "sucesso", json.total);
     } catch (e: unknown) {
       const msg = e instanceof Error ? e.message : "Erro desconhecido";
       setErro(msg);
-      setLogs((prev) => [
-        { origem, destino, status: "erro", total: 0, erro: msg, executadoEm: new Date().toISOString() },
-        ...prev,
-      ]);
+      addLog(origem, destino, "São Bento", "erro", 0, msg);
     } finally {
       setSalvando(false);
     }
   }
 
-  // ── Buscar todas as rotas em sequência ────────────────────────────────
+  // ── São Bento: buscar e salvar TODAS ────────────────────────────────
   async function buscarTodas() {
-    const todasCombinacoes: Array<{ origem: string; destino: string }> = [];
+    const combos: Array<{ origem: string; destino: string }> = [];
     for (const [org, dests] of Object.entries(rotas.mapa)) {
-      for (const dest of dests) {
-        todasCombinacoes.push({ origem: org, destino: dest });
-      }
+      for (const dest of dests) combos.push({ origem: org, destino: dest });
     }
-
     setErro(null);
     setMsgSalvo(null);
-
-    for (const combo of todasCombinacoes) {
-      setLoading(true);
+    setLoading(true);
+    for (const combo of combos) {
       try {
         const res = await fetch("/api/admin/scrape-e-salvar", {
           method: "POST",
@@ -152,33 +134,42 @@ export default function AdminHorarios({ rotas }: Props) {
           body: JSON.stringify(combo),
         });
         const json = await res.json();
-        setLogs((prev) => [
-          {
-            ...combo,
-            status: res.ok ? "sucesso" : "erro",
-            total: json.total ?? 0,
-            erro: json.error,
-            executadoEm: new Date().toISOString(),
-          },
-          ...prev,
-        ]);
+        addLog(combo.origem, combo.destino, "São Bento", res.ok ? "sucesso" : "erro", json.total ?? 0, json.error);
       } catch (e: unknown) {
-        setLogs((prev) => [
-          {
-            ...combo,
-            status: "erro",
-            total: 0,
-            erro: e instanceof Error ? e.message : "Erro",
-            executadoEm: new Date().toISOString(),
-          },
-          ...prev,
-        ]);
+        addLog(combo.origem, combo.destino, "São Bento", "erro", 0, e instanceof Error ? e.message : "Erro");
       }
-      // Pausa entre requisições para não sobrecarregar
       await new Promise((r) => setTimeout(r, 2000));
     }
     setLoading(false);
-    setMsgSalvo("✅ Todas as rotas processadas!");
+    setMsgSalvo("✅ Todas as rotas São Bento processadas!");
+  }
+
+  // ── Ribe: buscar e salvar ────────────────────────────────────────────
+  async function buscarRibe() {
+    setLoadingRibe(true);
+    setErro(null);
+    setMsgSalvo(null);
+    try {
+      const res = await fetch("/api/admin/scrape-ribe", { method: "POST" });
+      const json = await res.json();
+      if (!res.ok) throw new Error(json.error || "Erro ao buscar Ribe");
+      setMsgSalvo(`✅ ${json.message}`);
+      addLog("Ribeirão Preto / Jardinópolis", "↔", "Ribe", "sucesso", json.total ?? 0);
+    } catch (e: unknown) {
+      const msg = e instanceof Error ? e.message : "Erro desconhecido";
+      setErro(msg);
+      addLog("Ribe", "↔", "Ribe", "erro", 0, msg);
+    } finally {
+      setLoadingRibe(false);
+    }
+  }
+
+  // ── Helper log ───────────────────────────────────────────────────────
+  function addLog(origem: string, destino: string, empresa: string, status: LogEntry["status"], total: number, erro?: string) {
+    setLogs((prev) => [
+      { origem, destino, empresa, status, total, erro, executadoEm: new Date().toISOString() },
+      ...prev,
+    ]);
   }
 
   const dias = dados
@@ -202,15 +193,44 @@ export default function AdminHorarios({ rotas }: Props) {
           <p className="text-xs font-semibold uppercase tracking-widest text-cyan-400">
             Admin · Uso exclusivo local
           </p>
-          <h1 className="mt-1 text-2xl font-bold">🚌 Gerenciar horários — São Bento</h1>
+          <h1 className="mt-1 text-2xl font-bold">🚌 Gerenciar horários</h1>
           <p className="mt-1 text-sm text-gray-400">
-            Busca no semiurbano.lovable.app e salva no banco PostgreSQL (Neon)
+            Busca nos sites e salva no banco PostgreSQL (Neon)
           </p>
         </div>
 
-        {/* Seletores + ações */}
+        {/* ── Seção Ribe ── */}
         <div className="rounded-2xl border border-gray-800 bg-gray-900 p-6 space-y-4">
-          <p className="text-sm font-semibold text-gray-300">Selecione a rota</p>
+          <div>
+            <p className="text-sm font-semibold text-cyan-300">🚍 Ribe Transporte</p>
+            <p className="text-xs text-gray-400 mt-0.5">
+              Ribeirão Preto ↔ Jardinópolis · 2 sentidos · HTML estático
+            </p>
+          </div>
+          <div className="flex flex-wrap gap-3">
+            <button
+              onClick={buscarRibe}
+              disabled={loadingRibe || loading}
+              className="rounded-xl bg-emerald-500 px-5 py-2.5 text-sm font-bold text-gray-950 hover:bg-emerald-400 disabled:opacity-50 flex items-center gap-2"
+            >
+              {loadingRibe ? <Spinner /> : "🔄"} Buscar e salvar Ribe
+            </button>
+            <div className="flex items-center gap-2 text-xs text-gray-500">
+              <span>ribetransporte.com.br/ribeirao-preto-a-jardinopolis</span>
+              <span>·</span>
+              <span>ribetransporte.com.br/linha-01</span>
+            </div>
+          </div>
+        </div>
+
+        {/* ── Seção São Bento ── */}
+        <div className="rounded-2xl border border-gray-800 bg-gray-900 p-6 space-y-4">
+          <div>
+            <p className="text-sm font-semibold text-cyan-300">🚌 Viação São Bento</p>
+            <p className="text-xs text-gray-400 mt-0.5">
+              {Object.keys(rotas.mapa).length} origens · {Object.values(rotas.mapa).reduce((a, b) => a + b.length, 0)} combinações · Puppeteer
+            </p>
+          </div>
 
           <div className="flex flex-col gap-3 sm:flex-row sm:items-end">
             <div className="flex-1">
@@ -226,15 +246,11 @@ export default function AdminHorarios({ rotas }: Props) {
                 ))}
               </select>
             </div>
-
             <button
               onClick={() => { setOrigem(destino); setDestino(origem); setDados(null); }}
               disabled={!origem || !destino}
               className="shrink-0 self-center rounded-full border border-gray-700 p-2.5 text-cyan-400 hover:border-cyan-500 disabled:opacity-30"
-            >
-              ⇄
-            </button>
-
+            >⇄</button>
             <div className="flex-1">
               <label className="mb-1 block text-xs text-gray-400">📍 Destino</label>
               <select
@@ -251,8 +267,7 @@ export default function AdminHorarios({ rotas }: Props) {
             </div>
           </div>
 
-          {/* Botões de ação */}
-          <div className="flex flex-wrap gap-3 pt-2">
+          <div className="flex flex-wrap gap-3 pt-1">
             <button
               onClick={buscarHorarios}
               disabled={!origem || !destino || loading}
@@ -273,10 +288,10 @@ export default function AdminHorarios({ rotas }: Props) {
 
             <button
               onClick={buscarTodas}
-              disabled={loading}
+              disabled={loading || loadingRibe}
               className="rounded-xl border border-gray-700 px-5 py-2.5 text-sm font-medium text-gray-300 hover:border-gray-500 disabled:opacity-50 flex items-center gap-2 ml-auto"
             >
-              {loading ? <Spinner /> : "⚡"} Buscar e salvar TODAS as rotas
+              {loading ? <Spinner /> : "⚡"} Buscar e salvar TODAS
             </button>
           </div>
 
@@ -301,7 +316,7 @@ export default function AdminHorarios({ rotas }: Props) {
                 <p className="text-sm text-gray-400">{origem} ↔ {destino}</p>
               </div>
               <div className="flex flex-wrap gap-2">
-                {dados.tarifas.map((t) => (
+                {dados.tarifas?.map((t) => (
                   <span key={t.tipo} className="rounded-full bg-cyan-400/10 px-3 py-1 text-sm text-cyan-200">
                     🎫 {t.tipo} <strong>{t.valor}</strong>
                   </span>
@@ -309,7 +324,6 @@ export default function AdminHorarios({ rotas }: Props) {
               </div>
             </div>
 
-            {/* Tabs de dia */}
             <div className="flex border-b border-gray-800">
               {dias.map((dia) => (
                 <button
@@ -326,14 +340,11 @@ export default function AdminHorarios({ rotas }: Props) {
               ))}
             </div>
 
-            {/* Tabela */}
             <div className="divide-y divide-gray-800">
               {sentidosFiltrados.map((sentido, si) => (
                 <div key={si} className="px-6 py-4">
                   <div className="mb-3 flex items-center gap-3">
-                    <h3 className="font-medium text-gray-200">
-                      {sentido.origem} → {sentido.destino}
-                    </h3>
+                    <h3 className="font-medium text-gray-200">{sentido.origem} → {sentido.destino}</h3>
                     <span className="rounded-full bg-gray-800 px-2.5 py-0.5 text-xs text-gray-400">
                       {sentido.horarios.length} horários
                     </span>
@@ -354,7 +365,7 @@ export default function AdminHorarios({ rotas }: Props) {
                             <td className="px-4 py-2 font-mono text-lg font-bold text-gray-100">{h.horario}</td>
                             <td className="px-4 py-2">
                               {h.tipo === "intermediario" ? (
-                                <span className="rounded-full bg-amber-400/10 px-2.5 py-0.5 text-xs text-amber-300">🟡 Ponto intermediário</span>
+                                <span className="rounded-full bg-amber-400/10 px-2.5 py-0.5 text-xs text-amber-300">🟡 Ponto</span>
                               ) : (
                                 <span className="rounded-full bg-cyan-400/10 px-2.5 py-0.5 text-xs text-cyan-300">🔵 Rodoviária</span>
                               )}
@@ -362,15 +373,6 @@ export default function AdminHorarios({ rotas }: Props) {
                           </tr>
                         ))}
                       </tbody>
-                      <tfoot>
-                        <tr className="border-t border-gray-800 bg-gray-800/30">
-                          <td colSpan={3} className="px-4 py-2 text-xs text-gray-600">
-                            🔵 Rodoviária: {sentido.horarios.filter(h => h.tipo === "rodoviaria").length}
-                            {" · "}
-                            🟡 Intermediário: {sentido.horarios.filter(h => h.tipo === "intermediario").length}
-                          </td>
-                        </tr>
-                      </tfoot>
                     </table>
                   </div>
                 </div>
@@ -379,20 +381,24 @@ export default function AdminHorarios({ rotas }: Props) {
           </div>
         )}
 
-        {/* Log de operações */}
+        {/* Log */}
         {logs.length > 0 && (
           <div className="rounded-2xl border border-gray-800 bg-gray-900 overflow-hidden">
-            <div className="border-b border-gray-800 px-6 py-4">
+            <div className="border-b border-gray-800 px-6 py-4 flex items-center justify-between">
               <h2 className="font-bold text-gray-200">📋 Log de operações</h2>
+              <button onClick={() => setLogs([])} className="text-xs text-gray-600 hover:text-gray-400">
+                Limpar
+              </button>
             </div>
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b border-gray-800 text-xs text-gray-500">
                     <th className="px-4 py-3 text-left">Rota</th>
+                    <th className="px-4 py-3 text-left">Empresa</th>
                     <th className="px-4 py-3 text-left">Status</th>
                     <th className="px-4 py-3 text-left">Horários</th>
-                    <th className="px-4 py-3 text-left">Horário</th>
+                    <th className="px-4 py-3 text-left">Hora</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-800">
@@ -401,6 +407,7 @@ export default function AdminHorarios({ rotas }: Props) {
                       <td className="px-4 py-2.5 text-gray-300 whitespace-nowrap">
                         {log.origem} → {log.destino}
                       </td>
+                      <td className="px-4 py-2.5 text-xs text-gray-500">{log.empresa}</td>
                       <td className="px-4 py-2.5">
                         {log.status === "sucesso" ? (
                           <span className="rounded-full bg-green-400/10 px-2.5 py-0.5 text-xs text-green-400">✅ Sucesso</span>
