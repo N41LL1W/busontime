@@ -98,4 +98,4 @@ Este projeto está sob a licença MIT. Veja o arquivo `LICENSE` para mais detalh
 
 **Willian (N41LL1W)**
 
-[GitHub](https://github.com/N41LL1W) • [LinkedIn](https://www.linkedin.com/in/seu-usuario-aqui/)
+[GitHub](https://github.com/N41LL1W) • [LinkedIn](https://www.linkedin.com/in/seu-usuario-aqui/) 
