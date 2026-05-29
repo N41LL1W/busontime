@@ -2,7 +2,6 @@
 
 import React, { useMemo, useState, useEffect, useCallback } from "react";
 import { format, isBefore, startOfToday, differenceInMinutes } from "date-fns";
-import { ptBR } from "date-fns/locale";
 import { CalendarIcon, ClockIcon, FilterX, LinkIcon, ArrowLeftRight, Clock } from "lucide-react";
 
 import { Calendar } from "@/components/ui/calendar";
@@ -177,7 +176,7 @@ const BusScheduleFilter: React.FC<BusScheduleFilterProps> = ({ schedules, rotasM
                 <PopoverTrigger asChild>
                   <Button variant="outline" className="flex-1 justify-start text-left font-normal">
                     <CalendarIcon className="mr-2 h-4 w-4" />
-                    {isHydrated ? format(selectedDate, "EEE, dd/MM", { locale: ptBR }) : "—"}
+                    {isHydrated ? format(selectedDate, "EEE, dd/MM") : "—"}
                   </Button>
                 </PopoverTrigger>
                 <PopoverContent className="w-auto p-0">
@@ -186,7 +185,6 @@ const BusScheduleFilter: React.FC<BusScheduleFilterProps> = ({ schedules, rotasM
                     selected={selectedDate}
                     onSelect={(d) => d && setSelectedDate(d)}
                     disabled={(date) => isBefore(date, startOfToday())}
-                    locale={ptBR}
                   />
                 </PopoverContent>
               </Popover>
