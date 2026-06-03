@@ -30,14 +30,14 @@ interface HomePageProps {
 }
 
 export const getStaticProps: GetStaticProps<HomePageProps> = async () => {
-  // Mapa de rotas do JSON estático
   let rotasMapa: Record<string, string[]> = {};
+
   try {
     const jsonPath = path.join(process.cwd(), "public", "rotas-saobento.json");
     const raw = fs.readFileSync(jsonPath, "utf-8");
     rotasMapa = JSON.parse(raw).mapa ?? {};
   } catch {
-    // se não existir, ignora
+    // ignora se nao existir
   }
 
   try {
@@ -51,6 +51,21 @@ export const getStaticProps: GetStaticProps<HomePageProps> = async () => {
         },
       },
     });
+
+    // Enriquece o mapa com TODAS as rotas do banco (inclui Ribe, futuras empresas, etc)
+    for (const rota of rotas) {
+      if (!rotasMapa[rota.origem]) {
+        rotasMapa[rota.origem] = [];
+      }
+      if (!rotasMapa[rota.origem].includes(rota.destino)) {
+        rotasMapa[rota.origem].push(rota.destino);
+      }
+    }
+
+    // Ordena os destinos de cada origem
+    for (const origem of Object.keys(rotasMapa)) {
+      rotasMapa[origem].sort();
+    }
 
     const horarios: HorarioFlat[] = rotas.flatMap((rota) =>
       rota.horarios.map((h) => ({
@@ -78,7 +93,7 @@ export const getStaticProps: GetStaticProps<HomePageProps> = async () => {
       props: {
         horarios: [],
         rotasMapa,
-        error: "Não foi possível carregar os dados. Tente novamente mais tarde.",
+        error: "Nao foi possivel carregar os dados. Tente novamente mais tarde.",
       },
     };
   }
@@ -97,15 +112,15 @@ export default function HomePage({ horarios, rotasMapa, error }: HomePageProps) 
   return (
     <>
       <Head>
-        <title>BusOnTime — Horários de Ônibus</title>
-        <meta name="description" content="Encontre os horários de ônibus da sua região de forma fácil e rápida." />
+        <title>BusOnTime - Horarios de Onibus</title>
+        <meta name="description" content="Encontre os horarios de onibus da sua regiao de forma facil e rapida." />
       </Head>
       <div className="flex flex-col items-center w-full p-4 md:p-6 pb-24">
         <div className="w-full max-w-5xl">
           <div className="mb-6 text-center md:text-left">
-            <h2 className="text-xl font-semibold text-foreground">Encontre seu próximo ônibus</h2>
+            <h2 className="text-xl font-semibold text-foreground">Encontre seu proximo onibus</h2>
             <p className="text-sm text-muted-foreground">
-              Selecione a data, hora, origem e destino para ver os horários disponíveis.
+              Selecione a data, hora, origem e destino para ver os horarios disponiveis.
             </p>
           </div>
           <BusScheduleFilter schedules={horarios} rotasMapa={rotasMapa} />
