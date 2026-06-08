@@ -54,6 +54,7 @@ export default function AdminHorarios({ rotas }: Props) {
   const [diaAtivo, setDiaAtivo] = useState("");
   const [loading, setLoading] = useState(false);
   const [loadingRibe, setLoadingRibe] = useState(false);
+  const [loadingRapido, setLoadingRapido] = useState(false);
   const [salvando, setSalvando] = useState(false);
   const [erro, setErro] = useState<string | null>(null);
   const [logs, setLogs] = useState<LogEntry[]>([]);
@@ -164,6 +165,26 @@ export default function AdminHorarios({ rotas }: Props) {
     }
   }
 
+  // ── Rápido d'Oeste: buscar e salvar ────────────────────────────────
+  async function buscarRapido() {
+    setLoadingRapido(true);
+    setErro(null);
+    setMsgSalvo(null);
+    try {
+      const res = await fetch("/api/admin/scrape-rapidodoeste", { method: "POST" });
+      const json = await res.json();
+      if (!res.ok) throw new Error(json.error || "Erro ao buscar Rápido d'Oeste");
+      setMsgSalvo(`✅ ${json.message}${json.erros > 0 ? ` (${json.erros} linhas com erro)` : ""}`);
+      addLog("múltiplas origens", "múltiplos destinos", "Rápido d'Oeste", "sucesso", json.total ?? 0);
+    } catch (e: unknown) {
+      const msg = e instanceof Error ? e.message : "Erro desconhecido";
+      setErro(msg);
+      addLog("Rápido d'Oeste", "múltiplos", "Rápido d'Oeste", "erro", 0, msg);
+    } finally {
+      setLoadingRapido(false);
+    }
+  }
+
   // ── Helper log ───────────────────────────────────────────────────────
   function addLog(origem: string, destino: string, empresa: string, status: LogEntry["status"], total: number, erro?: string) {
     setLogs((prev) => [
@@ -197,6 +218,30 @@ export default function AdminHorarios({ rotas }: Props) {
           <p className="mt-1 text-sm text-gray-400">
             Busca nos sites e salva no banco PostgreSQL (Neon)
           </p>
+        </div>
+
+        {/* ── Seção Rápido d'Oeste ── */}
+        <div className="rounded-2xl border border-gray-800 bg-gray-900 p-6 space-y-4">
+          <div>
+            <p className="text-sm font-semibold text-cyan-300">🚌 Rápido d'Oeste</p>
+            <p className="text-xs text-gray-400 mt-0.5">
+              17 linhas suburbanas · Pontal, Cravinhos, Jaboticabal, São Simão e mais · HTML estático
+            </p>
+          </div>
+          <div className="flex flex-wrap gap-3">
+            <button
+              onClick={buscarRapido}
+              disabled={loadingRapido || loading || loadingRibe}
+              className="rounded-xl bg-violet-500 px-5 py-2.5 text-sm font-bold text-white hover:bg-violet-400 disabled:opacity-50 flex items-center gap-2"
+            >
+              {loadingRapido ? <Spinner /> : "🔄"} Buscar e salvar Rápido d'Oeste
+            </button>
+            <div className="flex items-center gap-2 text-xs text-gray-500">
+              <span>suburbano.rapidodoeste.com.br</span>
+              <span>·</span>
+              <span>17 linhas · ~420 horários</span>
+            </div>
+          </div>
         </div>
 
         {/* ── Seção Ribe ── */}
@@ -288,7 +333,7 @@ export default function AdminHorarios({ rotas }: Props) {
 
             <button
               onClick={buscarTodas}
-              disabled={loading || loadingRibe}
+              disabled={loading || loadingRibe || loadingRapido}
               className="rounded-xl border border-gray-700 px-5 py-2.5 text-sm font-medium text-gray-300 hover:border-gray-500 disabled:opacity-50 flex items-center gap-2 ml-auto"
             >
               {loading ? <Spinner /> : "⚡"} Buscar e salvar TODAS
