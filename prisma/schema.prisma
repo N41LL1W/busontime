@@ -7,62 +7,55 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// Empresa de transporte (São Bento, Ribe, etc)
 model Empresa {
   id        Int      @id @default(autoincrement())
   nome      String   @unique
-  slug      String   @unique  // ex: "saobento", "ribe"
+  slug      String   @unique
   sourceUrl String?
   ativo     Boolean  @default(true)
   criadoEm  DateTime @default(now())
-
   rotas     Rota[]
 }
 
-// Rota entre duas cidades
 model Rota {
-  id           Int      @id @default(autoincrement())
-  empresaId    Int
-  origem       String
-  destino      String
-  linha        String?  // ex: "Ribeirão Preto X Brodowski"
-  tarifaComum  Float?
+  id              Int       @id @default(autoincrement())
+  empresaId       Int
+  origem          String
+  destino         String
+  linha           String?
+  tarifaComum     Float?
   tarifaEstudante Float?
-  ativo        Boolean  @default(true)
-  atualizadoEm DateTime @default(now())
-  criadoEm     DateTime @default(now())
-
-  empresa   Empresa   @relation(fields: [empresaId], references: [id])
-  horarios  Horario[]
+  ativo           Boolean   @default(true)
+  atualizadoEm    DateTime  @default(now())
+  criadoEm        DateTime  @default(now())
+  horarios        Horario[]
+  empresa         Empresa   @relation(fields: [empresaId], references: [id])
 
   @@unique([empresaId, origem, destino])
 }
 
-// Horário individual de uma rota
 model Horario {
   id          Int      @id @default(autoincrement())
-  rotaId      Int
-  horario     String   // ex: "05:00"
-  diaDaSemana String   // "Segunda a Sexta" | "Sábado" | "Domingo e Feriados"
-  sentido     String   // "ida" | "volta"
-  tipo        String   @default("rodoviaria") // "rodoviaria" | "intermediario"
+  diaDaSemana String
+  horario     String
   observacao  String?
   ativo       Boolean  @default(true)
-  criadoEm   DateTime @default(now())
-
-  rota Rota @relation(fields: [rotaId], references: [id], onDelete: Cascade)
+  criadoEm    DateTime @default(now())
+  rotaId      Int
+  sentido     String
+  tipo        String   @default("rodoviaria")
+  rota        Rota     @relation(fields: [rotaId], references: [id], onDelete: Cascade)
 
   @@unique([rotaId, horario, diaDaSemana, sentido])
 }
 
-// Log de cada raspagem executada
 model LogRaspagem {
-  id           Int      @id @default(autoincrement())
-  origem       String
-  destino      String
-  empresaSlug  String
-  status       String   // "sucesso" | "erro" | "vazio"
-  totalHorarios Int     @default(0)
-  erro         String?
-  executadoEm  DateTime @default(now())
+  id            Int      @id @default(autoincrement())
+  origem        String
+  destino       String
+  empresaSlug   String
+  status        String
+  totalHorarios Int      @default(0)
+  erro          String?
+  executadoEm   DateTime @default(now())
 }

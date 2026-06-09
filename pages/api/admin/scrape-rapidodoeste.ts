@@ -2,9 +2,9 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { spawn } from "child_process";
 import path from "path";
 import fs from "fs";
-import { PrismaClient } from "@prisma/client";
+// Removido o PrismaClient local e importado o singleton do seu projeto
+import  prisma  from "@/lib/prisma";
 
-const prisma = new PrismaClient();
 export const config = { api: { responseLimit: false } };
 
 function runPython(): Promise<void> {
@@ -77,13 +77,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     let totalRotas = 0;
     const erros: string[] = [];
 
-    for (const linha of dados.linhas as LinhaItem[]) {
-      if (linha.erro) {
-        erros.push(`${linha.codigo}: ${linha.erro}`);
+    for (const clientLinha of dados.linhas as LinhaItem[]) {
+      if (clientLinha.erro) {
+        erros.push(`${clientLinha.codigo}: ${clientLinha.erro}`);
         continue;
       }
 
-      for (const rota of linha.rotas) {
+      for (const rota of clientLinha.rotas) {
         if (!rota.horarios?.length) continue;
 
         try {
@@ -96,16 +96,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
               },
             },
             update: {
-              linha: linha.nome,
-              tarifaComum: rota.tarifa ?? linha.tarifa,
+              linha: clientLinha.nome,
+              tarifaComum: rota.tarifa ?? clientLinha.tarifa,
               atualizadoEm: new Date(),
             },
             create: {
               empresaId: emp.id,
               origem: rota.origem,
               destino: rota.destino,
-              linha: linha.nome,
-              tarifaComum: rota.tarifa ?? linha.tarifa,
+              linha: clientLinha.nome,
+              tarifaComum: rota.tarifa ?? clientLinha.tarifa,
             },
           });
 
@@ -131,7 +131,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           }
         } catch (err) {
           const msg = err instanceof Error ? err.message : String(err);
-          erros.push(`${linha.codigo} ${rota.origem}→${rota.destino}: ${msg}`);
+          erros.push(`${clientLinha.codigo} ${rota.origem}→${rota.destino}: ${msg}`);
         }
       }
     }
@@ -141,7 +141,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         origem: "múltiplas",
         destino: "múltiplas",
         empresaSlug: "rapidodoeste",
-        status: erros.length === 0 ? "sucesso" : "sucesso",
+        status: "sucesso",
         totalHorarios,
         erro: erros.length > 0 ? erros.slice(0, 5).join("; ") : null,
       },
@@ -157,7 +157,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const msg = err instanceof Error ? err.message : String(err);
     console.error("[scrape-rapidodoeste] erro:", msg);
     return res.status(500).json({ error: msg });
-  } finally {
+  }finally {
     await prisma.$disconnect();
   }
 }
