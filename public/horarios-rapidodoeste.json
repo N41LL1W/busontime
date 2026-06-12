@@ -11,7 +11,6 @@
         {
           "origem": "Pontal",
           "destino": "Ribeirão Preto",
-          "sentido": "ida",
           "tarifa": 8.95,
           "horarios": [
             {
@@ -418,7 +417,6 @@
         {
           "origem": "Ribeirão Preto",
           "destino": "Pontal",
-          "sentido": "ida",
           "tarifa": 8.95,
           "horarios": []
         }
@@ -432,7 +430,6 @@
         {
           "origem": "Cruz das Posses",
           "destino": "Ribeirão Preto",
-          "sentido": "ida",
           "tarifa": 7.25,
           "horarios": [
             {
@@ -545,7 +542,6 @@
         {
           "origem": "Ribeirão Preto",
           "destino": "Cruz das Posses",
-          "sentido": "ida",
           "tarifa": 7.25,
           "horarios": []
         }
@@ -559,7 +555,6 @@
         {
           "origem": "Viradouro",
           "destino": "Ribeirão Preto",
-          "sentido": "ida",
           "tarifa": null,
           "horarios": [
             {
@@ -679,7 +674,6 @@
         {
           "origem": "Ribeirão Preto",
           "destino": "Viradouro",
-          "sentido": "ida",
           "tarifa": null,
           "horarios": [
             {
@@ -806,7 +800,6 @@
         {
           "origem": "Terra Roxa",
           "destino": "Bebedouro",
-          "sentido": "ida",
           "tarifa": 10.25,
           "horarios": [
             {
@@ -912,7 +905,6 @@
         {
           "origem": "Bebedouro",
           "destino": "Terra Roxa",
-          "sentido": "ida",
           "tarifa": 10.25,
           "horarios": []
         }
@@ -926,7 +918,6 @@
         {
           "origem": "Cândia",
           "destino": "Pontal",
-          "sentido": "ida",
           "tarifa": 7.35,
           "horarios": [
             {
@@ -976,7 +967,6 @@
         {
           "origem": "Pontal",
           "destino": "Cândia",
-          "sentido": "ida",
           "tarifa": 7.35,
           "horarios": []
         }
@@ -990,7 +980,6 @@
         {
           "origem": "Morro Agudo",
           "destino": "Ribeirão Preto",
-          "sentido": "ida",
           "tarifa": 21.4,
           "horarios": [
             {
@@ -1054,7 +1043,6 @@
         {
           "origem": "Ribeirão Preto",
           "destino": "Morro Agudo",
-          "sentido": "ida",
           "tarifa": 21.4,
           "horarios": [
             {
@@ -1118,27 +1106,6 @@
       ]
     },
     {
-      "codigo": "6309",
-      "nome": "6309 Santa Rosa de Viterbo x Ribeirão Preto",
-      "tarifa": null,
-      "rotas": [
-        {
-          "origem": "Santa Rosa de Viterbo",
-          "destino": "Ribeirão Preto",
-          "sentido": "ida",
-          "tarifa": null,
-          "horarios": []
-        },
-        {
-          "origem": "Ribeirão Preto",
-          "destino": "Santa Rosa de Viterbo",
-          "sentido": "ida",
-          "tarifa": null,
-          "horarios": []
-        }
-      ]
-    },
-    {
       "codigo": "6310",
       "nome": "6310 Rincão x Ribeirão Preto",
       "tarifa": null,
@@ -1146,7 +1113,6 @@
         {
           "origem": "Rincão",
           "destino": "Ribeirão Preto",
-          "sentido": "ida",
           "tarifa": null,
           "horarios": [
             {
@@ -1196,7 +1162,6 @@
         {
           "origem": "Ribeirão Preto",
           "destino": "Rincão",
-          "sentido": "ida",
           "tarifa": null,
           "horarios": [
             {
@@ -1253,7 +1218,6 @@
         {
           "origem": "Taquaritinga",
           "destino": "Ribeirão Preto",
-          "sentido": "ida",
           "tarifa": null,
           "horarios": [
             {
@@ -1401,7 +1365,6 @@
         {
           "origem": "Ribeirão Preto",
           "destino": "Taquaritinga",
-          "sentido": "ida",
           "tarifa": null,
           "horarios": [
             {
@@ -1556,7 +1519,6 @@
         {
           "origem": "Jaboticabal",
           "destino": "Ribeirão Preto",
-          "sentido": "ida",
           "tarifa": null,
           "horarios": [
             {
@@ -1620,7 +1582,6 @@
         {
           "origem": "Ribeirão Preto",
           "destino": "Jaboticabal",
-          "sentido": "ida",
           "tarifa": null,
           "horarios": []
         }
@@ -1634,7 +1595,6 @@
         {
           "origem": "Luiz Antônio",
           "destino": "Ribeirão Preto",
-          "sentido": "ida",
           "tarifa": 16.75,
           "horarios": [
             {
@@ -1859,7 +1819,6 @@
         {
           "origem": "Ribeirão Preto",
           "destino": "Luiz Antônio",
-          "sentido": "ida",
           "tarifa": 16.75,
           "horarios": []
         }
@@ -1873,7 +1832,6 @@
         {
           "origem": "Jaborandi",
           "destino": "Barretos",
-          "sentido": "ida",
           "tarifa": null,
           "horarios": [
             {
@@ -1937,7 +1895,6 @@
         {
           "origem": "Barretos",
           "destino": "Jaborandi",
-          "sentido": "ida",
           "tarifa": null,
           "horarios": []
         }
@@ -1951,7 +1908,6 @@
         {
           "origem": "Matão",
           "destino": "Ribeirão Preto",
-          "sentido": "ida",
           "tarifa": null,
           "horarios": [
             {
@@ -2043,7 +1999,6 @@
         {
           "origem": "Ribeirão Preto",
           "destino": "Matão",
-          "sentido": "ida",
           "tarifa": null,
           "horarios": [
             {
@@ -2142,7 +2097,6 @@
         {
           "origem": "São Simão",
           "destino": "Ribeirão Preto",
-          "sentido": "ida",
           "tarifa": 16.55,
           "horarios": [
             {
@@ -2206,7 +2160,6 @@
         {
           "origem": "Ribeirão Preto",
           "destino": "São Simão",
-          "sentido": "ida",
           "tarifa": 16.55,
           "horarios": []
         }
@@ -2220,7 +2173,6 @@
         {
           "origem": "Cravinhos",
           "destino": "Ribeirão Preto",
-          "sentido": "ida",
           "tarifa": 8.25,
           "horarios": [
             {
@@ -2690,7 +2642,6 @@
         {
           "origem": "Ribeirão Preto",
           "destino": "Cravinhos",
-          "sentido": "ida",
           "tarifa": 8.25,
           "horarios": [
             {
@@ -3160,7 +3111,6 @@
         {
           "origem": "Tambaú",
           "destino": "Ribeirão Preto",
-          "sentido": "ida",
           "tarifa": null,
           "horarios": [
             {
@@ -3196,7 +3146,6 @@
         {
           "origem": "Ribeirão Preto",
           "destino": "Tambaú",
-          "sentido": "ida",
           "tarifa": null,
           "horarios": [
             {
@@ -3232,7 +3181,6 @@
         {
           "origem": "Pitangueiras",
           "destino": "Ribeirão Preto",
-          "sentido": "ida",
           "tarifa": null,
           "horarios": [
             {
@@ -3324,12 +3272,2461 @@
         {
           "origem": "Ribeirão Preto",
           "destino": "Pitangueiras",
-          "sentido": "ida",
           "tarifa": null,
           "horarios": []
         }
       ]
+    },
+    {
+      "codigo": "6309",
+      "nome": "6309 Santa Rosa de Viterbo x Ribeirão Preto",
+      "tarifa": null,
+      "rotas": [
+        {
+          "origem": "Santa Rosa de Viterbo",
+          "destino": "Ribeirão Preto",
+          "tarifa": 22.2,
+          "horarios": [
+            {
+              "horario": "04:20",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "05:20",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "05:20",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "05:30",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "06:00",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "06:20",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "06:30",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "07:15",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "08:00",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "08:30",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "09:15",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "11:30",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "12:15",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "12:30",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "14:10",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "16:00",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "17:00",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "19:15",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "20:30",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "06:20",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "08:15",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "10:15",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "11:30",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "13:00",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "14:10",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "14:11",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "15:00",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "16:30",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "16:30",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "17:15",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "17:15",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "18:15",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "18:15",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "18:20",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "19:30",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "20:45",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "22:00",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "22:15",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "04:20",
+              "diaDaSemana": "Sábado",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "06:30",
+              "diaDaSemana": "Sábado",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "07:15",
+              "diaDaSemana": "Sábado",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "08:00",
+              "diaDaSemana": "Sábado",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "08:30",
+              "diaDaSemana": "Sábado",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "09:15",
+              "diaDaSemana": "Sábado",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "11:30",
+              "diaDaSemana": "Sábado",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "12:15",
+              "diaDaSemana": "Sábado",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "12:30",
+              "diaDaSemana": "Sábado",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "14:10",
+              "diaDaSemana": "Sábado",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "16:00",
+              "diaDaSemana": "Sábado",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "17:00",
+              "diaDaSemana": "Sábado",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "19:15",
+              "diaDaSemana": "Sábado",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "20:30",
+              "diaDaSemana": "Sábado",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "06:20",
+              "diaDaSemana": "Sábado",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "08:15",
+              "diaDaSemana": "Sábado",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "10:15",
+              "diaDaSemana": "Sábado",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "11:30",
+              "diaDaSemana": "Sábado",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "13:00",
+              "diaDaSemana": "Sábado",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "14:10",
+              "diaDaSemana": "Sábado",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "15:00",
+              "diaDaSemana": "Sábado",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "17:15",
+              "diaDaSemana": "Sábado",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "17:15",
+              "diaDaSemana": "Sábado",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "18:15",
+              "diaDaSemana": "Sábado",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "18:20",
+              "diaDaSemana": "Sábado",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "19:30",
+              "diaDaSemana": "Sábado",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "20:45",
+              "diaDaSemana": "Sábado",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "22:00",
+              "diaDaSemana": "Sábado",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "22:15",
+              "diaDaSemana": "Sábado",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "05:30",
+              "diaDaSemana": "Domingo e Feriados",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "07:15",
+              "diaDaSemana": "Domingo e Feriados",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "09:15",
+              "diaDaSemana": "Domingo e Feriados",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "12:15",
+              "diaDaSemana": "Domingo e Feriados",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "12:30",
+              "diaDaSemana": "Domingo e Feriados",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "16:00",
+              "diaDaSemana": "Domingo e Feriados",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "18:30",
+              "diaDaSemana": "Domingo e Feriados",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "08:15",
+              "diaDaSemana": "Domingo e Feriados",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "11:30",
+              "diaDaSemana": "Domingo e Feriados",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "15:00",
+              "diaDaSemana": "Domingo e Feriados",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "16:30",
+              "diaDaSemana": "Domingo e Feriados",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "18:15",
+              "diaDaSemana": "Domingo e Feriados",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "20:00",
+              "diaDaSemana": "Domingo e Feriados",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "20:45",
+              "diaDaSemana": "Domingo e Feriados",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            }
+          ]
+        },
+        {
+          "origem": "Ribeirão Preto",
+          "destino": "Santa Rosa de Viterbo",
+          "tarifa": 22.2,
+          "horarios": [
+            {
+              "horario": "06:00",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "07:00",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "06:40",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "07:25",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "07:00",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "07:01",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "07:35",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "08:00",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "07:50",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "08:55",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "10:00",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "10:10",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "10:55",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "13:10",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "14:15",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "14:10",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "15:50",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "17:30",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "17:40",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "18:40",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "20:55",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "21:55",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "07:30",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "08:00",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "09:55",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "11:55",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "13:15",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "14:45",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "15:50",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "16:40",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "18:00",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "18:15",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "18:20",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "18:00",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "19:00",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "19:35",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "20:20",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "21:10",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "22:30",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "00:00",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "23:55",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "06:00",
+              "diaDaSemana": "Sábado",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "07:35",
+              "diaDaSemana": "Sábado",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "08:10",
+              "diaDaSemana": "Sábado",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "09:00",
+              "diaDaSemana": "Sábado",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "10:00",
+              "diaDaSemana": "Sábado",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "10:10",
+              "diaDaSemana": "Sábado",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "10:55",
+              "diaDaSemana": "Sábado",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "13:10",
+              "diaDaSemana": "Sábado",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "14:15",
+              "diaDaSemana": "Sábado",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "14:10",
+              "diaDaSemana": "Sábado",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "15:50",
+              "diaDaSemana": "Sábado",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "17:40",
+              "diaDaSemana": "Sábado",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "18:40",
+              "diaDaSemana": "Sábado",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "20:55",
+              "diaDaSemana": "Sábado",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "21:55",
+              "diaDaSemana": "Sábado",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "08:00",
+              "diaDaSemana": "Sábado",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "10:05",
+              "diaDaSemana": "Sábado",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "11:55",
+              "diaDaSemana": "Sábado",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "13:00",
+              "diaDaSemana": "Sábado",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "14:45",
+              "diaDaSemana": "Sábado",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "15:50",
+              "diaDaSemana": "Sábado",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "16:40",
+              "diaDaSemana": "Sábado",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "19:00",
+              "diaDaSemana": "Sábado",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "19:55",
+              "diaDaSemana": "Sábado",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "20:20",
+              "diaDaSemana": "Sábado",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "21:10",
+              "diaDaSemana": "Sábado",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "22:30",
+              "diaDaSemana": "Sábado",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "00:00",
+              "diaDaSemana": "Sábado",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "23:55",
+              "diaDaSemana": "Sábado",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "07:10",
+              "diaDaSemana": "Domingo e Feriados",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "09:00",
+              "diaDaSemana": "Domingo e Feriados",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "10:55",
+              "diaDaSemana": "Domingo e Feriados",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "14:15",
+              "diaDaSemana": "Domingo e Feriados",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "14:10",
+              "diaDaSemana": "Domingo e Feriados",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "17:40",
+              "diaDaSemana": "Domingo e Feriados",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "20:10",
+              "diaDaSemana": "Domingo e Feriados",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "10:05",
+              "diaDaSemana": "Domingo e Feriados",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "13:00",
+              "diaDaSemana": "Domingo e Feriados",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "16:40",
+              "diaDaSemana": "Domingo e Feriados",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "18:10",
+              "diaDaSemana": "Domingo e Feriados",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "19:55",
+              "diaDaSemana": "Domingo e Feriados",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "22:00",
+              "diaDaSemana": "Domingo e Feriados",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "22:30",
+              "diaDaSemana": "Domingo e Feriados",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            }
+          ]
+        },
+        {
+          "origem": "Cravinhos",
+          "destino": "Ribeirão Preto",
+          "tarifa": 8.25,
+          "horarios": [
+            {
+              "horario": "04:50",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "05:50",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "05:50",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "05:51",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "06:20",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "06:50",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "07:45",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "08:30",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "09:00",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "09:45",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "12:00",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "12:45",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "13:00",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "14:40",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "16:15",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "16:30",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "17:30",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "19:45",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "18:45",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "22:25",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "04:50",
+              "diaDaSemana": "Sábado",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "06:20",
+              "diaDaSemana": "Sábado",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "07:00",
+              "diaDaSemana": "Sábado",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "07:45",
+              "diaDaSemana": "Sábado",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "08:30",
+              "diaDaSemana": "Sábado",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "09:00",
+              "diaDaSemana": "Sábado",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "09:45",
+              "diaDaSemana": "Sábado",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "12:00",
+              "diaDaSemana": "Sábado",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "12:45",
+              "diaDaSemana": "Sábado",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "13:00",
+              "diaDaSemana": "Sábado",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "14:40",
+              "diaDaSemana": "Sábado",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "16:30",
+              "diaDaSemana": "Sábado",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "17:30",
+              "diaDaSemana": "Sábado",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "19:45",
+              "diaDaSemana": "Sábado",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "18:45",
+              "diaDaSemana": "Sábado",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "22:25",
+              "diaDaSemana": "Sábado",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "06:00",
+              "diaDaSemana": "Domingo e Feriados",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "07:45",
+              "diaDaSemana": "Domingo e Feriados",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "09:45",
+              "diaDaSemana": "Domingo e Feriados",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "12:45",
+              "diaDaSemana": "Domingo e Feriados",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "13:00",
+              "diaDaSemana": "Domingo e Feriados",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "16:30",
+              "diaDaSemana": "Domingo e Feriados",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "19:00",
+              "diaDaSemana": "Domingo e Feriados",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "20:25",
+              "diaDaSemana": "Domingo e Feriados",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            }
+          ]
+        },
+        {
+          "origem": "Ribeirão Preto",
+          "destino": "Cravinhos",
+          "tarifa": 8.25,
+          "horarios": [
+            {
+              "horario": "09:35",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "13:50",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "07:35",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "09:30",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "11:30",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "12:45",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "14:15",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "15:25",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "15:26",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "16:15",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "17:45",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "17:50",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "17:50",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "18:30",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "18:30",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "19:30",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "19:50",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "20:45",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "22:00",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "23:30",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "23:30",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "09:35",
+              "diaDaSemana": "Sábado",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "13:50",
+              "diaDaSemana": "Sábado",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "07:35",
+              "diaDaSemana": "Sábado",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "09:30",
+              "diaDaSemana": "Sábado",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "11:30",
+              "diaDaSemana": "Sábado",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "12:35",
+              "diaDaSemana": "Sábado",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "14:15",
+              "diaDaSemana": "Sábado",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "15:25",
+              "diaDaSemana": "Sábado",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "16:15",
+              "diaDaSemana": "Sábado",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "18:30",
+              "diaDaSemana": "Sábado",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "18:30",
+              "diaDaSemana": "Sábado",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "19:30",
+              "diaDaSemana": "Sábado",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "19:50",
+              "diaDaSemana": "Sábado",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "20:45",
+              "diaDaSemana": "Sábado",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "22:00",
+              "diaDaSemana": "Sábado",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "23:30",
+              "diaDaSemana": "Sábado",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "23:30",
+              "diaDaSemana": "Sábado",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "13:50",
+              "diaDaSemana": "Domingo e Feriados",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "09:30",
+              "diaDaSemana": "Domingo e Feriados",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "12:35",
+              "diaDaSemana": "Domingo e Feriados",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "16:15",
+              "diaDaSemana": "Domingo e Feriados",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "17:45",
+              "diaDaSemana": "Domingo e Feriados",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "19:30",
+              "diaDaSemana": "Domingo e Feriados",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "21:30",
+              "diaDaSemana": "Domingo e Feriados",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "22:00",
+              "diaDaSemana": "Domingo e Feriados",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            }
+          ]
+        },
+        {
+          "origem": "São Simão",
+          "destino": "Ribeirão Preto",
+          "tarifa": 16.55,
+          "horarios": [
+            {
+              "horario": "05:00",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "06:00",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "06:30",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "07:00",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "07:55",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "08:40",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "09:10",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "09:55",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "12:10",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "12:55",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "13:10",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "14:50",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "16:25",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "16:40",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "17:40",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "19:55",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "18:55",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "22:35",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "05:00",
+              "diaDaSemana": "Sábado",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "06:30",
+              "diaDaSemana": "Sábado",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "07:10",
+              "diaDaSemana": "Sábado",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "07:55",
+              "diaDaSemana": "Sábado",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "08:40",
+              "diaDaSemana": "Sábado",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "09:10",
+              "diaDaSemana": "Sábado",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "09:55",
+              "diaDaSemana": "Sábado",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "12:10",
+              "diaDaSemana": "Sábado",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "12:55",
+              "diaDaSemana": "Sábado",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "13:10",
+              "diaDaSemana": "Sábado",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "14:50",
+              "diaDaSemana": "Sábado",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "16:40",
+              "diaDaSemana": "Sábado",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "17:40",
+              "diaDaSemana": "Sábado",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "19:55",
+              "diaDaSemana": "Sábado",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "18:55",
+              "diaDaSemana": "Sábado",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "22:35",
+              "diaDaSemana": "Sábado",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "06:10",
+              "diaDaSemana": "Domingo e Feriados",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "07:55",
+              "diaDaSemana": "Domingo e Feriados",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "09:55",
+              "diaDaSemana": "Domingo e Feriados",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "12:55",
+              "diaDaSemana": "Domingo e Feriados",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "13:10",
+              "diaDaSemana": "Domingo e Feriados",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "16:40",
+              "diaDaSemana": "Domingo e Feriados",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "19:10",
+              "diaDaSemana": "Domingo e Feriados",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "20:35",
+              "diaDaSemana": "Domingo e Feriados",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            }
+          ]
+        },
+        {
+          "origem": "Ribeirão Preto",
+          "destino": "São Simão",
+          "tarifa": 16.55,
+          "horarios": [
+            {
+              "horario": "09:25",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "13:40",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "07:25",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "09:20",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "11:20",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "12:35",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "14:05",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "15:15",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "15:16",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "16:05",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "17:35",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "17:40",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "17:40",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "18:20",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "18:20",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "19:20",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "19:40",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "20:35",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "21:50",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "23:20",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "23:20",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "09:25",
+              "diaDaSemana": "Sábado",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "13:40",
+              "diaDaSemana": "Sábado",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "07:25",
+              "diaDaSemana": "Sábado",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "09:20",
+              "diaDaSemana": "Sábado",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "11:20",
+              "diaDaSemana": "Sábado",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "12:25",
+              "diaDaSemana": "Sábado",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "14:05",
+              "diaDaSemana": "Sábado",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "15:15",
+              "diaDaSemana": "Sábado",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "16:05",
+              "diaDaSemana": "Sábado",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "18:20",
+              "diaDaSemana": "Sábado",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "18:20",
+              "diaDaSemana": "Sábado",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "19:20",
+              "diaDaSemana": "Sábado",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "19:40",
+              "diaDaSemana": "Sábado",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "20:35",
+              "diaDaSemana": "Sábado",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "21:50",
+              "diaDaSemana": "Sábado",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "23:20",
+              "diaDaSemana": "Sábado",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "23:20",
+              "diaDaSemana": "Sábado",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "13:40",
+              "diaDaSemana": "Domingo e Feriados",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "09:20",
+              "diaDaSemana": "Domingo e Feriados",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "12:25",
+              "diaDaSemana": "Domingo e Feriados",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "16:05",
+              "diaDaSemana": "Domingo e Feriados",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "17:35",
+              "diaDaSemana": "Domingo e Feriados",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "19:20",
+              "diaDaSemana": "Domingo e Feriados",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "21:20",
+              "diaDaSemana": "Domingo e Feriados",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "21:50",
+              "diaDaSemana": "Domingo e Feriados",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            }
+          ]
+        }
+      ]
     }
   ],
-  "pesquisado_em": "2026-06-09T11:02:18.395217"
+  "pesquisado_em": "2026-06-09T16:00:10.652321"
 }

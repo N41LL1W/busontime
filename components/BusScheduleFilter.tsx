@@ -2,11 +2,9 @@
 
 import React, { useMemo, useState, useEffect, useCallback } from "react";
 import { format, isBefore, startOfToday, differenceInMinutes } from "date-fns";
-import { CalendarIcon, ClockIcon, FilterX, LinkIcon, ArrowLeftRight, Clock } from "lucide-react";
-
+import { CalendarIcon, ClockIcon, FilterX, LinkIcon, ArrowLeftRight, Clock, Bus, MapPin } from "lucide-react";
 import { Calendar } from "@/components/ui/calendar";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -18,7 +16,6 @@ interface BusScheduleFilterProps {
   rotasMapa?: Record<string, string[]>;
 }
 
-// ── Helpers ───────────────────────────────────────────────────────────────
 const getDiaDaSemana = (date: Date): string => {
   const dia = date.getDay();
   if (dia === 0) return "Domingo e Feriados";
@@ -37,17 +34,23 @@ const tempoAte = (horario: string): string => {
   if (alvo <= agora) alvo.setDate(alvo.getDate() + 1);
   const diff = differenceInMinutes(alvo, agora);
   if (diff < 1) return "agora";
-  if (diff < 60) return `em ${diff} min`;
+  if (diff < 60) return `${diff} min`;
   const horas = Math.floor(diff / 60);
   const mins = diff % 60;
-  return mins > 0 ? `em ${horas}h ${mins}min` : `em ${horas}h`;
+  return mins > 0 ? `${horas}h ${mins}min` : `${horas}h`;
 };
 
 const INITIAL_DATE = new Date(2000, 0, 1);
 const INITIAL_TIME = "00:00";
 
-// ── Componente ────────────────────────────────────────────────────────────
-const BusScheduleFilter: React.FC<BusScheduleFilterProps> = ({ schedules, rotasMapa }) => {
+// Badge de empresa com cor por empresa
+const empresaCor: Record<string, string> = {
+  "Viação São Bento": "bg-blue-100 text-blue-800 dark:bg-blue-900/40 dark:text-blue-200",
+  "Ribe Transporte": "bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-200",
+  "Rápido d'Oeste": "bg-violet-100 text-violet-800 dark:bg-violet-900/40 dark:text-violet-200",
+};
+
+export default function BusScheduleFilter({ schedules, rotasMapa }: BusScheduleFilterProps) {
   const [selectedDate, setSelectedDate] = useState<Date>(INITIAL_DATE);
   const [selectedTime, setSelectedTime] = useState(INITIAL_TIME);
   const [origin, setOrigin] = useState("");
@@ -55,10 +58,9 @@ const BusScheduleFilter: React.FC<BusScheduleFilterProps> = ({ schedules, rotasM
   const [currentPage, setCurrentPage] = useState(1);
   const [modalUrl, setModalUrl] = useState<string | null>(null);
   const [isHydrated, setIsHydrated] = useState(false);
-  const [agora, setAgora] = useState<Date>(new Date());
-  const itensPorPagina = 10;
+  const [agora, setAgora] = useState(new Date());
+  const itensPorPagina = 12;
 
-  // Inicializa com hora atual após hidratação
   useEffect(() => {
     const now = new Date();
     setSelectedDate(now);
@@ -66,7 +68,6 @@ const BusScheduleFilter: React.FC<BusScheduleFilterProps> = ({ schedules, rotasM
     setIsHydrated(true);
   }, []);
 
-  // Atualiza "agora" a cada minuto para o countdown
   useEffect(() => {
     const interval = setInterval(() => setAgora(new Date()), 30000);
     return () => clearInterval(interval);
@@ -82,7 +83,6 @@ const BusScheduleFilter: React.FC<BusScheduleFilterProps> = ({ schedules, rotasM
     ? format(selectedDate, "yyyy-MM-dd") === format(agora, "yyyy-MM-dd")
     : false;
 
-  // Destinos filtrados pelo mapa de rotas (se disponível)
   const destinosPorOrigem = useMemo(() => {
     if (!rotasMapa || !origin) return null;
     return rotasMapa[origin] ?? [];
@@ -103,12 +103,11 @@ const BusScheduleFilter: React.FC<BusScheduleFilterProps> = ({ schedules, rotasM
 
     let filtered = [...base];
     let finalOrigens = origensDisponiveis;
-    let finalDestinos = destinosDisponiveis;
+    let finalDestinos = destinosPorOrigem ?? destinosDisponiveis;
 
     if (origin) {
       filtered = filtered.filter((s) => s.origem === origin);
-      // Usa mapa de rotas se disponível, senão deriva dos dados
-      finalDestinos = destinosPorOrigem ?? Array.from(new Set(filtered.map((s) => s.destino))).sort();
+      if (!destinosPorOrigem) finalDestinos = Array.from(new Set(filtered.map((s) => s.destino))).sort();
     }
     if (destination) {
       filtered = filtered.filter((s) => s.destino === destination);
@@ -138,44 +137,32 @@ const BusScheduleFilter: React.FC<BusScheduleFilterProps> = ({ schedules, rotasM
 
   const proximoHorario = filteredSchedules[0] ?? null;
 
-  // Info da rota selecionada
   const rotaInfo = useMemo(() => {
-    if (!origin || !destination) return null;
-    const amostra = filteredSchedules[0];
-    if (!amostra) return null;
+    if (!origin || !destination || !filteredSchedules.length) return null;
+    const s = filteredSchedules[0];
     return {
-      linha: amostra.linha,
-      tarifaComum: amostra.tarifaComum,
-      tarifaEstudante: amostra.tarifaEstudante,
-      empresa: amostra.empresaNome,
+      linha: s.linha,
+      tarifaComum: s.tarifaComum,
+      tarifaEstudante: s.tarifaEstudante,
+      empresa: s.empresaNome,
     };
   }, [filteredSchedules, origin, destination]);
 
-  const handleClear = () => {
-    resetParaAgora();
-    setOrigin("");
-    setDestination("");
-  };
-
-  const handleSwap = () => {
-    setOrigin(destination);
-    setDestination(origin);
-  };
+  const handleClear = () => { resetParaAgora(); setOrigin(""); setDestination(""); };
+  const handleSwap = () => { setOrigin(destination); setDestination(origin); };
 
   return (
     <>
-      <Card className="p-4 md:p-6 max-w-5xl mx-auto shadow-lg bg-card text-card-foreground">
-        <CardContent className="flex flex-col gap-5 p-0">
-
-          {/* ── Filtros ── */}
-          <div className="grid grid-cols-1 gap-4 lg:grid-cols-12">
-
-            {/* Data e Hora */}
-            <div className="flex flex-col sm:flex-row gap-3 lg:col-span-4">
+      <div className="space-y-4">
+        {/* ── Filtros ── */}
+        <div className="rounded-2xl border bg-card shadow-sm overflow-hidden">
+          <div className="p-4 space-y-3">
+            {/* Data + Hora */}
+            <div className="flex gap-2">
               <Popover>
                 <PopoverTrigger asChild>
-                  <Button variant="outline" className="flex-1 justify-start text-left font-normal">
-                    <CalendarIcon className="mr-2 h-4 w-4" />
+                  <Button variant="outline" className="flex-1 justify-start text-left font-normal text-sm h-10">
+                    <CalendarIcon className="mr-2 h-4 w-4 shrink-0" />
                     {isHydrated ? format(selectedDate, "EEE, dd/MM") : "—"}
                   </Button>
                 </PopoverTrigger>
@@ -189,34 +176,33 @@ const BusScheduleFilter: React.FC<BusScheduleFilterProps> = ({ schedules, rotasM
                 </PopoverContent>
               </Popover>
 
-              {/* Hora + botão Agora */}
-              <div className="flex gap-2 sm:w-[170px]">
-                <div className="relative flex-1">
-                  <ClockIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                  <Input
-                    type="time"
-                    value={selectedTime}
-                    onChange={(e) => setSelectedTime(e.target.value)}
-                    className="pl-9"
-                  />
-                </div>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={resetParaAgora}
-                  title="Voltar para agora"
-                  className="shrink-0 px-2"
-                >
-                  <Clock className="h-4 w-4" />
-                </Button>
+              <div className="relative w-32 shrink-0">
+                <ClockIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Input
+                  type="time"
+                  value={selectedTime}
+                  onChange={(e) => setSelectedTime(e.target.value)}
+                  className="pl-9 h-10 text-sm"
+                />
               </div>
+
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={resetParaAgora}
+                title="Hora atual"
+                className="shrink-0 px-2 h-10"
+              >
+                <Clock className="h-4 w-4" />
+              </Button>
             </div>
 
             {/* Origem ⇄ Destino */}
-            <div className="flex items-center gap-2 lg:col-span-6">
+            <div className="flex items-center gap-2">
               <Select value={origin} onValueChange={(v) => { setOrigin(v); setDestination(""); }}>
-                <SelectTrigger className="flex-1">
-                  <SelectValue placeholder="Origem" />
+                <SelectTrigger className="flex-1 h-10 text-sm">
+                  <MapPin className="h-3.5 w-3.5 mr-1.5 shrink-0 text-primary" />
+                  <SelectValue placeholder="De onde?" />
                 </SelectTrigger>
                 <SelectContent>
                   {availableOrigins.map((c) => (
@@ -230,15 +216,15 @@ const BusScheduleFilter: React.FC<BusScheduleFilterProps> = ({ schedules, rotasM
                 size="sm"
                 onClick={handleSwap}
                 disabled={!origin && !destination}
-                title="Inverter origem e destino"
-                className="shrink-0 rounded-full border-primary/30 hover:border-primary/60 px-2"
+                className="shrink-0 rounded-full px-2 h-10 border-primary/30"
               >
                 <ArrowLeftRight className="h-4 w-4 text-primary" />
               </Button>
 
               <Select value={destination} onValueChange={setDestination}>
-                <SelectTrigger className="flex-1">
-                  <SelectValue placeholder="Destino" />
+                <SelectTrigger className="flex-1 h-10 text-sm">
+                  <MapPin className="h-3.5 w-3.5 mr-1.5 shrink-0 text-muted-foreground" />
+                  <SelectValue placeholder="Para onde?" />
                 </SelectTrigger>
                 <SelectContent>
                   {availableDestinations.map((c) => (
@@ -248,230 +234,243 @@ const BusScheduleFilter: React.FC<BusScheduleFilterProps> = ({ schedules, rotasM
               </Select>
             </div>
 
-            {/* Limpar */}
-            <div className="lg:col-span-2">
-              <Button variant="destructive" onClick={handleClear} className="w-full">
-                <FilterX className="mr-2 w-4 h-4" /> Limpar
+            {/* Linha de info + limpar */}
+            <div className="flex items-center justify-between gap-2">
+              {rotaInfo ? (
+                <div className="flex flex-wrap items-center gap-2 text-xs">
+                  <span className="font-medium text-foreground truncate max-w-[200px]">
+                    {rotaInfo.linha ?? `${origin} → ${destination}`}
+                  </span>
+                  <span className={`rounded-full px-2 py-0.5 font-medium ${empresaCor[rotaInfo.empresa] ?? "bg-muted text-muted-foreground"}`}>
+                    {rotaInfo.empresa}
+                  </span>
+                  {rotaInfo.tarifaComum && (
+                    <span className="text-muted-foreground">
+                      {formatTarifa(rotaInfo.tarifaComum)}
+                      {rotaInfo.tarifaEstudante && (
+                        <span className="text-green-600 dark:text-green-400"> · Estudante {formatTarifa(rotaInfo.tarifaEstudante)}</span>
+                      )}
+                    </span>
+                  )}
+                  <span className="text-muted-foreground">
+                    {filteredSchedules.length} horário{filteredSchedules.length !== 1 ? "s" : ""}
+                  </span>
+                </div>
+              ) : (
+                <span className="text-xs text-muted-foreground">
+                  {filteredSchedules.length > 0
+                    ? `${filteredSchedules.length} horários disponíveis`
+                    : "Selecione origem e destino"}
+                </span>
+              )}
+              <Button variant="ghost" size="sm" onClick={handleClear} className="shrink-0 text-destructive hover:text-destructive h-8 px-2">
+                <FilterX className="h-4 w-4" />
               </Button>
             </div>
           </div>
+        </div>
 
-          {/* ── Info da rota selecionada ── */}
-          {rotaInfo && (
-            <div className="flex flex-wrap items-center gap-3 rounded-xl border bg-muted/30 px-4 py-3 text-sm">
-              <span className="font-semibold text-foreground">🚌 {rotaInfo.linha ?? `${origin} → ${destination}`}</span>
-              <span className="text-muted-foreground">{rotaInfo.empresa}</span>
-              <div className="ml-auto flex flex-wrap gap-2">
-                {rotaInfo.tarifaComum && (
-                  <span className="rounded-full bg-background border px-2.5 py-0.5 text-xs font-medium">
-                    Comum: <strong>{formatTarifa(rotaInfo.tarifaComum)}</strong>
-                  </span>
-                )}
-                {rotaInfo.tarifaEstudante && (
-                  <span className="rounded-full bg-background border px-2.5 py-0.5 text-xs font-medium">
-                    Estudante: <strong>{formatTarifa(rotaInfo.tarifaEstudante)}</strong>
-                  </span>
-                )}
-                <span className="rounded-full bg-background border px-2.5 py-0.5 text-xs text-muted-foreground">
-                  {filteredSchedules.length} horário{filteredSchedules.length !== 1 ? "s" : ""} restante{filteredSchedules.length !== 1 ? "s" : ""}
-                </span>
-              </div>
-            </div>
-          )}
-
-          {/* ── Próximo ônibus destaque ── */}
-          {proximoHorario && isHoje && (
-            <div className="flex items-center gap-4 rounded-xl border-2 border-primary/30 bg-primary/5 px-4 py-3">
-              <div className="text-3xl font-bold tabular-nums text-primary">
+        {/* ── Próximo ônibus ── */}
+        {proximoHorario && isHoje && (
+          <div className="rounded-2xl border-2 border-primary/40 bg-primary/5 dark:bg-primary/10 p-4 flex items-center gap-4">
+            <div className="shrink-0 flex flex-col items-center">
+              <span className="text-4xl font-bold tabular-nums text-primary leading-none">
                 {proximoHorario.horario}
-              </div>
-              <div className="flex-1 min-w-0">
-                <p className="text-sm font-semibold text-foreground">
-                  Próximo ônibus — {tempoAte(proximoHorario.horario)}
-                </p>
-                <p className="text-xs text-muted-foreground truncate">
-                  {proximoHorario.origem} → {proximoHorario.destino}
-                  {proximoHorario.tipo === "intermediario" && " · passa por ponto intermediário"}
-                </p>
-              </div>
-              {proximoHorario.sourceUrl && (
-                <button
-                  onClick={() => setModalUrl(proximoHorario.sourceUrl!)}
-                  className="shrink-0 p-2 text-muted-foreground hover:text-primary rounded-full transition-colors"
-                  title="Ver fonte"
-                >
-                  <LinkIcon size={14} />
-                </button>
-              )}
+              </span>
+              <span className="text-xs font-medium text-primary/70 mt-1">
+                em {tempoAte(proximoHorario.horario)}
+              </span>
             </div>
-          )}
-
-          {/* ── Resultados ── */}
-          <div>
-            <h3 className="font-bold text-lg mb-3">
-              Horários disponíveis
-              {!rotaInfo && filteredSchedules.length > 0 && (
-                <span className="ml-2 text-sm font-normal text-muted-foreground">
-                  {filteredSchedules.length} resultado{filteredSchedules.length !== 1 ? "s" : ""}
+            <div className="flex-1 min-w-0 border-l border-primary/20 pl-4">
+              <p className="text-sm font-semibold text-foreground truncate">
+                {proximoHorario.origem} → {proximoHorario.destino}
+              </p>
+              <div className="flex flex-wrap items-center gap-1.5 mt-1">
+                <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${empresaCor[proximoHorario.empresaNome] ?? "bg-muted text-muted-foreground"}`}>
+                  {proximoHorario.empresaNome}
                 </span>
-              )}
-            </h3>
+                {proximoHorario.tipo === "intermediario" && (
+                  <span className="rounded-full px-2 py-0.5 text-xs bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-200">
+                    ponto intermediário
+                  </span>
+                )}
+                {proximoHorario.tarifaComum && (
+                  <span className="text-xs text-muted-foreground">{formatTarifa(proximoHorario.tarifaComum)}</span>
+                )}
+              </div>
+            </div>
+            {proximoHorario.sourceUrl && (
+              <button
+                onClick={() => setModalUrl(proximoHorario.sourceUrl!)}
+                className="shrink-0 p-2 text-muted-foreground hover:text-primary rounded-full"
+              >
+                <LinkIcon size={14} />
+              </button>
+            )}
+          </div>
+        )}
 
-            {paginatedSchedules.length > 0 ? (
-              <>
-                {/* Tabela — desktop */}
-                <div className="hidden md:block overflow-x-auto border rounded-md">
-                  <table className="min-w-full text-sm">
-                    <thead className="bg-muted/50">
-                      <tr>
-                        <th className="px-3 py-2 text-left font-semibold">Horário</th>
-                        <th className="px-3 py-2 text-left font-semibold">Origem</th>
-                        <th className="px-3 py-2 text-left font-semibold">Destino</th>
-                        <th className="px-3 py-2 text-left font-semibold">Dia</th>
-                        <th className="px-3 py-2 text-left font-semibold">Saída</th>
-                        <th className="px-3 py-2 text-left font-semibold">Tarifa</th>
-                        <th className="px-3 py-2 text-left font-semibold">Empresa</th>
-                        <th className="px-3 py-2 text-right font-semibold">Fonte</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y">
-                      {paginatedSchedules.map((s, idx) => {
-                        const isProximo = idx === 0 && currentPage === 1 && isHoje;
-                        return (
-                          <tr key={s.id} className={`hover:bg-muted/40 ${isProximo ? "bg-primary/5" : ""}`}>
-                            <td className="px-3 py-2">
-                              <div className="flex items-center gap-2">
-                                <span className="font-bold text-primary tabular-nums">{s.horario}</span>
-                                {isProximo && isHoje && (
-                                  <span className="rounded-full bg-primary/10 px-2 py-0.5 text-xs text-primary font-medium">
-                                    {tempoAte(s.horario)}
-                                  </span>
-                                )}
-                              </div>
-                            </td>
-                            <td className="px-3 py-2">{s.origem}</td>
-                            <td className="px-3 py-2">{s.destino}</td>
-                            <td className="px-3 py-2 text-xs text-muted-foreground">{s.diaDaSemana}</td>
-                            <td className="px-3 py-2 text-xs">
-                              {s.tipo === "intermediario" ? (
-                                <span className="rounded-full px-2 py-0.5 bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-200">
-                                  ponto
-                                </span>
-                              ) : (
-                                <span className="rounded-full px-2 py-0.5 bg-muted text-muted-foreground">
-                                  rodoviária
-                                </span>
-                              )}
-                            </td>
-                            <td className="px-3 py-2 text-xs text-muted-foreground">
-                              {formatTarifa(s.tarifaComum) ?? "—"}
-                            </td>
-                            <td className="px-3 py-2 text-xs text-muted-foreground">{s.empresaNome}</td>
-                            <td className="px-3 py-2 text-right">
-                              {s.sourceUrl && (
-                                <button
-                                  onClick={() => setModalUrl(s.sourceUrl!)}
-                                  className="inline-flex p-2 text-muted-foreground hover:text-primary transition-colors rounded-full"
-                                  title="Ver fonte"
-                                >
-                                  <LinkIcon size={14} />
-                                </button>
-                              )}
-                            </td>
-                          </tr>
-                        );
-                      })}
-                    </tbody>
-                  </table>
-                </div>
-
-                {/* Cards — mobile */}
-                <div className="flex flex-col gap-3 md:hidden">
+        {/* ── Resultados ── */}
+        {paginatedSchedules.length > 0 ? (
+          <>
+            {/* Tabela — md+ */}
+            <div className="hidden md:block rounded-2xl border bg-card shadow-sm overflow-hidden">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b bg-muted/40 text-xs text-muted-foreground">
+                    <th className="px-4 py-3 text-left font-medium w-28">Horário</th>
+                    <th className="px-4 py-3 text-left font-medium">Origem → Destino</th>
+                    {!origin && !destination && (
+                      <th className="px-4 py-3 text-left font-medium hidden lg:table-cell">Dia</th>
+                    )}
+                    <th className="px-4 py-3 text-left font-medium">Empresa</th>
+                    <th className="px-4 py-3 text-left font-medium">Saída</th>
+                    <th className="px-4 py-3 text-left font-medium">Tarifa</th>
+                    <th className="px-4 py-3 text-right font-medium w-10"></th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y">
                   {paginatedSchedules.map((s, idx) => {
                     const isProximo = idx === 0 && currentPage === 1 && isHoje;
                     return (
-                      <div
-                        key={s.id}
-                        className={`rounded-xl border p-4 ${isProximo ? "border-primary/40 bg-primary/5" : "bg-card"}`}
-                      >
-                        <div className="flex items-start justify-between gap-3">
-                          <div>
-                            <div className="flex items-center gap-2 mb-1">
-                              <span className="text-2xl font-bold tabular-nums text-primary">{s.horario}</span>
-                              {isProximo && isHoje && (
-                                <span className="rounded-full bg-primary/10 px-2 py-0.5 text-xs text-primary font-medium">
-                                  {tempoAte(s.horario)}
-                                </span>
-                              )}
-                            </div>
-                            <p className="text-sm font-medium text-foreground">
-                              {s.origem} → {s.destino}
-                            </p>
-                            <p className="text-xs text-muted-foreground mt-0.5">{s.diaDaSemana}</p>
-                          </div>
-                          <div className="flex flex-col items-end gap-1.5">
-                            {s.tipo === "intermediario" ? (
-                              <span className="rounded-full px-2 py-0.5 text-xs bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-200">
-                                ponto
-                              </span>
-                            ) : (
-                              <span className="rounded-full px-2 py-0.5 text-xs bg-muted text-muted-foreground">
-                                rodoviária
+                      <tr key={s.id} className={`hover:bg-muted/30 transition-colors ${isProximo ? "bg-primary/5" : ""}`}>
+                        <td className="px-4 py-3">
+                          <div className="flex items-center gap-2">
+                            <span className={`font-mono text-base font-bold tabular-nums ${isProximo ? "text-primary" : "text-foreground"}`}>
+                              {s.horario}
+                            </span>
+                            {isProximo && isHoje && (
+                              <span className="rounded-full bg-primary/10 px-1.5 py-0.5 text-[10px] font-semibold text-primary whitespace-nowrap">
+                                {tempoAte(s.horario)}
                               </span>
                             )}
-                            {s.tarifaComum && (
-                              <span className="text-xs text-muted-foreground">{formatTarifa(s.tarifaComum)}</span>
-                            )}
                           </div>
-                        </div>
-                        <div className="flex items-center justify-between mt-3 pt-2.5 border-t">
-                          <span className="text-xs text-muted-foreground">{s.empresaNome}</span>
+                        </td>
+                        <td className="px-4 py-3 font-medium text-foreground">
+                          {s.origem} <span className="text-muted-foreground font-normal">→</span> {s.destino}
+                        </td>
+                        {!origin && !destination && (
+                          <td className="px-4 py-3 text-xs text-muted-foreground hidden lg:table-cell">{s.diaDaSemana}</td>
+                        )}
+                        <td className="px-4 py-3">
+                          <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${empresaCor[s.empresaNome] ?? "bg-muted text-muted-foreground"}`}>
+                            {s.empresaNome}
+                          </span>
+                        </td>
+                        <td className="px-4 py-3">
+                          {s.tipo === "intermediario" ? (
+                            <span className="rounded-full px-2 py-0.5 text-xs bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-200">
+                              ponto
+                            </span>
+                          ) : (
+                            <span className="text-xs text-muted-foreground">rodoviária</span>
+                          )}
+                        </td>
+                        <td className="px-4 py-3 text-sm text-muted-foreground whitespace-nowrap">
+                          {formatTarifa(s.tarifaComum) ?? "—"}
+                        </td>
+                        <td className="px-4 py-3 text-right">
                           {s.sourceUrl && (
                             <button
                               onClick={() => setModalUrl(s.sourceUrl!)}
-                              className="p-1.5 text-muted-foreground hover:text-primary rounded-full transition-colors"
-                              title="Ver fonte"
+                              className="p-1.5 text-muted-foreground/50 hover:text-primary rounded-full transition-colors"
                             >
                               <LinkIcon size={13} />
                             </button>
                           )}
-                        </div>
-                      </div>
+                        </td>
+                      </tr>
                     );
                   })}
-                </div>
+                </tbody>
+              </table>
+            </div>
 
-                {/* Paginação */}
-                {totalPages > 1 && (
-                  <div className="flex justify-center items-center gap-2 mt-4">
-                    <Button variant="ghost" size="sm" disabled={currentPage === 1} onClick={() => setCurrentPage((p) => p - 1)}>
-                      Anterior
-                    </Button>
-                    <span className="text-sm text-muted-foreground">
-                      Página {currentPage} de {totalPages}
-                    </span>
-                    <Button variant="ghost" size="sm" disabled={currentPage === totalPages} onClick={() => setCurrentPage((p) => p + 1)}>
-                      Próximo
-                    </Button>
+            {/* Cards — mobile */}
+            <div className="flex flex-col gap-2 md:hidden">
+              {paginatedSchedules.map((s, idx) => {
+                const isProximo = idx === 0 && currentPage === 1 && isHoje;
+                return (
+                  <div
+                    key={s.id}
+                    className={`rounded-xl border p-3.5 flex items-center gap-3 ${isProximo ? "border-primary/40 bg-primary/5" : "bg-card"}`}
+                  >
+                    {/* Horário */}
+                    <div className="shrink-0 text-center w-16">
+                      <div className={`text-2xl font-bold tabular-nums leading-none ${isProximo ? "text-primary" : "text-foreground"}`}>
+                        {s.horario}
+                      </div>
+                      {isProximo && isHoje && (
+                        <div className="text-[10px] text-primary font-medium mt-0.5">{tempoAte(s.horario)}</div>
+                      )}
+                    </div>
+
+                    {/* Info */}
+                    <div className="flex-1 min-w-0 border-l pl-3">
+                      <p className="text-sm font-semibold text-foreground truncate">
+                        {s.origem} → {s.destino}
+                      </p>
+                      <div className="flex flex-wrap items-center gap-1.5 mt-1">
+                        <span className={`rounded-full px-1.5 py-0 text-[11px] font-medium ${empresaCor[s.empresaNome] ?? "bg-muted text-muted-foreground"}`}>
+                          {s.empresaNome}
+                        </span>
+                        {s.tipo === "intermediario" && (
+                          <span className="rounded-full px-1.5 py-0 text-[11px] bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-200">
+                            ponto
+                          </span>
+                        )}
+                        {s.tarifaComum && (
+                          <span className="text-[11px] text-muted-foreground">{formatTarifa(s.tarifaComum)}</span>
+                        )}
+                      </div>
+                    </div>
+
+                    {s.sourceUrl && (
+                      <button
+                        onClick={() => setModalUrl(s.sourceUrl!)}
+                        className="shrink-0 p-1.5 text-muted-foreground/40 hover:text-primary rounded-full"
+                      >
+                        <LinkIcon size={13} />
+                      </button>
+                    )}
                   </div>
-                )}
-              </>
-            ) : (
-              <div className="text-center py-10 px-4 border-2 border-dashed rounded-lg">
-                <p className="text-muted-foreground">
-                  {origin || destination
-                    ? "Nenhum horário disponível para esta rota nos filtros selecionados."
-                    : "Selecione origem e destino para ver os horários."}
-                </p>
+                );
+              })}
+            </div>
+
+            {/* Paginação */}
+            {totalPages > 1 && (
+              <div className="flex justify-center items-center gap-3 py-2">
+                <Button variant="outline" size="sm" disabled={currentPage === 1} onClick={() => setCurrentPage((p) => p - 1)}>
+                  ← Anterior
+                </Button>
+                <span className="text-sm text-muted-foreground tabular-nums">
+                  {currentPage} / {totalPages}
+                </span>
+                <Button variant="outline" size="sm" disabled={currentPage === totalPages} onClick={() => setCurrentPage((p) => p + 1)}>
+                  Próximo →
+                </Button>
               </div>
             )}
+          </>
+        ) : isHydrated ? (
+          <div className="rounded-2xl border-2 border-dashed bg-card p-10 text-center">
+            <Bus className="mx-auto h-10 w-10 text-muted-foreground/30 mb-3" />
+            <p className="text-muted-foreground font-medium">
+              {origin || destination
+                ? "Nenhum horário disponível para esta rota agora."
+                : "Selecione origem e destino para ver os horários."}
+            </p>
+            {(origin || destination) && (
+              <p className="text-sm text-muted-foreground mt-1">
+                Tente outra data ou remova os filtros.
+              </p>
+            )}
           </div>
-        </CardContent>
-      </Card>
+        ) : null}
+      </div>
 
       {modalUrl && <SourceModal url={modalUrl} onClose={() => setModalUrl(null)} />}
     </>
   );
-};
-
-export default BusScheduleFilter;
+}
