@@ -132,7 +132,7 @@ def parse_horarios(html, sentido):
     return horarios, tarifa
 
 def scrape_rota(rota):
-    print(f"  Buscando: {rota['origem']} → {rota['destino']}")
+    print(f"  Buscando: {rota['origem']} -> {rota['destino']}")
     html = fetch_html(rota["url"])
     horarios, tarifa = parse_horarios(html, rota["sentido"])
     print(f"  {len(horarios)} horários | tarifa: R$ {tarifa}")

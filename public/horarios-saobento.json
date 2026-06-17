@@ -1,7 +1,7 @@
 {
-  "origem": "São Joaquim da Barra",
-  "destino": "Sales Oliveira",
-  "linha": "Sales Oliveira X São Joaquim da Barra",
+  "origem": "Brodowski",
+  "destino": "Ribeirão Preto",
+  "linha": "Ribeirão Preto X Brodowski",
   "tarifas": [
     {
       "tipo": "Comum/VT:",
@@ -15,167 +15,335 @@
   "sentidos": [
     {
       "diaDaSemana": "Segunda a Sexta",
-      "origem": "São Joaquim da Barra",
-      "destino": "Sales Oliveira",
+      "origem": "Brodowski",
+      "destino": "Ribeirão Preto",
       "horarios": [
         {
+          "horario": "05:00",
+          "tipo": "intermediario"
+        },
+        {
+          "horario": "05:56",
+          "tipo": "intermediario"
+        },
+        {
+          "horario": "05:57",
+          "tipo": "rodoviaria"
+        },
+        {
+          "horario": "06:50",
+          "tipo": "intermediario"
+        },
+        {
+          "horario": "07:10",
+          "tipo": "intermediario"
+        },
+        {
+          "horario": "08:00",
+          "tipo": "intermediario"
+        },
+        {
+          "horario": "09:00",
+          "tipo": "intermediario"
+        },
+        {
+          "horario": "10:45",
+          "tipo": "intermediario"
+        },
+        {
+          "horario": "12:00",
+          "tipo": "intermediario"
+        },
+        {
+          "horario": "13:15",
+          "tipo": "rodoviaria"
+        },
+        {
+          "horario": "15:00",
+          "tipo": "intermediario"
+        },
+        {
+          "horario": "16:00",
+          "tipo": "intermediario"
+        },
+        {
+          "horario": "17:00",
+          "tipo": "intermediario"
+        },
+        {
+          "horario": "18:20",
+          "tipo": "rodoviaria"
+        },
+        {
+          "horario": "20:30",
+          "tipo": "rodoviaria"
+        }
+      ]
+    },
+    {
+      "diaDaSemana": "Sábado",
+      "origem": "Brodowski",
+      "destino": "Ribeirão Preto",
+      "horarios": [
+        {
+          "horario": "05:00",
+          "tipo": "intermediario"
+        },
+        {
+          "horario": "05:55",
+          "tipo": "intermediario"
+        },
+        {
+          "horario": "07:10",
+          "tipo": "intermediario"
+        },
+        {
+          "horario": "09:00",
+          "tipo": "intermediario"
+        },
+        {
+          "horario": "11:00",
+          "tipo": "intermediario"
+        },
+        {
+          "horario": "13:00",
+          "tipo": "intermediario"
+        },
+        {
+          "horario": "15:00",
+          "tipo": "intermediario"
+        },
+        {
+          "horario": "17:00",
+          "tipo": "intermediario"
+        },
+        {
+          "horario": "18:30",
+          "tipo": "intermediario"
+        },
+        {
+          "horario": "21:00",
+          "tipo": "intermediario"
+        }
+      ]
+    },
+    {
+      "diaDaSemana": "Domingo e Feriados",
+      "origem": "Brodowski",
+      "destino": "Ribeirão Preto",
+      "horarios": [
+        {
+          "horario": "06:00",
+          "tipo": "rodoviaria"
+        },
+        {
           "horario": "06:30",
+          "tipo": "intermediario"
+        },
+        {
+          "horario": "09:30",
+          "tipo": "intermediario"
+        },
+        {
+          "horario": "11:30",
+          "tipo": "intermediario"
+        },
+        {
+          "horario": "13:00",
+          "tipo": "intermediario"
+        },
+        {
+          "horario": "14:00",
           "tipo": "rodoviaria"
         },
         {
-          "horario": "07:15",
+          "horario": "15:30",
+          "tipo": "intermediario"
+        },
+        {
+          "horario": "17:00",
           "tipo": "rodoviaria"
         },
         {
-          "horario": "08:06",
+          "horario": "17:30",
+          "tipo": "intermediario"
+        },
+        {
+          "horario": "20:30",
+          "tipo": "intermediario"
+        },
+        {
+          "horario": "22:30",
+          "tipo": "intermediario"
+        }
+      ]
+    },
+    {
+      "diaDaSemana": "Segunda a Sexta",
+      "origem": "Ribeirão Preto",
+      "destino": "Brodowski",
+      "horarios": [
+        {
+          "horario": "06:00",
+          "tipo": "intermediario"
+        },
+        {
+          "horario": "06:50",
+          "tipo": "intermediario"
+        },
+        {
+          "horario": "07:30",
+          "tipo": "intermediario"
+        },
+        {
+          "horario": "10:00",
+          "tipo": "intermediario"
+        },
+        {
+          "horario": "12:00",
+          "tipo": "intermediario"
+        },
+        {
+          "horario": "13:40",
           "tipo": "rodoviaria"
+        },
+        {
+          "horario": "14:50",
+          "tipo": "rodoviaria"
+        },
+        {
+          "horario": "15:45",
+          "tipo": "intermediario"
+        },
+        {
+          "horario": "16:30",
+          "tipo": "rodoviaria"
+        },
+        {
+          "horario": "17:00",
+          "tipo": "intermediario"
+        },
+        {
+          "horario": "17:30",
+          "tipo": "intermediario"
+        },
+        {
+          "horario": "18:00",
+          "tipo": "intermediario"
+        },
+        {
+          "horario": "18:40",
+          "tipo": "intermediario"
+        },
+        {
+          "horario": "19:30",
+          "tipo": "rodoviaria"
+        },
+        {
+          "horario": "21:30",
+          "tipo": "intermediario"
+        }
+      ]
+    },
+    {
+      "diaDaSemana": "Sábado",
+      "origem": "Ribeirão Preto",
+      "destino": "Brodowski",
+      "horarios": [
+        {
+          "horario": "06:00",
+          "tipo": "intermediario"
+        },
+        {
+          "horario": "07:30",
+          "tipo": "intermediario"
+        },
+        {
+          "horario": "09:50",
+          "tipo": "intermediario"
         },
         {
           "horario": "12:00",
           "tipo": "rodoviaria"
         },
         {
-          "horario": "15:25",
+          "horario": "13:00",
+          "tipo": "intermediario"
+        },
+        {
+          "horario": "14:00",
+          "tipo": "intermediario"
+        },
+        {
+          "horario": "16:00",
           "tipo": "rodoviaria"
         },
         {
-          "horario": "18:00",
-          "tipo": "rodoviaria"
-        }
-      ]
-    },
-    {
-      "diaDaSemana": "Sábado",
-      "origem": "São Joaquim da Barra",
-      "destino": "Sales Oliveira",
-      "horarios": [
-        {
-          "horario": "06:30",
-          "tipo": "rodoviaria"
+          "horario": "17:00",
+          "tipo": "intermediario"
         },
         {
-          "horario": "07:15",
-          "tipo": "rodoviaria"
+          "horario": "18:20",
+          "tipo": "intermediario"
         },
         {
-          "horario": "08:06",
-          "tipo": "rodoviaria"
+          "horario": "19:30",
+          "tipo": "intermediario"
         },
         {
-          "horario": "15:25",
-          "tipo": "rodoviaria"
-        },
-        {
-          "horario": "18:00",
-          "tipo": "rodoviaria"
+          "horario": "22:10",
+          "tipo": "intermediario"
         }
       ]
     },
     {
       "diaDaSemana": "Domingo e Feriados",
-      "origem": "São Joaquim da Barra",
-      "destino": "Sales Oliveira",
+      "origem": "Ribeirão Preto",
+      "destino": "Brodowski",
       "horarios": [
         {
-          "horario": "08:06",
+          "horario": "07:25",
           "tipo": "rodoviaria"
         },
         {
-          "horario": "13:00",
+          "horario": "09:00",
           "tipo": "rodoviaria"
         },
         {
-          "horario": "15:25",
+          "horario": "11:00",
           "tipo": "rodoviaria"
         },
         {
-          "horario": "15:30",
+          "horario": "13:15",
+          "tipo": "intermediario"
+        },
+        {
+          "horario": "14:00",
           "tipo": "rodoviaria"
         },
         {
-          "horario": "18:00",
-          "tipo": "rodoviaria"
-        }
-      ]
-    },
-    {
-      "diaDaSemana": "Segunda a Sexta",
-      "origem": "Sales Oliveira",
-      "destino": "São Joaquim da Barra",
-      "horarios": [
+          "horario": "15:00",
+          "tipo": "intermediario"
+        },
         {
-          "horario": "06:20",
+          "horario": "17:00",
+          "tipo": "intermediario"
+        },
+        {
+          "horario": "18:40",
           "tipo": "rodoviaria"
         },
         {
-          "horario": "10:00",
-          "tipo": "rodoviaria"
+          "horario": "19:30",
+          "tipo": "intermediario"
         },
         {
-          "horario": "13:00",
-          "tipo": "rodoviaria"
+          "horario": "21:30",
+          "tipo": "intermediario"
         },
         {
-          "horario": "17:10",
-          "tipo": "rodoviaria"
-        },
-        {
-          "horario": "19:00",
-          "tipo": "rodoviaria"
-        },
-        {
-          "horario": "22:00",
-          "tipo": "rodoviaria"
-        }
-      ]
-    },
-    {
-      "diaDaSemana": "Sábado",
-      "origem": "Sales Oliveira",
-      "destino": "São Joaquim da Barra",
-      "horarios": [
-        {
-          "horario": "10:00",
-          "tipo": "rodoviaria"
-        },
-        {
-          "horario": "13:00",
-          "tipo": "rodoviaria"
-        },
-        {
-          "horario": "17:10",
-          "tipo": "rodoviaria"
-        },
-        {
-          "horario": "19:00",
-          "tipo": "rodoviaria"
-        },
-        {
-          "horario": "22:00",
-          "tipo": "rodoviaria"
-        }
-      ]
-    },
-    {
-      "diaDaSemana": "Domingo e Feriados",
-      "origem": "Sales Oliveira",
-      "destino": "São Joaquim da Barra",
-      "horarios": [
-        {
-          "horario": "10:00",
-          "tipo": "rodoviaria"
-        },
-        {
-          "horario": "17:10",
-          "tipo": "rodoviaria"
-        },
-        {
-          "horario": "19:00",
-          "tipo": "rodoviaria"
-        },
-        {
-          "horario": "22:00",
-          "tipo": "rodoviaria"
+          "horario": "23:30",
+          "tipo": "intermediario"
         }
       ]
     }
@@ -196,15 +364,15 @@
     "Ituverava",
     "Miguelópolis",
     "Orlândia",
-    "Ribeirão",
+    "RIBEIRAO",
     "Ribeirão Preto",
+    "SANTO ANTONIO D. ALEGRIA",
     "Sales Oliveira",
-    "Santo antonio da alegria",
     "Serra Azul",
     "Serrana",
     "Sertãozinho",
     "São Benedito da Cachoeirinha",
     "São Joaquim da Barra"
   ],
-  "pesquisado_em": "2026-05-26T21:01:43.208819"
+  "pesquisado_em": "2026-06-17T16:37:43.837427"
 }
