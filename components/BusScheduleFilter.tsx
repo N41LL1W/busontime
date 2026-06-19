@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useMemo, useState, useEffect, useCallback } from "react";
+import Link from "next/link";
 import { format, isBefore, startOfToday, differenceInMinutes } from "date-fns";
 import { CalendarIcon, ClockIcon, FilterX, LinkIcon, ArrowLeftRight, Clock, Bus, MapPin } from "lucide-react";
 import { Calendar } from "@/components/ui/calendar";
@@ -49,6 +50,15 @@ const empresaCor: Record<string, string> = {
   "Ribe Transporte": "bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-200",
   "Rápido d'Oeste": "bg-violet-100 text-violet-800 dark:bg-violet-900/40 dark:text-violet-200",
 };
+
+function slugify(texto: string) {
+  return texto
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-|-$/g, "");
+}
 
 export default function BusScheduleFilter({ schedules, rotasMapa }: BusScheduleFilterProps) {
   const [selectedDate, setSelectedDate] = useState<Date>(INITIAL_DATE);
@@ -267,6 +277,17 @@ export default function BusScheduleFilter({ schedules, rotasMapa }: BusScheduleF
                 <FilterX className="h-4 w-4" />
               </Button>
             </div>
+
+            {/* Link para página completa da rota */}
+            {origin && destination && (
+              <Link
+                href={`/rota/${slugify(origin)}-ate-${slugify(destination)}`}
+                className="flex items-center justify-between rounded-xl border border-primary/20 bg-primary/5 px-3 py-2 text-xs font-medium text-primary hover:bg-primary/10 transition-colors"
+              >
+                <span>📋 Ver página completa desta rota</span>
+                <span className="opacity-60">→</span>
+              </Link>
+            )}
           </div>
         </div>
 
