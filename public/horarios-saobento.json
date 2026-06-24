@@ -1,11 +1,11 @@
 {
   "origem": "Brodowski",
-  "destino": "Ribeirão Preto",
-  "linha": "Ribeirão Preto X Brodowski",
+  "destino": "Batatais",
+  "linha": "Batatais X Brodowski",
   "tarifas": [
     {
       "tipo": "Comum/VT:",
-      "valor": "R$ 8,95"
+      "valor": "R$ 8,20"
     },
     {
       "tipo": "Estudante:",
@@ -16,333 +16,111 @@
     {
       "diaDaSemana": "Segunda a Sexta",
       "origem": "Brodowski",
-      "destino": "Ribeirão Preto",
-      "horarios": [
-        {
-          "horario": "05:00",
-          "tipo": "intermediario"
-        },
-        {
-          "horario": "05:56",
-          "tipo": "intermediario"
-        },
-        {
-          "horario": "05:57",
-          "tipo": "rodoviaria"
-        },
-        {
-          "horario": "06:50",
-          "tipo": "intermediario"
-        },
-        {
-          "horario": "07:10",
-          "tipo": "intermediario"
-        },
-        {
-          "horario": "08:00",
-          "tipo": "intermediario"
-        },
-        {
-          "horario": "09:00",
-          "tipo": "intermediario"
-        },
-        {
-          "horario": "10:45",
-          "tipo": "intermediario"
-        },
-        {
-          "horario": "12:00",
-          "tipo": "intermediario"
-        },
-        {
-          "horario": "13:15",
-          "tipo": "rodoviaria"
-        },
-        {
-          "horario": "15:00",
-          "tipo": "intermediario"
-        },
-        {
-          "horario": "16:00",
-          "tipo": "intermediario"
-        },
-        {
-          "horario": "17:00",
-          "tipo": "intermediario"
-        },
-        {
-          "horario": "18:20",
-          "tipo": "rodoviaria"
-        },
-        {
-          "horario": "20:30",
-          "tipo": "rodoviaria"
-        }
-      ]
-    },
-    {
-      "diaDaSemana": "Sábado",
-      "origem": "Brodowski",
-      "destino": "Ribeirão Preto",
-      "horarios": [
-        {
-          "horario": "05:00",
-          "tipo": "intermediario"
-        },
-        {
-          "horario": "05:55",
-          "tipo": "intermediario"
-        },
-        {
-          "horario": "07:10",
-          "tipo": "intermediario"
-        },
-        {
-          "horario": "09:00",
-          "tipo": "intermediario"
-        },
-        {
-          "horario": "11:00",
-          "tipo": "intermediario"
-        },
-        {
-          "horario": "13:00",
-          "tipo": "intermediario"
-        },
-        {
-          "horario": "15:00",
-          "tipo": "intermediario"
-        },
-        {
-          "horario": "17:00",
-          "tipo": "intermediario"
-        },
-        {
-          "horario": "18:30",
-          "tipo": "intermediario"
-        },
-        {
-          "horario": "21:00",
-          "tipo": "intermediario"
-        }
-      ]
-    },
-    {
-      "diaDaSemana": "Domingo e Feriados",
-      "origem": "Brodowski",
-      "destino": "Ribeirão Preto",
-      "horarios": [
-        {
-          "horario": "06:00",
-          "tipo": "rodoviaria"
-        },
-        {
-          "horario": "06:30",
-          "tipo": "intermediario"
-        },
-        {
-          "horario": "09:30",
-          "tipo": "intermediario"
-        },
-        {
-          "horario": "11:30",
-          "tipo": "intermediario"
-        },
-        {
-          "horario": "13:00",
-          "tipo": "intermediario"
-        },
-        {
-          "horario": "14:00",
-          "tipo": "rodoviaria"
-        },
-        {
-          "horario": "15:30",
-          "tipo": "intermediario"
-        },
-        {
-          "horario": "17:00",
-          "tipo": "rodoviaria"
-        },
-        {
-          "horario": "17:30",
-          "tipo": "intermediario"
-        },
-        {
-          "horario": "20:30",
-          "tipo": "intermediario"
-        },
-        {
-          "horario": "22:30",
-          "tipo": "intermediario"
-        }
-      ]
-    },
-    {
-      "diaDaSemana": "Segunda a Sexta",
-      "origem": "Ribeirão Preto",
-      "destino": "Brodowski",
-      "horarios": [
-        {
-          "horario": "06:00",
-          "tipo": "intermediario"
-        },
-        {
-          "horario": "06:50",
-          "tipo": "intermediario"
-        },
-        {
-          "horario": "07:30",
-          "tipo": "intermediario"
-        },
-        {
-          "horario": "10:00",
-          "tipo": "intermediario"
-        },
-        {
-          "horario": "12:00",
-          "tipo": "intermediario"
-        },
-        {
-          "horario": "13:40",
-          "tipo": "rodoviaria"
-        },
-        {
-          "horario": "14:50",
-          "tipo": "rodoviaria"
-        },
-        {
-          "horario": "15:45",
-          "tipo": "intermediario"
-        },
-        {
-          "horario": "16:30",
-          "tipo": "rodoviaria"
-        },
-        {
-          "horario": "17:00",
-          "tipo": "intermediario"
-        },
-        {
-          "horario": "17:30",
-          "tipo": "intermediario"
-        },
-        {
-          "horario": "18:00",
-          "tipo": "intermediario"
-        },
-        {
-          "horario": "18:40",
-          "tipo": "intermediario"
-        },
-        {
-          "horario": "19:30",
-          "tipo": "rodoviaria"
-        },
-        {
-          "horario": "21:30",
-          "tipo": "intermediario"
-        }
-      ]
-    },
-    {
-      "diaDaSemana": "Sábado",
-      "origem": "Ribeirão Preto",
-      "destino": "Brodowski",
-      "horarios": [
-        {
-          "horario": "06:00",
-          "tipo": "intermediario"
-        },
-        {
-          "horario": "07:30",
-          "tipo": "intermediario"
-        },
-        {
-          "horario": "09:50",
-          "tipo": "intermediario"
-        },
-        {
-          "horario": "12:00",
-          "tipo": "rodoviaria"
-        },
-        {
-          "horario": "13:00",
-          "tipo": "intermediario"
-        },
-        {
-          "horario": "14:00",
-          "tipo": "intermediario"
-        },
-        {
-          "horario": "16:00",
-          "tipo": "rodoviaria"
-        },
-        {
-          "horario": "17:00",
-          "tipo": "intermediario"
-        },
-        {
-          "horario": "18:20",
-          "tipo": "intermediario"
-        },
-        {
-          "horario": "19:30",
-          "tipo": "intermediario"
-        },
-        {
-          "horario": "22:10",
-          "tipo": "intermediario"
-        }
-      ]
-    },
-    {
-      "diaDaSemana": "Domingo e Feriados",
-      "origem": "Ribeirão Preto",
-      "destino": "Brodowski",
+      "destino": "Batatais",
       "horarios": [
         {
           "horario": "07:25",
           "tipo": "rodoviaria"
         },
         {
+          "horario": "12:15",
+          "tipo": "intermediario"
+        },
+        {
+          "horario": "17:30",
+          "tipo": "rodoviaria"
+        }
+      ]
+    },
+    {
+      "diaDaSemana": "Domingo e Feriados",
+      "origem": "Brodowski",
+      "destino": "Batatais",
+      "horarios": [
+        {
+          "horario": "00:10",
+          "tipo": "rodoviaria"
+        },
+        {
+          "horario": "09:50",
+          "tipo": "intermediario"
+        },
+        {
+          "horario": "11:50",
+          "tipo": "intermediario"
+        },
+        {
+          "horario": "14:00",
+          "tipo": "intermediario"
+        },
+        {
+          "horario": "15:50",
+          "tipo": "intermediario"
+        },
+        {
+          "horario": "17:50",
+          "tipo": "intermediario"
+        },
+        {
+          "horario": "20:20",
+          "tipo": "intermediario"
+        },
+        {
+          "horario": "22:20",
+          "tipo": "intermediario"
+        }
+      ]
+    },
+    {
+      "diaDaSemana": "Segunda a Sexta",
+      "origem": "Batatais",
+      "destino": "Brodowski",
+      "horarios": [
+        {
+          "horario": "06:50",
+          "tipo": "intermediario"
+        },
+        {
+          "horario": "17:00",
+          "tipo": "rodoviaria"
+        }
+      ]
+    },
+    {
+      "diaDaSemana": "Domingo e Feriados",
+      "origem": "Batatais",
+      "destino": "Brodowski",
+      "horarios": [
+        {
+          "horario": "06:00",
+          "tipo": "intermediario"
+        },
+        {
           "horario": "09:00",
           "tipo": "rodoviaria"
         },
         {
           "horario": "11:00",
-          "tipo": "rodoviaria"
-        },
-        {
-          "horario": "13:15",
           "tipo": "intermediario"
         },
         {
-          "horario": "14:00",
+          "horario": "13:30",
           "tipo": "rodoviaria"
         },
         {
           "horario": "15:00",
-          "tipo": "intermediario"
+          "tipo": "rodoviaria"
         },
         {
           "horario": "17:00",
           "tipo": "intermediario"
         },
         {
-          "horario": "18:40",
-          "tipo": "rodoviaria"
-        },
-        {
-          "horario": "19:30",
+          "horario": "20:00",
           "tipo": "intermediario"
         },
         {
-          "horario": "21:30",
-          "tipo": "intermediario"
-        },
-        {
-          "horario": "23:30",
+          "horario": "22:00",
           "tipo": "intermediario"
         }
       ]
@@ -374,5 +152,5 @@
     "São Benedito da Cachoeirinha",
     "São Joaquim da Barra"
   ],
-  "pesquisado_em": "2026-06-17T16:37:43.837427"
+  "pesquisado_em": "2026-06-24T13:11:57.791771"
 }
