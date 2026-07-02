@@ -10,6 +10,8 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import SourceModal from "./SourceModal";
+import BotaoAlarme from "./BotaoAlarme";
+import PainelAlarmes from "./PainelAlarmes";
 import type { HorarioFlat } from "@/pages/index";
 
 interface BusScheduleFilterProps {
@@ -44,7 +46,6 @@ const tempoAte = (horario: string): string => {
 const INITIAL_DATE = new Date(2000, 0, 1);
 const INITIAL_TIME = "00:00";
 
-// Badge de empresa com cor por empresa
 const empresaCor: Record<string, string> = {
   "Viação São Bento": "bg-blue-100 text-blue-800 dark:bg-blue-900/40 dark:text-blue-200",
   "Ribe Transporte": "bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-200",
@@ -164,10 +165,12 @@ export default function BusScheduleFilter({ schedules, rotasMapa }: BusScheduleF
   return (
     <>
       <div className="space-y-4">
-        {/* ── Filtros ── */}
+        {/* Painel de alarmes ativos */}
+        <PainelAlarmes />
+
+        {/* Filtros */}
         <div className="rounded-2xl border bg-card shadow-sm overflow-hidden">
           <div className="p-4 space-y-3">
-            {/* Data + Hora */}
             <div className="flex gap-2">
               <Popover>
                 <PopoverTrigger asChild>
@@ -196,18 +199,11 @@ export default function BusScheduleFilter({ schedules, rotasMapa }: BusScheduleF
                 />
               </div>
 
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={resetParaAgora}
-                title="Hora atual"
-                className="shrink-0 px-2 h-10"
-              >
+              <Button variant="outline" size="sm" onClick={resetParaAgora} title="Hora atual" className="shrink-0 px-2 h-10">
                 <Clock className="h-4 w-4" />
               </Button>
             </div>
 
-            {/* Origem ⇄ Destino */}
             <div className="flex items-center gap-2">
               <Select value={origin} onValueChange={(v) => { setOrigin(v); setDestination(""); }}>
                 <SelectTrigger className="flex-1 h-10 text-sm">
@@ -221,13 +217,7 @@ export default function BusScheduleFilter({ schedules, rotasMapa }: BusScheduleF
                 </SelectContent>
               </Select>
 
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={handleSwap}
-                disabled={!origin && !destination}
-                className="shrink-0 rounded-full px-2 h-10 border-primary/30"
-              >
+              <Button variant="outline" size="sm" onClick={handleSwap} disabled={!origin && !destination} className="shrink-0 rounded-full px-2 h-10 border-primary/30">
                 <ArrowLeftRight className="h-4 w-4 text-primary" />
               </Button>
 
@@ -244,7 +234,6 @@ export default function BusScheduleFilter({ schedules, rotasMapa }: BusScheduleF
               </Select>
             </div>
 
-            {/* Linha de info + limpar */}
             <div className="flex items-center justify-between gap-2">
               {rotaInfo ? (
                 <div className="flex flex-wrap items-center gap-2 text-xs">
@@ -268,9 +257,7 @@ export default function BusScheduleFilter({ schedules, rotasMapa }: BusScheduleF
                 </div>
               ) : (
                 <span className="text-xs text-muted-foreground">
-                  {filteredSchedules.length > 0
-                    ? `${filteredSchedules.length} horários disponíveis`
-                    : "Selecione origem e destino"}
+                  {filteredSchedules.length > 0 ? `${filteredSchedules.length} horários disponíveis` : "Selecione origem e destino"}
                 </span>
               )}
               <Button variant="ghost" size="sm" onClick={handleClear} className="shrink-0 text-destructive hover:text-destructive h-8 px-2">
@@ -278,7 +265,6 @@ export default function BusScheduleFilter({ schedules, rotasMapa }: BusScheduleF
               </Button>
             </div>
 
-            {/* Link para página completa da rota */}
             {origin && destination && (
               <Link
                 href={`/rota/${slugify(origin)}-ate-${slugify(destination)}`}
@@ -291,16 +277,12 @@ export default function BusScheduleFilter({ schedules, rotasMapa }: BusScheduleF
           </div>
         </div>
 
-        {/* ── Próximo ônibus ── */}
+        {/* Próximo ônibus */}
         {proximoHorario && isHoje && (
           <div className="rounded-2xl border-2 border-primary/40 bg-primary/5 dark:bg-primary/10 p-4 flex items-center gap-4">
             <div className="shrink-0 flex flex-col items-center">
-              <span className="text-4xl font-bold tabular-nums text-primary leading-none">
-                {proximoHorario.horario}
-              </span>
-              <span className="text-xs font-medium text-primary/70 mt-1">
-                em {tempoAte(proximoHorario.horario)}
-              </span>
+              <span className="text-4xl font-bold tabular-nums text-primary leading-none">{proximoHorario.horario}</span>
+              <span className="text-xs font-medium text-primary/70 mt-1">em {tempoAte(proximoHorario.horario)}</span>
             </div>
             <div className="flex-1 min-w-0 border-l border-primary/20 pl-4">
               <p className="text-sm font-semibold text-foreground truncate">
@@ -320,21 +302,23 @@ export default function BusScheduleFilter({ schedules, rotasMapa }: BusScheduleF
                 )}
               </div>
             </div>
+            <BotaoAlarme
+              horario={proximoHorario.horario}
+              origem={proximoHorario.origem}
+              destino={proximoHorario.destino}
+              empresa={proximoHorario.empresaNome}
+            />
             {proximoHorario.sourceUrl && (
-              <button
-                onClick={() => setModalUrl(proximoHorario.sourceUrl!)}
-                className="shrink-0 p-2 text-muted-foreground hover:text-primary rounded-full"
-              >
+              <button onClick={() => setModalUrl(proximoHorario.sourceUrl!)} className="shrink-0 p-2 text-muted-foreground hover:text-primary rounded-full">
                 <LinkIcon size={14} />
               </button>
             )}
           </div>
         )}
 
-        {/* ── Resultados ── */}
+        {/* Resultados */}
         {paginatedSchedules.length > 0 ? (
           <>
-            {/* Tabela — md+ */}
             <div className="hidden md:block rounded-2xl border bg-card shadow-sm overflow-hidden">
               <table className="w-full text-sm">
                 <thead>
@@ -347,7 +331,7 @@ export default function BusScheduleFilter({ schedules, rotasMapa }: BusScheduleF
                     <th className="px-4 py-3 text-left font-medium">Empresa</th>
                     <th className="px-4 py-3 text-left font-medium">Saída</th>
                     <th className="px-4 py-3 text-left font-medium">Tarifa</th>
-                    <th className="px-4 py-3 text-right font-medium w-10"></th>
+                    <th className="px-4 py-3 text-right font-medium w-20"></th>
                   </tr>
                 </thead>
                 <tbody className="divide-y">
@@ -380,9 +364,7 @@ export default function BusScheduleFilter({ schedules, rotasMapa }: BusScheduleF
                         </td>
                         <td className="px-4 py-3">
                           {s.tipo === "intermediario" ? (
-                            <span className="rounded-full px-2 py-0.5 text-xs bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-200">
-                              ponto
-                            </span>
+                            <span className="rounded-full px-2 py-0.5 text-xs bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-200">ponto</span>
                           ) : (
                             <span className="text-xs text-muted-foreground">rodoviária</span>
                           )}
@@ -390,15 +372,15 @@ export default function BusScheduleFilter({ schedules, rotasMapa }: BusScheduleF
                         <td className="px-4 py-3 text-sm text-muted-foreground whitespace-nowrap">
                           {formatTarifa(s.tarifaComum) ?? "—"}
                         </td>
-                        <td className="px-4 py-3 text-right">
-                          {s.sourceUrl && (
-                            <button
-                              onClick={() => setModalUrl(s.sourceUrl!)}
-                              className="p-1.5 text-muted-foreground/50 hover:text-primary rounded-full transition-colors"
-                            >
-                              <LinkIcon size={13} />
-                            </button>
-                          )}
+                        <td className="px-4 py-3">
+                          <div className="flex items-center justify-end gap-1">
+                            <BotaoAlarme horario={s.horario} origem={s.origem} destino={s.destino} empresa={s.empresaNome} />
+                            {s.sourceUrl && (
+                              <button onClick={() => setModalUrl(s.sourceUrl!)} className="p-1.5 text-muted-foreground/50 hover:text-primary rounded-full transition-colors">
+                                <LinkIcon size={13} />
+                              </button>
+                            )}
+                          </div>
                         </td>
                       </tr>
                     );
@@ -407,16 +389,11 @@ export default function BusScheduleFilter({ schedules, rotasMapa }: BusScheduleF
               </table>
             </div>
 
-            {/* Cards — mobile */}
             <div className="flex flex-col gap-2 md:hidden">
               {paginatedSchedules.map((s, idx) => {
                 const isProximo = idx === 0 && currentPage === 1 && isHoje;
                 return (
-                  <div
-                    key={s.id}
-                    className={`rounded-xl border p-3.5 flex items-center gap-3 ${isProximo ? "border-primary/40 bg-primary/5" : "bg-card"}`}
-                  >
-                    {/* Horário */}
+                  <div key={s.id} className={`rounded-xl border p-3.5 flex items-center gap-3 ${isProximo ? "border-primary/40 bg-primary/5" : "bg-card"}`}>
                     <div className="shrink-0 text-center w-16">
                       <div className={`text-2xl font-bold tabular-nums leading-none ${isProximo ? "text-primary" : "text-foreground"}`}>
                         {s.horario}
@@ -425,52 +402,38 @@ export default function BusScheduleFilter({ schedules, rotasMapa }: BusScheduleF
                         <div className="text-[10px] text-primary font-medium mt-0.5">{tempoAte(s.horario)}</div>
                       )}
                     </div>
-
-                    {/* Info */}
                     <div className="flex-1 min-w-0 border-l pl-3">
-                      <p className="text-sm font-semibold text-foreground truncate">
-                        {s.origem} → {s.destino}
-                      </p>
+                      <p className="text-sm font-semibold text-foreground truncate">{s.origem} → {s.destino}</p>
                       <div className="flex flex-wrap items-center gap-1.5 mt-1">
                         <span className={`rounded-full px-1.5 py-0 text-[11px] font-medium ${empresaCor[s.empresaNome] ?? "bg-muted text-muted-foreground"}`}>
                           {s.empresaNome}
                         </span>
                         {s.tipo === "intermediario" && (
-                          <span className="rounded-full px-1.5 py-0 text-[11px] bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-200">
-                            ponto
-                          </span>
+                          <span className="rounded-full px-1.5 py-0 text-[11px] bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-200">ponto</span>
                         )}
                         {s.tarifaComum && (
                           <span className="text-[11px] text-muted-foreground">{formatTarifa(s.tarifaComum)}</span>
                         )}
                       </div>
                     </div>
-
-                    {s.sourceUrl && (
-                      <button
-                        onClick={() => setModalUrl(s.sourceUrl!)}
-                        className="shrink-0 p-1.5 text-muted-foreground/40 hover:text-primary rounded-full"
-                      >
-                        <LinkIcon size={13} />
-                      </button>
-                    )}
+                    <div className="flex items-center gap-1 shrink-0">
+                      <BotaoAlarme horario={s.horario} origem={s.origem} destino={s.destino} empresa={s.empresaNome} />
+                      {s.sourceUrl && (
+                        <button onClick={() => setModalUrl(s.sourceUrl!)} className="p-1.5 text-muted-foreground/40 hover:text-primary rounded-full">
+                          <LinkIcon size={13} />
+                        </button>
+                      )}
+                    </div>
                   </div>
                 );
               })}
             </div>
 
-            {/* Paginação */}
             {totalPages > 1 && (
               <div className="flex justify-center items-center gap-3 py-2">
-                <Button variant="outline" size="sm" disabled={currentPage === 1} onClick={() => setCurrentPage((p) => p - 1)}>
-                  ← Anterior
-                </Button>
-                <span className="text-sm text-muted-foreground tabular-nums">
-                  {currentPage} / {totalPages}
-                </span>
-                <Button variant="outline" size="sm" disabled={currentPage === totalPages} onClick={() => setCurrentPage((p) => p + 1)}>
-                  Próximo →
-                </Button>
+                <Button variant="outline" size="sm" disabled={currentPage === 1} onClick={() => setCurrentPage((p) => p - 1)}>← Anterior</Button>
+                <span className="text-sm text-muted-foreground tabular-nums">{currentPage} / {totalPages}</span>
+                <Button variant="outline" size="sm" disabled={currentPage === totalPages} onClick={() => setCurrentPage((p) => p + 1)}>Próximo →</Button>
               </div>
             )}
           </>
@@ -478,14 +441,10 @@ export default function BusScheduleFilter({ schedules, rotasMapa }: BusScheduleF
           <div className="rounded-2xl border-2 border-dashed bg-card p-10 text-center">
             <Bus className="mx-auto h-10 w-10 text-muted-foreground/30 mb-3" />
             <p className="text-muted-foreground font-medium">
-              {origin || destination
-                ? "Nenhum horário disponível para esta rota agora."
-                : "Selecione origem e destino para ver os horários."}
+              {origin || destination ? "Nenhum horário disponível para esta rota agora." : "Selecione origem e destino para ver os horários."}
             </p>
             {(origin || destination) && (
-              <p className="text-sm text-muted-foreground mt-1">
-                Tente outra data ou remova os filtros.
-              </p>
+              <p className="text-sm text-muted-foreground mt-1">Tente outra data ou remova os filtros.</p>
             )}
           </div>
         ) : null}

@@ -86,15 +86,16 @@ export function useAlarmes() {
       if (delay > 0) {
         const timer = setTimeout(() => {
           if ("Notification" in window && Notification.permission === "granted") {
-            const titulo = minutos === 0
+            const minutosNum = Number(minutos);
+            const titulo = minutosNum <= 0
               ? `🚌 Seu ônibus está saindo agora!`
-              : `🚌 Ônibus em ${minutos} minuto${minutos !== 1 ? "s" : ""}`;
+              : `🚌 Ônibus em ${minutosNum} minuto${minutosNum !== 1 ? "s" : ""}`;
 
             new Notification(titulo, {
               body: `${alarme.origem} → ${alarme.destino} às ${formatarHorario(alarme.horario)} · ${alarme.empresa}`,
               icon: "/favicon.svg",
               tag: `${alarme.id}-${minutos}`,
-              requireInteraction: minutos <= 5,
+              requireInteraction: minutosNum <= 5,
             });
           }
         }, delay);
