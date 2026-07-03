@@ -1,27 +1,24 @@
 "use client";
 
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useCallback, useSyncExternalStore } from "react";
 
-// ── Tipos ────────────────────────────────────────────────────────────────
 export type Intervalo = 60 | 30 | 15 | 5;
 
 export type Alarme = {
   id: string;
-  horario: string;       // "07:10"
+  horario: string;
   origem: string;
   destino: string;
   empresa: string;
-  data: string;          // "2026-06-26" (YYYY-MM-DD)
-  intervalos: Intervalo[]; // [60, 30, 15, 5]
+  data: string;
+  intervalos: Intervalo[];
   criadoEm: number;
 };
 
 const STORAGE_KEY = "busontime:alarmes";
-const INTERVALOS_PADRAO: Intervalo[] = [30, 15, 5];
 
-// ── Helpers ──────────────────────────────────────────────────────────────
-function gerarId(alarme: Omit<Alarme, "id" | "criadoEm">) {
-  return `${alarme.data}-${alarme.horario}-${alarme.origem}-${alarme.destino}`;
+function gerarId(horario: string, origem: string, destino: string, data: string) {
+  return `${data}-${horario}-${origem}-${destino}`.replace(/\s+/g, "_");
 }
 
 function calcularMs(horario: string, data: string, minutosAntes: number): number {
@@ -31,188 +28,180 @@ function calcularMs(horario: string, data: string, minutosAntes: number): number
   return alvo.getTime();
 }
 
-function formatarHorario(horario: string) {
-  return horario;
-}
-
 function dataHoje() {
   return new Date().toISOString().slice(0, 10);
 }
 
-// ── Hook principal ────────────────────────────────────────────────────────
-export function useAlarmes() {
-  const [alarmes, setAlarmes] = useState<Alarme[]>([]);
-  const [permissao, setPermissao] = useState<NotificationPermission>("default");
-  const timersRef = useRef<Map<string, ReturnType<typeof setTimeout>[]>>(new Map());
+// ── Estado GLOBAL fora do React ──────────────────────────────────────────
+// Isso é o que corrige o bug: os timers e a lista de alarmes vivem no módulo,
+// não dentro de um componente. Navegar entre páginas (SPA) NÃO os destrói,
+// pois o módulo continua carregado enquanto a aba estiver aberta.
+let alarmesGlobais: Alarme[] = [];
+const timersGlobais = new Map<string, ReturnType<typeof setTimeout>[]>();
+const listeners = new Set<() => void>();
+let inicializado = false;
 
-  // Carrega do localStorage
-  useEffect(() => {
-    try {
-      const raw = localStorage.getItem(STORAGE_KEY);
-      if (raw) {
-        const parsed: Alarme[] = JSON.parse(raw);
-        // Remove alarmes de dias passados
-        const hoje = dataHoje();
-        const ativos = parsed.filter((a) => a.data >= hoje);
-        setAlarmes(ativos);
-        if (ativos.length !== parsed.length) {
-          localStorage.setItem(STORAGE_KEY, JSON.stringify(ativos));
-        }
-      }
-    } catch {
-      // ignora erro de parse
-    }
+function notificarListeners() {
+  listeners.forEach((fn) => fn());
+}
 
-    // Verifica permissão atual
-    if ("Notification" in window) {
-      setPermissao(Notification.permission);
-    }
-  }, []);
+function persistir() {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(alarmesGlobais));
+  } catch { /* ignora */ }
+}
 
-  // Salva no localStorage quando alarmes mudam
-  useEffect(() => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(alarmes));
-  }, [alarmes]);
+function agendarTimers(alarme: Alarme) {
+  // Cancela timers antigos deste alarme específico (não mexe nos outros)
+  const antigos = timersGlobais.get(alarme.id);
+  if (antigos) antigos.forEach(clearTimeout);
 
-  // Agenda os timers para cada alarme ativo
-  const agendarTimers = useCallback((alarme: Alarme) => {
-    const timers: ReturnType<typeof setTimeout>[] = [];
-    const agora = Date.now();
+  const timers: ReturnType<typeof setTimeout>[] = [];
+  const agora = Date.now();
 
-    for (const minutos of alarme.intervalos) {
-      const dispararEm = calcularMs(alarme.horario, alarme.data, minutos);
-      const delay = dispararEm - agora;
+  for (const minutos of alarme.intervalos) {
+    const dispararEm = calcularMs(alarme.horario, alarme.data, minutos);
+    const delay = dispararEm - agora;
 
-      if (delay > 0) {
-        const timer = setTimeout(() => {
-          if ("Notification" in window && Notification.permission === "granted") {
-            const minutosNum = Number(minutos);
-            const titulo = minutosNum <= 0
-              ? `🚌 Seu ônibus está saindo agora!`
-              : `🚌 Ônibus em ${minutosNum} minuto${minutosNum !== 1 ? "s" : ""}`;
+    if (delay > 0) {
+      const timer = setTimeout(() => {
+        if ("Notification" in window && Notification.permission === "granted") {
+          const minutosNum = Number(minutos);
+          const titulo = minutosNum <= 0
+            ? "🚌 Seu ônibus está saindo agora!"
+            : `🚌 Ônibus em ${minutosNum} minuto${minutosNum !== 1 ? "s" : ""}`;
 
-            new Notification(titulo, {
-              body: `${alarme.origem} → ${alarme.destino} às ${formatarHorario(alarme.horario)} · ${alarme.empresa}`,
+          try {
+            const n = new Notification(titulo, {
+              body: `${alarme.origem} → ${alarme.destino} às ${alarme.horario} · ${alarme.empresa}`,
               icon: "/favicon.svg",
               tag: `${alarme.id}-${minutos}`,
               requireInteraction: minutosNum <= 5,
             });
+            n.onclick = () => window.focus();
+          } catch (err) {
+            console.error("Erro ao criar notificação:", err);
           }
-        }, delay);
-
-        timers.push(timer);
-      }
+        }
+      }, delay);
+      timers.push(timer);
     }
+  }
 
-    timersRef.current.set(alarme.id, timers);
+  timersGlobais.set(alarme.id, timers);
+}
+
+function inicializar() {
+  if (inicializado || typeof window === "undefined") return;
+  inicializado = true;
+
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) {
+      const parsed: Alarme[] = JSON.parse(raw);
+      const hoje = dataHoje();
+      alarmesGlobais = parsed.filter((a) => a.data >= hoje);
+      if (alarmesGlobais.length !== parsed.length) persistir();
+    }
+  } catch { /* ignora */ }
+
+  // Reagenda tudo que já estava salvo, se a permissão já foi concedida antes
+  if ("Notification" in window && Notification.permission === "granted") {
+    alarmesGlobais.forEach(agendarTimers);
+  }
+}
+
+function subscribe(callback: () => void) {
+  listeners.add(callback);
+  return () => listeners.delete(callback);
+}
+
+function getSnapshot() {
+  return alarmesGlobais;
+}
+
+// ── Hook ──────────────────────────────────────────────────────────────────
+export function useAlarmes() {
+  const alarmes = useSyncExternalStore(subscribe, getSnapshot, () => []);
+  const [permissao, setPermissao] = useState<NotificationPermission>("default");
+
+  useEffect(() => {
+    inicializar();
+    if ("Notification" in window) setPermissao(Notification.permission);
   }, []);
 
-  // Reagenda todos os alarmes ao montar
-  useEffect(() => {
-    if (permissao === "granted") {
-      alarmes.forEach(agendarTimers);
-    }
-    return () => {
-      // Limpa todos os timers ao desmontar
-      timersRef.current.forEach((timers) => timers.forEach(clearTimeout));
-    };
-  }, [permissao]); // eslint-disable-line react-hooks/exhaustive-deps
-
-  // Solicita permissão de notificação
   const solicitarPermissao = useCallback(async () => {
     if (!("Notification" in window)) return false;
     const resultado = await Notification.requestPermission();
     setPermissao(resultado);
+    if (resultado === "granted") {
+      // Agenda tudo que já estava pendente assim que a permissão for concedida
+      alarmesGlobais.forEach(agendarTimers);
+    }
     return resultado === "granted";
   }, []);
 
-  // Adiciona ou atualiza alarme
-  const adicionarAlarme = useCallback(async (
-    params: {
-      horario: string;
-      origem: string;
-      destino: string;
-      empresa: string;
-      data?: string;
-      intervalos?: Intervalo[];
-    }
-  ) => {
-    let perm = permissao;
+  const adicionarAlarme = useCallback(async (params: {
+    horario: string;
+    origem: string;
+    destino: string;
+    empresa: string;
+    data?: string;
+    intervalos?: Intervalo[];
+  }) => {
+    let perm: NotificationPermission = ("Notification" in window) ? Notification.permission : "denied";
     if (perm !== "granted") {
       const ok = await solicitarPermissao();
       if (!ok) return false;
-      perm = "granted";
     }
 
+    const data = params.data ?? dataHoje();
+    const intervalos = params.intervalos ?? [30, 15, 5];
     const novoAlarme: Alarme = {
-      id: gerarId({
-        horario: params.horario,
-        origem: params.origem,
-        destino: params.destino,
-        empresa: params.empresa,
-        data: params.data ?? dataHoje(),
-        intervalos: params.intervalos ?? INTERVALOS_PADRAO,
-      }),
+      id: gerarId(params.horario, params.origem, params.destino, data),
       horario: params.horario,
       origem: params.origem,
       destino: params.destino,
       empresa: params.empresa,
-      data: params.data ?? dataHoje(),
-      intervalos: params.intervalos ?? INTERVALOS_PADRAO,
+      data,
+      intervalos,
       criadoEm: Date.now(),
     };
 
-    // Remove timers antigos do mesmo alarme se existir
-    const timersAntigos = timersRef.current.get(novoAlarme.id);
-    if (timersAntigos) timersAntigos.forEach(clearTimeout);
-
-    setAlarmes((prev) => {
-      const filtrado = prev.filter((a) => a.id !== novoAlarme.id);
-      return [...filtrado, novoAlarme];
-    });
-
+    alarmesGlobais = [...alarmesGlobais.filter((a) => a.id !== novoAlarme.id), novoAlarme];
+    persistir();
     agendarTimers(novoAlarme);
+    notificarListeners();
     return true;
-  }, [permissao, solicitarPermissao, agendarTimers]);
+  }, [solicitarPermissao]);
 
-  // Remove alarme
   const removerAlarme = useCallback((id: string) => {
-    const timers = timersRef.current.get(id);
-    if (timers) {
-      timers.forEach(clearTimeout);
-      timersRef.current.delete(id);
-    }
-    setAlarmes((prev) => prev.filter((a) => a.id !== id));
+    const timers = timersGlobais.get(id);
+    if (timers) { timers.forEach(clearTimeout); timersGlobais.delete(id); }
+    alarmesGlobais = alarmesGlobais.filter((a) => a.id !== id);
+    persistir();
+    notificarListeners();
   }, []);
 
-  // Atualiza intervalos de um alarme existente
   const atualizarIntervalos = useCallback((id: string, intervalos: Intervalo[]) => {
-    setAlarmes((prev) =>
-      prev.map((a) => {
-        if (a.id !== id) return a;
-        const atualizado = { ...a, intervalos };
-        // Reagenda
-        const timersAntigos = timersRef.current.get(id);
-        if (timersAntigos) timersAntigos.forEach(clearTimeout);
-        agendarTimers(atualizado);
-        return atualizado;
-      })
-    );
-  }, [agendarTimers]);
+    alarmesGlobais = alarmesGlobais.map((a) => {
+      if (a.id !== id) return a;
+      const atualizado = { ...a, intervalos };
+      agendarTimers(atualizado);
+      return atualizado;
+    });
+    persistir();
+    notificarListeners();
+  }, []);
 
-  // Verifica se um horário tem alarme ativo
   const temAlarme = useCallback((horario: string, origem: string, destino: string) => {
     const hoje = dataHoje();
-    return alarmes.some(
-      (a) => a.horario === horario && a.origem === origem && a.destino === destino && a.data >= hoje
-    );
+    return alarmes.some((a) => a.horario === horario && a.origem === origem && a.destino === destino && a.data >= hoje);
   }, [alarmes]);
 
   const getAlarme = useCallback((horario: string, origem: string, destino: string) => {
     const hoje = dataHoje();
-    return alarmes.find(
-      (a) => a.horario === horario && a.origem === origem && a.destino === destino && a.data >= hoje
-    ) ?? null;
+    return alarmes.find((a) => a.horario === horario && a.origem === origem && a.destino === destino && a.data >= hoje) ?? null;
   }, [alarmes]);
 
   return {
@@ -224,6 +213,5 @@ export function useAlarmes() {
     temAlarme,
     getAlarme,
     solicitarPermissao,
-    INTERVALOS_PADRAO,
   };
 }
