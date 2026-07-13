@@ -6,7 +6,7 @@ import { Home, Info, MessageSquarePlus, RotateCw } from 'lucide-react';
 
 const navItems = [
   { href: '/', label: 'Suburbanos', icon: Home },
-  { href: '/circulares', label: 'Circular', icon: RotateCw },
+  { href: '/circular', label: 'Circular', icon: RotateCw },
   { href: '/suggest', label: 'Sugerir', icon: MessageSquarePlus },
   { href: '/about', label: 'Sobre', icon: Info },
 ];
