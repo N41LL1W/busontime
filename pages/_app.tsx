@@ -3,16 +3,13 @@ import type { AppProps } from 'next/app';
 import Head from 'next/head';
 import NavBar from '@/components/NavBar';
 import { useEffect, useState } from 'react';
-import Link from 'next/link'; 
+import Link from 'next/link';
 import { QueryClientProvider } from '@tanstack/react-query';
 import queryClient from '@/lib/reactQuery';
-
-// Importações do Capacitor e AdMob
 import { Capacitor } from '@capacitor/core';
 import { AdMob, BannerAdOptions, BannerAdSize, BannerAdPosition } from '@capacitor-community/admob';
 
 function MyApp({ Component, pageProps }: AppProps) {
-  // Lógica do Dark Mode
   const [darkMode, setDarkMode] = useState(false);
 
   useEffect(() => {
@@ -31,16 +28,25 @@ function MyApp({ Component, pageProps }: AppProps) {
     }
   }, [darkMode]);
 
-  // Lógica para inicializar e mostrar o banner do AdMob
   useEffect(() => {
     if (Capacitor.isNativePlatform()) {
       initializeAdMob();
     }
   }, []);
 
+  // Registra o Service Worker do PWA (só em produção e se o navegador suportar)
+  useEffect(() => {
+    if ('serviceWorker' in navigator && process.env.NODE_ENV === 'production') {
+      navigator.serviceWorker
+        .register('/sw.js')
+        .then((reg) => console.log('Service Worker registrado:', reg.scope))
+        .catch((err) => console.error('Erro ao registrar Service Worker:', err));
+    }
+  }, []);
+
   const initializeAdMob = async () => {
     try {
-      await AdMob.initialize(); 
+      await AdMob.initialize();
       console.log('AdMob inicializado com sucesso.');
       showBannerAd();
     } catch (error) {
@@ -50,13 +56,12 @@ function MyApp({ Component, pageProps }: AppProps) {
 
   const showBannerAd = async () => {
     const options: BannerAdOptions = {
-      adId: 'ca-app-pub-3940256099942544/6300978111', // ID de teste do Google
+      adId: 'ca-app-pub-3940256099942544/6300978111',
       adSize: BannerAdSize.ADAPTIVE_BANNER,
       position: BannerAdPosition.BOTTOM_CENTER,
-      margin: 64, // Altura da sua NavBar (h-16)
+      margin: 64,
       isTesting: true,
     };
-
     try {
       await AdMob.showBanner(options);
       console.log('Banner do AdMob deve estar visível.');
@@ -80,14 +85,11 @@ function MyApp({ Component, pageProps }: AppProps) {
             {darkMode ? "Claro" : "Escuro"}
           </button>
         </header>
-        
+
         <main>
           <Component {...pageProps} />
         </main>
-
-      <NavBar />
-
-        {/* RODAPÉ GLOBAL MODIFICADO com o link para a Política de Privacidade */}
+        <NavBar />
         <footer className="text-center p-4 pt-0 pb-20 text-sm text-muted-foreground space-y-1">
           <p>© {new Date().getFullYear()} BusOnTime</p>
           <Link href="/privacy" className="hover:text-primary hover:underline">
