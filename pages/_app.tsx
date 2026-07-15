@@ -8,6 +8,7 @@ import { QueryClientProvider } from '@tanstack/react-query';
 import queryClient from '@/lib/reactQuery';
 import { Capacitor } from '@capacitor/core';
 import { AdMob, BannerAdOptions, BannerAdSize, BannerAdPosition } from '@capacitor-community/admob';
+import { Analytics } from '@vercel/analytics/react';
 
 function MyApp({ Component, pageProps }: AppProps) {
   const [darkMode, setDarkMode] = useState(false);
@@ -97,6 +98,7 @@ function MyApp({ Component, pageProps }: AppProps) {
           </Link>
         </footer>
       </div>
+      <Analytics />
     </QueryClientProvider>
   );
 }
