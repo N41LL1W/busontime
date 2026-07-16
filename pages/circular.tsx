@@ -13,6 +13,7 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import BotaoAlarme from "@/components/BotaoAlarme";
 import PainelAlarmes from "@/components/PainelAlarmes";
+import AdBanner from "@/components/Adbanner";
 
 // ── Tipos ────────────────────────────────────────────────────────────────
 type CircularSimples = {
@@ -190,6 +191,7 @@ export default function CircularesPage({ cidades }: Props) {
         <div className="mx-auto max-w-2xl px-4 py-6 space-y-4">
 
           <div className="flex items-center justify-between">
+            <AdBanner slot="1234567890" />
             <Link href="/" className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors">
               <ChevronLeft className="h-4 w-4" /> Voltar para busca de suburbanos
             </Link>
@@ -367,6 +369,8 @@ export default function CircularesPage({ cidades }: Props) {
               {dados.contato && <p>{dados.contato}</p>}
             </div>
           )}
+
+          <AdBanner slot="1234567890" />
 
         </div>
       </div>

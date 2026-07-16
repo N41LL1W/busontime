@@ -1,0 +1,5 @@
+# ads.txt
+# Depois de criar sua conta no Google AdSense, ele vai te dar uma linha assim
+# (com seu próprio código pub-XXXXXXXXXXXXXXXX). Substitua a linha abaixo por ela:
+#
+# google.com, pub-0000000000000000, DIRECT, f08c47fec0942fa0

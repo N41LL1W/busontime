@@ -5,6 +5,7 @@ import path from "path";
 import fs from "fs";
 import prisma from "../lib/prisma";
 import BusScheduleFilter from "../components/BusScheduleFilter";
+import AdBanner from "@/components/Adbanner";
 
 export type HorarioFlat = {
   id: number;
@@ -117,6 +118,7 @@ export default function HomePage({ horarios, rotasMapa, error }: HomePageProps) 
       <div className="flex flex-col items-center w-full p-4 md:p-6 pb-24">
         <div className="w-full max-w-3xl">
           <div className="mb-5 text-center md:text-left">
+            <AdBanner slot="1234567890" />
             <h2 className="text-xl font-semibold text-foreground">
               Encontre seu próximo ônibus
             </h2>
@@ -125,6 +127,7 @@ export default function HomePage({ horarios, rotasMapa, error }: HomePageProps) 
             </p>
           </div>
           <BusScheduleFilter schedules={horarios} rotasMapa={rotasMapa} />
+          <AdBanner slot="1234567890" />
         </div>
       </div>
     </>
