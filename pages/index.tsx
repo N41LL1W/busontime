@@ -53,7 +53,6 @@ export const getStaticProps: GetStaticProps<HomePageProps> = async () => {
       },
     });
 
-    // Enriquece o mapa com TODAS as rotas do banco (inclui Ribe, Rápido d'Oeste, etc)
     for (const rota of rotas) {
       if (!rotasMapa[rota.origem]) rotasMapa[rota.origem] = [];
       if (!rotasMapa[rota.origem].includes(rota.destino)) {
@@ -117,8 +116,12 @@ export default function HomePage({ horarios, rotasMapa, error }: HomePageProps) 
       </Head>
       <div className="flex flex-col items-center w-full p-4 md:p-6 pb-24">
         <div className="w-full max-w-3xl">
+          {/* 1. Banner do TOPO (Home) */}
+          <div className="mb-6 w-full flex justify-center">
+            <AdBanner slot="9088960446" className="my-2" />
+          </div>
+
           <div className="mb-5 text-center md:text-left">
-            <AdBanner slot="1234567890" />
             <h2 className="text-xl font-semibold text-foreground">
               Encontre seu próximo ônibus
             </h2>
@@ -126,8 +129,13 @@ export default function HomePage({ horarios, rotasMapa, error }: HomePageProps) 
               Selecione a data, hora, origem e destino para ver os horários disponíveis.
             </p>
           </div>
+          
           <BusScheduleFilter schedules={horarios} rotasMapa={rotasMapa} />
-          <AdBanner slot="1234567890" />
+          
+          {/* 2. Banner de BAIXO (Home) */}
+          <div className="mt-8 w-full flex justify-center">
+            <AdBanner slot="5149715430" className="my-2" />
+          </div>
         </div>
       </div>
     </>

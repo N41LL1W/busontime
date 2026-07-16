@@ -90,7 +90,6 @@ export default function CircularesPage({ cidades }: Props) {
   const [pontoSelecionado, setPontoSelecionado] = useState("Rodoviária");
   const [viagemManual, setViagemManual] = useState<number | null>(null);
 
-  // Corrige hidratação: só calcula data/hora reais depois de montar no cliente
   useEffect(() => {
     const now = new Date();
     setSelectedDate(now);
@@ -120,7 +119,6 @@ export default function CircularesPage({ cidades }: Props) {
   const pontosOrdenados = useMemo(() => {
     if (!dados) return [];
     const lista = temLinhas(dados) ? (linhaAtual?.pontos ?? []) : dados.pontos;
-    // remove duplicatas mantendo ordem, já que a lista de pontos pode repetir nomes (ex: "Rodoviária")
     const vistos = new Set<string>();
     return lista.filter((p) => {
       const chaveExata = Object.keys(horariosBase).find((k) => k === p) ? p : null;
@@ -137,7 +135,6 @@ export default function CircularesPage({ cidades }: Props) {
   const indiceAutoPonto = isHoje ? proximoIndice(horariosDoPonto, selectedTime) : -1;
   const viagemAtual = viagemManual ?? (indiceAutoPonto >= 0 ? indiceAutoPonto : 0);
 
-  // Ponto onde o ônibus estaria "agora" dentro da viagem atual (para destaque na tabela completa)
   const indicePontoAtualNaViagem = useMemo(() => {
     if (!isHoje) return -1;
     for (const ponto of pontosOrdenados) {
@@ -163,7 +160,6 @@ export default function CircularesPage({ cidades }: Props) {
 
   function handleClicarPontoNaTabela(ponto: string) {
     setPontoSelecionado(ponto);
-    // mantém a viagem atual se aquele ponto tiver horário nesse índice, senão reseta pra auto
     const temHorarioNesseIndice = Boolean(horariosBase[ponto]?.[viagemAtual]);
     if (!temHorarioNesseIndice) setViagemManual(null);
   }
@@ -190,8 +186,11 @@ export default function CircularesPage({ cidades }: Props) {
       <div className="min-h-screen bg-background pb-16">
         <div className="mx-auto max-w-2xl px-4 py-6 space-y-4">
 
-          <div className="flex items-center justify-between">
-            <AdBanner slot="1234567890" />
+          {/* 1. Banner do TOPO (Circular) — Usando o TopCircular */}
+          <div className="w-full flex flex-col gap-2">
+            <div className="w-full flex justify-center">
+              <AdBanner slot="2635232734" className="my-1" />
+            </div>
             <Link href="/" className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors">
               <ChevronLeft className="h-4 w-4" /> Voltar para busca de suburbanos
             </Link>
@@ -214,7 +213,7 @@ export default function CircularesPage({ cidades }: Props) {
           <div className="rounded-2xl border bg-card shadow-sm overflow-hidden">
             <div className="p-4 space-y-3">
 
-              {/* Data + Hora — igual ao suburbano */}
+              {/* Data + Hora */}
               <div className="flex gap-2">
                 <Popover>
                   <PopoverTrigger asChild>
@@ -315,7 +314,7 @@ export default function CircularesPage({ cidades }: Props) {
             </div>
           )}
 
-          {/* Itinerário completo, ponto a ponto, para a viagem selecionada */}
+          {/* Itinerário completo */}
           <div className="rounded-2xl border bg-card shadow-sm overflow-hidden">
             <div className="px-4 py-3 border-b bg-muted/20 flex items-center justify-between gap-2">
               <span className="text-sm font-semibold text-foreground flex items-center gap-2">
@@ -370,7 +369,10 @@ export default function CircularesPage({ cidades }: Props) {
             </div>
           )}
 
-          <AdBanner slot="1234567890" />
+          {/* 2. Banner de BAIXO (Circular) — Usando o BottomCircular */}
+          <div className="w-full flex justify-center mt-4">
+            <AdBanner slot="9009069393" className="my-1" />
+          </div>
 
         </div>
       </div>
