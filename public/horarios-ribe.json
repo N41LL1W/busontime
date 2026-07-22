@@ -8,322 +8,315 @@
       "origem": "Ribeirão Preto",
       "destino": "Jardinópolis",
       "sentido": "ida",
-      "tarifa": 8.25,
+      "tarifa": null,
       "horarios": [
         {
           "horario": "05:40",
           "diaDaSemana": "Segunda a Sexta",
           "sentido": "ida",
           "tipo": "rodoviaria",
-          "observacao": "DIRETO"
+          "observacao": "Direto"
         },
         {
           "horario": "06:00",
           "diaDaSemana": "Segunda a Sexta",
           "sentido": "ida",
           "tipo": "rodoviaria",
-          "observacao": "DIRETO"
+          "observacao": "São Francisco"
         },
         {
           "horario": "06:10",
           "diaDaSemana": "Segunda a Sexta",
           "sentido": "ida",
           "tipo": "rodoviaria",
-          "observacao": "Não Passa no Morumbi"
+          "observacao": "Direto"
         },
         {
           "horario": "06:30",
           "diaDaSemana": "Segunda a Sexta",
           "sentido": "ida",
           "tipo": "rodoviaria",
-          "observacao": "Jurucê / Estatua"
+          "observacao": "Juruce / Estatua"
         },
         {
-          "horario": "06:40",
+          "horario": "06:30",
           "diaDaSemana": "Segunda a Sexta",
           "sentido": "ida",
           "tipo": "rodoviaria",
-          "observacao": "S. Francisco"
+          "observacao": "São Francisco"
         },
         {
           "horario": "07:00",
           "diaDaSemana": "Segunda a Sexta",
           "sentido": "ida",
           "tipo": "rodoviaria",
-          "observacao": "DIRETO"
+          "observacao": "HC / direto Jard."
+        },
+        {
+          "horario": "07:00",
+          "diaDaSemana": "Segunda a Sexta",
+          "sentido": "ida",
+          "tipo": "rodoviaria",
+          "observacao": "Direto"
         },
         {
           "horario": "07:25",
           "diaDaSemana": "Segunda a Sexta",
           "sentido": "ida",
           "tipo": "rodoviaria",
-          "observacao": "Jurucê"
+          "observacao": "Juruce"
         },
         {
-          "horario": "07:30",
+          "horario": "07:35",
           "diaDaSemana": "Segunda a Sexta",
           "sentido": "ida",
           "tipo": "rodoviaria",
-          "observacao": "S. Francisco"
+          "observacao": "São Francisco"
         },
         {
           "horario": "07:50",
           "diaDaSemana": "Segunda a Sexta",
           "sentido": "ida",
           "tipo": "rodoviaria",
-          "observacao": "S. Francisco"
+          "observacao": "São Francisco"
         },
         {
           "horario": "08:20",
           "diaDaSemana": "Segunda a Sexta",
           "sentido": "ida",
           "tipo": "rodoviaria",
-          "observacao": "S. Fco não sobe Pernambucanas"
+          "observacao": "São Francisco"
         },
         {
           "horario": "08:45",
           "diaDaSemana": "Segunda a Sexta",
           "sentido": "ida",
           "tipo": "rodoviaria",
-          "observacao": "S. Francisco"
+          "observacao": "São Francisco"
         },
         {
           "horario": "09:45",
           "diaDaSemana": "Segunda a Sexta",
           "sentido": "ida",
           "tipo": "rodoviaria",
-          "observacao": "S. Francisco"
+          "observacao": "São Francisco"
         },
         {
           "horario": "10:25",
           "diaDaSemana": "Segunda a Sexta",
           "sentido": "ida",
           "tipo": "rodoviaria",
-          "observacao": "S. Francisco"
+          "observacao": "São Francisco"
         },
         {
           "horario": "11:15",
           "diaDaSemana": "Segunda a Sexta",
           "sentido": "ida",
           "tipo": "rodoviaria",
-          "observacao": "S. Francisco"
+          "observacao": "São Francisco"
         },
         {
           "horario": "12:30",
           "diaDaSemana": "Segunda a Sexta",
           "sentido": "ida",
           "tipo": "rodoviaria",
-          "observacao": "S. Francisco"
+          "observacao": "São Francisco"
         },
         {
           "horario": "13:00",
           "diaDaSemana": "Segunda a Sexta",
           "sentido": "ida",
           "tipo": "rodoviaria",
-          "observacao": "Jurucê / Estatua"
+          "observacao": "Juruce / Estatua"
         },
         {
           "horario": "13:30",
           "diaDaSemana": "Segunda a Sexta",
           "sentido": "ida",
           "tipo": "rodoviaria",
-          "observacao": "S. Francisco"
+          "observacao": "São Francisco"
         },
         {
           "horario": "14:00",
           "diaDaSemana": "Segunda a Sexta",
           "sentido": "ida",
           "tipo": "rodoviaria",
-          "observacao": "S. Francisco"
+          "observacao": "São Francisco"
         },
         {
           "horario": "14:45",
           "diaDaSemana": "Segunda a Sexta",
           "sentido": "ida",
           "tipo": "rodoviaria",
-          "observacao": "S. Francisco"
+          "observacao": "São Francisco"
         },
         {
           "horario": "15:10",
           "diaDaSemana": "Segunda a Sexta",
           "sentido": "ida",
           "tipo": "rodoviaria",
-          "observacao": "S. Francisco"
+          "observacao": "São Francisco"
         },
         {
           "horario": "15:20",
           "diaDaSemana": "Segunda a Sexta",
           "sentido": "ida",
           "tipo": "rodoviaria",
-          "observacao": "Jurucê / Estatua"
+          "observacao": "Juruce / S. Francisco"
         },
         {
           "horario": "15:40",
           "diaDaSemana": "Segunda a Sexta",
           "sentido": "ida",
           "tipo": "rodoviaria",
-          "observacao": "S. Francisco"
+          "observacao": "São Francisco"
         },
         {
           "horario": "16:00",
           "diaDaSemana": "Segunda a Sexta",
           "sentido": "ida",
           "tipo": "rodoviaria",
-          "observacao": "S. Francisco"
+          "observacao": "São Francisco"
         },
         {
-          "horario": "16:20",
+          "horario": "16:17",
           "diaDaSemana": "Segunda a Sexta",
           "sentido": "ida",
           "tipo": "rodoviaria",
-          "observacao": "S. Francisco"
+          "observacao": "São Francisco"
         },
         {
           "horario": "16:40",
           "diaDaSemana": "Segunda a Sexta",
           "sentido": "ida",
           "tipo": "rodoviaria",
-          "observacao": "S. Francisco"
+          "observacao": "S.Fco./ Não Sobe a Pernambucanas"
         },
         {
-          "horario": "16:50",
+          "horario": "16:57",
           "diaDaSemana": "Segunda a Sexta",
           "sentido": "ida",
           "tipo": "rodoviaria",
-          "observacao": "Jurucê / Estatua"
-        },
-        {
-          "horario": "16:56",
-          "diaDaSemana": "Segunda a Sexta",
-          "sentido": "ida",
-          "tipo": "rodoviaria",
-          "observacao": "S. Fco não sobe Pernambucanas"
-        },
-        {
-          "horario": "17:01",
-          "diaDaSemana": "Segunda a Sexta",
-          "sentido": "ida",
-          "tipo": "rodoviaria",
-          "observacao": "Aroeira"
+          "observacao": "São Francisco"
         },
         {
           "horario": "17:08",
           "diaDaSemana": "Segunda a Sexta",
           "sentido": "ida",
           "tipo": "rodoviaria",
-          "observacao": "S. Francisco"
+          "observacao": "São Francisco"
         },
         {
           "horario": "17:20",
           "diaDaSemana": "Segunda a Sexta",
           "sentido": "ida",
           "tipo": "rodoviaria",
-          "observacao": "S. Francisco"
+          "observacao": "São Francisco"
         },
         {
           "horario": "17:30",
           "diaDaSemana": "Segunda a Sexta",
           "sentido": "ida",
           "tipo": "rodoviaria",
-          "observacao": "S. Francisco"
+          "observacao": "São Francisco"
         },
         {
-          "horario": "17:35",
+          "horario": "17:36",
           "diaDaSemana": "Segunda a Sexta",
           "sentido": "ida",
           "tipo": "rodoviaria",
-          "observacao": "Jurucê / Mogiana"
+          "observacao": "Mogiana / Juruce"
         },
         {
           "horario": "17:45",
           "diaDaSemana": "Segunda a Sexta",
           "sentido": "ida",
           "tipo": "rodoviaria",
-          "observacao": "S. Fco não sobe Pernambucanas"
+          "observacao": "S.Fco./ Não Sobe a Pernambucanas"
         },
         {
-          "horario": "17:50",
+          "horario": "17:55",
           "diaDaSemana": "Segunda a Sexta",
           "sentido": "ida",
           "tipo": "rodoviaria",
-          "observacao": "S. Francisco"
-        },
-        {
-          "horario": "18:00",
-          "diaDaSemana": "Segunda a Sexta",
-          "sentido": "ida",
-          "tipo": "rodoviaria",
-          "observacao": "S. Francisco"
+          "observacao": "São Francisco"
         },
         {
           "horario": "18:01",
           "diaDaSemana": "Segunda a Sexta",
           "sentido": "ida",
           "tipo": "rodoviaria",
-          "observacao": "VIA  SHOPPING"
+          "observacao": "Shopping"
         },
         {
-          "horario": "18:15",
+          "horario": "18:10",
           "diaDaSemana": "Segunda a Sexta",
           "sentido": "ida",
           "tipo": "rodoviaria",
-          "observacao": "S. Francisco"
+          "observacao": "São Francisco"
+        },
+        {
+          "horario": "18:25",
+          "diaDaSemana": "Segunda a Sexta",
+          "sentido": "ida",
+          "tipo": "rodoviaria",
+          "observacao": "São Francisco"
         },
         {
           "horario": "18:35",
           "diaDaSemana": "Segunda a Sexta",
           "sentido": "ida",
           "tipo": "rodoviaria",
-          "observacao": "Jurucê / Estatua"
+          "observacao": "Juruce / Estatua"
         },
         {
-          "horario": "18:45",
+          "horario": "18:55",
           "diaDaSemana": "Segunda a Sexta",
           "sentido": "ida",
           "tipo": "rodoviaria",
-          "observacao": "S. Francisco"
+          "observacao": "São Francisco"
         },
         {
-          "horario": "19:10",
+          "horario": "19:30",
           "diaDaSemana": "Segunda a Sexta",
           "sentido": "ida",
           "tipo": "rodoviaria",
-          "observacao": "S. Francisco"
+          "observacao": "São Francisco / HC 19:00 h"
         },
         {
-          "horario": "20:00",
+          "horario": "20:10",
           "diaDaSemana": "Segunda a Sexta",
           "sentido": "ida",
           "tipo": "rodoviaria",
-          "observacao": "S. Francisco"
+          "observacao": "São Francisco"
         },
         {
           "horario": "21:00",
           "diaDaSemana": "Segunda a Sexta",
           "sentido": "ida",
           "tipo": "rodoviaria",
-          "observacao": "Jurucê / S.Fco /  Morumbi"
+          "observacao": "Juruce / Est. /Morumbi"
         },
         {
           "horario": "22:15",
           "diaDaSemana": "Segunda a Sexta",
           "sentido": "ida",
           "tipo": "rodoviaria",
-          "observacao": "Renascer / S.Francisco"
+          "observacao": "São Francisco"
         },
         {
           "horario": "23:30",
           "diaDaSemana": "Segunda a Sexta",
           "sentido": "ida",
           "tipo": "rodoviaria",
-          "observacao": "Renascer / S.Francisco"
+          "observacao": "São Francisco"
         },
         {
           "horario": "05:40",
           "diaDaSemana": "Sábado",
           "sentido": "ida",
           "tipo": "rodoviaria",
-          "observacao": "S. Francisco"
+          "observacao": "S.Francisco"
         },
         {
           "horario": "06:00",
@@ -344,42 +337,42 @@
           "diaDaSemana": "Sábado",
           "sentido": "ida",
           "tipo": "rodoviaria",
-          "observacao": "S. Francisco"
+          "observacao": "S.Francisco"
         },
         {
           "horario": "07:45",
           "diaDaSemana": "Sábado",
           "sentido": "ida",
           "tipo": "rodoviaria",
-          "observacao": "S. Francisco"
+          "observacao": "S.Francisco"
         },
         {
           "horario": "08:45",
           "diaDaSemana": "Sábado",
           "sentido": "ida",
           "tipo": "rodoviaria",
-          "observacao": "S. Francisco"
+          "observacao": "S.Francisco"
         },
         {
           "horario": "09:20",
           "diaDaSemana": "Sábado",
           "sentido": "ida",
           "tipo": "rodoviaria",
-          "observacao": "S. Francisco"
+          "observacao": "S.Francisco"
         },
         {
           "horario": "10:00",
           "diaDaSemana": "Sábado",
           "sentido": "ida",
           "tipo": "rodoviaria",
-          "observacao": "S. Francisco"
+          "observacao": "S.Francisco"
         },
         {
           "horario": "11:00",
           "diaDaSemana": "Sábado",
           "sentido": "ida",
           "tipo": "rodoviaria",
-          "observacao": "S. Francisco"
+          "observacao": "S.Francisco"
         },
         {
           "horario": "12:00",
@@ -400,56 +393,56 @@
           "diaDaSemana": "Sábado",
           "sentido": "ida",
           "tipo": "rodoviaria",
-          "observacao": "S. Francisco"
+          "observacao": "S.Francisco"
         },
         {
           "horario": "13:30",
           "diaDaSemana": "Sábado",
           "sentido": "ida",
           "tipo": "rodoviaria",
-          "observacao": "Jurucê / Estatua"
+          "observacao": "Jurucê/Estatua"
         },
         {
           "horario": "14:00",
           "diaDaSemana": "Sábado",
           "sentido": "ida",
           "tipo": "rodoviaria",
-          "observacao": "S. Francisco"
+          "observacao": "S.Francisco"
         },
         {
           "horario": "14:30",
           "diaDaSemana": "Sábado",
           "sentido": "ida",
           "tipo": "rodoviaria",
-          "observacao": "S. Francisco"
+          "observacao": "S.Francisco"
         },
         {
           "horario": "15:00",
           "diaDaSemana": "Sábado",
           "sentido": "ida",
           "tipo": "rodoviaria",
-          "observacao": "S. Francisco"
+          "observacao": "S.Francisco"
         },
         {
           "horario": "16:00",
           "diaDaSemana": "Sábado",
           "sentido": "ida",
           "tipo": "rodoviaria",
-          "observacao": "S. Francisco"
+          "observacao": "S.Francisco"
         },
         {
           "horario": "17:00",
           "diaDaSemana": "Sábado",
           "sentido": "ida",
           "tipo": "rodoviaria",
-          "observacao": "S. Francisco"
+          "observacao": "S.Francisco"
         },
         {
           "horario": "18:00",
           "diaDaSemana": "Sábado",
           "sentido": "ida",
           "tipo": "rodoviaria",
-          "observacao": "S. Francisco"
+          "observacao": "S.Francisco"
         },
         {
           "horario": "18:20",
@@ -484,7 +477,7 @@
           "diaDaSemana": "Sábado",
           "sentido": "ida",
           "tipo": "rodoviaria",
-          "observacao": "Renascer São Francisco"
+          "observacao": "São Francisco"
         },
         {
           "horario": "06:00",
@@ -498,7 +491,7 @@
           "diaDaSemana": "Domingo e Feriados",
           "sentido": "ida",
           "tipo": "rodoviaria",
-          "observacao": "Jurucê / S.Fco. / Morumbí"
+          "observacao": "Jurucê/ S.Fco./Morumbí"
         },
         {
           "horario": "08:00",
@@ -554,14 +547,14 @@
           "diaDaSemana": "Domingo e Feriados",
           "sentido": "ida",
           "tipo": "rodoviaria",
-          "observacao": "Jurucê/ S.Fco. / Morumbí"
+          "observacao": "Jurucê/ S.Fco./Morumbí"
         },
         {
           "horario": "23:30",
           "diaDaSemana": "Domingo e Feriados",
           "sentido": "ida",
           "tipo": "rodoviaria",
-          "observacao": "Renascer / S. Fco."
+          "observacao": "São Francisco"
         }
       ]
     },
@@ -570,98 +563,91 @@
       "origem": "Jardinópolis",
       "destino": "Ribeirão Preto",
       "sentido": "ida",
-      "tarifa": 8.25,
+      "tarifa": null,
       "horarios": [
         {
           "horario": "04:35",
           "diaDaSemana": "Segunda a Sexta",
           "sentido": "ida",
           "tipo": "rodoviaria",
-          "observacao": "DIRETO"
+          "observacao": "Direto"
         },
         {
           "horario": "05:00",
           "diaDaSemana": "Segunda a Sexta",
           "sentido": "ida",
           "tipo": "rodoviaria",
-          "observacao": "Saída 04:40 do Sto.Antonio"
+          "observacao": "Sto. Antonio"
         },
         {
           "horario": "05:05",
           "diaDaSemana": "Segunda a Sexta",
           "sentido": "ida",
           "tipo": "rodoviaria",
-          "observacao": "Aroeira"
+          "observacao": "AROEIRA"
         },
         {
           "horario": "05:30",
           "diaDaSemana": "Segunda a Sexta",
           "sentido": "ida",
           "tipo": "rodoviaria",
-          "observacao": "S. Francisco"
+          "observacao": "São Francisco"
         },
         {
           "horario": "05:35",
           "diaDaSemana": "Segunda a Sexta",
           "sentido": "ida",
           "tipo": "rodoviaria",
-          "observacao": "Jurucê"
+          "observacao": "Juruce"
         },
         {
-          "horario": "05:50",
+          "horario": "05:45",
           "diaDaSemana": "Segunda a Sexta",
           "sentido": "ida",
           "tipo": "rodoviaria",
-          "observacao": "S. Francisco"
+          "observacao": "São Francisco / HC 6:55h"
         },
         {
           "horario": "06:00",
           "diaDaSemana": "Segunda a Sexta",
           "sentido": "ida",
           "tipo": "rodoviaria",
-          "observacao": "DIRETO"
-        },
-        {
-          "horario": "06:08",
-          "diaDaSemana": "Segunda a Sexta",
-          "sentido": "ida",
-          "tipo": "rodoviaria",
-          "observacao": "MARIA REGINA (06:03 do mercado JDS)"
+          "observacao": "Direto"
         },
         {
           "horario": "06:10",
           "diaDaSemana": "Segunda a Sexta",
           "sentido": "ida",
           "tipo": "rodoviaria",
-          "observacao": "S. Francisco"
+          "observacao": "São Francisco"
         },
         {
           "horario": "06:20",
           "diaDaSemana": "Segunda a Sexta",
           "sentido": "ida",
           "tipo": "rodoviaria",
-          "observacao": "COSTA E SILVA"
+          "observacao": "Costa e Silva"
         },
         {
           "horario": "06:30",
           "diaDaSemana": "Segunda a Sexta",
           "sentido": "ida",
           "tipo": "rodoviaria",
-          "observacao": "Cx.Dágua"
+          "observacao": "CX D ÁGUA"
         },
         {
           "horario": "06:31",
           "diaDaSemana": "Segunda a Sexta",
           "sentido": "ida",
           "tipo": "rodoviaria",
-          "observacao": "VIA  SHOPPING"
+          "observacao": "Shopping"
         },
         {
           "horario": "06:40",
           "diaDaSemana": "Segunda a Sexta",
           "sentido": "ida",
           "tipo": "rodoviaria",
-          "observacao": "COSTA E SILVA"
+          "observacao": "Costa e Silva"
         },
         {
           "horario": "06:41",
@@ -675,119 +661,119 @@
           "diaDaSemana": "Segunda a Sexta",
           "sentido": "ida",
           "tipo": "rodoviaria",
-          "observacao": "DIRETO"
+          "observacao": "AROEIRA"
         },
         {
           "horario": "06:55",
           "diaDaSemana": "Segunda a Sexta",
           "sentido": "ida",
           "tipo": "rodoviaria",
-          "observacao": "AROEIRA ( 06.50 do bar do Japão)"
+          "observacao": "São Francisco"
         },
         {
           "horario": "07:00",
           "diaDaSemana": "Segunda a Sexta",
           "sentido": "ida",
           "tipo": "rodoviaria",
-          "observacao": "VIA  SHOPPING"
+          "observacao": "Shopping"
         },
         {
-          "horario": "07:05",
+          "horario": "07:10",
           "diaDaSemana": "Segunda a Sexta",
           "sentido": "ida",
           "tipo": "rodoviaria",
-          "observacao": "S. Francisco"
+          "observacao": "São Francisco"
         },
         {
-          "horario": "07:25",
+          "horario": "07:30",
           "diaDaSemana": "Segunda a Sexta",
           "sentido": "ida",
           "tipo": "rodoviaria",
-          "observacao": "DIRETO"
+          "observacao": "São Francisco"
         },
         {
           "horario": "07:31",
           "diaDaSemana": "Segunda a Sexta",
           "sentido": "ida",
           "tipo": "rodoviaria",
-          "observacao": "Jurucê / Estatua"
+          "observacao": "Juruce / Estatua"
         },
         {
-          "horario": "07:45",
+          "horario": "07:50",
           "diaDaSemana": "Segunda a Sexta",
           "sentido": "ida",
           "tipo": "rodoviaria",
-          "observacao": "S. Francisco"
+          "observacao": "São Francisco"
         },
         {
-          "horario": "08:20",
+          "horario": "08:25",
           "diaDaSemana": "Segunda a Sexta",
           "sentido": "ida",
           "tipo": "rodoviaria",
-          "observacao": "DIRETO"
+          "observacao": "São Francisco"
         },
         {
           "horario": "08:50",
           "diaDaSemana": "Segunda a Sexta",
           "sentido": "ida",
           "tipo": "rodoviaria",
-          "observacao": "S. Francisco"
+          "observacao": "São Francisco"
         },
         {
           "horario": "09:30",
           "diaDaSemana": "Segunda a Sexta",
           "sentido": "ida",
           "tipo": "rodoviaria",
-          "observacao": "DIRETO"
+          "observacao": "São Francisco"
         },
         {
           "horario": "10:00",
           "diaDaSemana": "Segunda a Sexta",
           "sentido": "ida",
           "tipo": "rodoviaria",
-          "observacao": "S. Francisco"
+          "observacao": "Direto"
         },
         {
           "horario": "11:00",
           "diaDaSemana": "Segunda a Sexta",
           "sentido": "ida",
           "tipo": "rodoviaria",
-          "observacao": "VIA  SHOPPING"
+          "observacao": "Shopping"
         },
         {
           "horario": "11:30",
           "diaDaSemana": "Segunda a Sexta",
           "sentido": "ida",
           "tipo": "rodoviaria",
-          "observacao": "DIRETO"
+          "observacao": "Direto"
         },
         {
           "horario": "12:00",
           "diaDaSemana": "Segunda a Sexta",
           "sentido": "ida",
           "tipo": "rodoviaria",
-          "observacao": "S. Francisco"
+          "observacao": "São Francisco"
         },
         {
           "horario": "12:30",
           "diaDaSemana": "Segunda a Sexta",
           "sentido": "ida",
           "tipo": "rodoviaria",
-          "observacao": "DIRETO"
+          "observacao": "Direto"
         },
         {
           "horario": "13:00",
           "diaDaSemana": "Segunda a Sexta",
           "sentido": "ida",
           "tipo": "rodoviaria",
-          "observacao": "S. Francisco"
+          "observacao": "São Francisco"
         },
         {
           "horario": "13:30",
           "diaDaSemana": "Segunda a Sexta",
           "sentido": "ida",
           "tipo": "rodoviaria",
-          "observacao": "Jurucê / Estatua"
+          "observacao": "Juruce / Estatua"
         },
         {
           "horario": "14:00",
@@ -801,91 +787,98 @@
           "diaDaSemana": "Segunda a Sexta",
           "sentido": "ida",
           "tipo": "rodoviaria",
-          "observacao": "S. Francisco"
+          "observacao": "São Francisco"
         },
         {
           "horario": "15:30",
           "diaDaSemana": "Segunda a Sexta",
           "sentido": "ida",
           "tipo": "rodoviaria",
-          "observacao": "DIRETO"
+          "observacao": "Direto"
         },
         {
           "horario": "16:00",
           "diaDaSemana": "Segunda a Sexta",
           "sentido": "ida",
           "tipo": "rodoviaria",
-          "observacao": "S. Francisco"
+          "observacao": "São Francisco"
         },
         {
           "horario": "16:25",
           "diaDaSemana": "Segunda a Sexta",
           "sentido": "ida",
           "tipo": "rodoviaria",
-          "observacao": "S. Francisco"
+          "observacao": "São Francisco"
         },
         {
           "horario": "16:45",
           "diaDaSemana": "Segunda a Sexta",
           "sentido": "ida",
           "tipo": "rodoviaria",
-          "observacao": "DIRETO"
+          "observacao": "Direto"
         },
         {
           "horario": "17:00",
           "diaDaSemana": "Segunda a Sexta",
           "sentido": "ida",
           "tipo": "rodoviaria",
-          "observacao": "S. Francisco"
+          "observacao": "Direto"
         },
         {
           "horario": "17:15",
           "diaDaSemana": "Segunda a Sexta",
           "sentido": "ida",
           "tipo": "rodoviaria",
-          "observacao": "Jurucê / COSTA E SILVA"
+          "observacao": "Juruce / Estatua"
         },
         {
           "horario": "17:25",
           "diaDaSemana": "Segunda a Sexta",
           "sentido": "ida",
           "tipo": "rodoviaria",
-          "observacao": "DIRETO"
+          "observacao": "São Francisco"
         },
         {
           "horario": "17:40",
           "diaDaSemana": "Segunda a Sexta",
           "sentido": "ida",
           "tipo": "rodoviaria",
-          "observacao": "COSTA E SILVA"
+          "observacao": "Direto / Costa e Silva"
         },
         {
           "horario": "18:00",
           "diaDaSemana": "Segunda a Sexta",
           "sentido": "ida",
           "tipo": "rodoviaria",
-          "observacao": "S. Francisco"
+          "observacao": "São Francisco / HC 19:00 h"
         },
         {
           "horario": "19:00",
           "diaDaSemana": "Segunda a Sexta",
           "sentido": "ida",
           "tipo": "rodoviaria",
-          "observacao": "S. Francisco"
+          "observacao": "São Francisco"
         },
         {
           "horario": "20:00",
           "diaDaSemana": "Segunda a Sexta",
           "sentido": "ida",
           "tipo": "rodoviaria",
-          "observacao": "DIRETO"
+          "observacao": "Direto"
         },
         {
           "horario": "21:00",
           "diaDaSemana": "Segunda a Sexta",
           "sentido": "ida",
           "tipo": "rodoviaria",
-          "observacao": "S. Francisco"
+          "observacao": "São Francisco"
+        },
+        {
+          "horario": "22:25",
+          "diaDaSemana": "Segunda a Sexta",
+          "sentido": "ida",
+          "tipo": "rodoviaria",
+          "observacao": "Shopping"
         },
         {
           "horario": "22:25",
@@ -899,7 +892,7 @@
           "diaDaSemana": "Sábado",
           "sentido": "ida",
           "tipo": "rodoviaria",
-          "observacao": "DIRETO"
+          "observacao": "Direto"
         },
         {
           "horario": "05:00",
@@ -927,7 +920,7 @@
           "diaDaSemana": "Sábado",
           "sentido": "ida",
           "tipo": "rodoviaria",
-          "observacao": "S.Francisco"
+          "observacao": "Direto"
         },
         {
           "horario": "06:31",
@@ -1067,14 +1060,14 @@
           "diaDaSemana": "Domingo e Feriados",
           "sentido": "ida",
           "tipo": "rodoviaria",
-          "observacao": "Saída as 04:40 do Sto. Antonio"
+          "observacao": "04:40 do Sto.Antonio"
         },
         {
           "horario": "06:00",
           "diaDaSemana": "Domingo e Feriados",
           "sentido": "ida",
           "tipo": "rodoviaria",
-          "observacao": "S. Francisco / Jurucê / Estatua"
+          "observacao": "S.Fco/Jurucê/Estatua"
         },
         {
           "horario": "07:00",
@@ -1123,7 +1116,7 @@
           "diaDaSemana": "Domingo e Feriados",
           "sentido": "ida",
           "tipo": "rodoviaria",
-          "observacao": "Saída 17:10hs de Jurucê para o S.Fco"
+          "observacao": "Sai 17:10hs de Jurucê para o S.Fco"
         },
         {
           "horario": "19:30",
@@ -1142,5 +1135,5 @@
       ]
     }
   ],
-  "pesquisado_em": "2026-06-17T16:44:24.193154"
+  "pesquisado_em": "2026-07-22T11:07:39.048821"
 }

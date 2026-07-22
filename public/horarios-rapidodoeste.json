@@ -6,12 +6,12 @@
     {
       "codigo": "0083",
       "nome": "0083 Pontal x Ribeirão Preto",
-      "tarifa": 8.95,
+      "tarifa": 9.25,
       "rotas": [
         {
           "origem": "Pontal",
           "destino": "Ribeirão Preto",
-          "tarifa": 8.95,
+          "tarifa": 9.25,
           "horarios": [
             {
               "horario": "04:40",
@@ -417,7 +417,7 @@
         {
           "origem": "Ribeirão Preto",
           "destino": "Pontal",
-          "tarifa": 8.95,
+          "tarifa": 9.25,
           "horarios": []
         }
       ]
@@ -425,12 +425,12 @@
     {
       "codigo": "0084",
       "nome": "0084 Cruz das Posses x Ribeirão Preto",
-      "tarifa": 7.25,
+      "tarifa": 9.0,
       "rotas": [
         {
           "origem": "Cruz das Posses",
           "destino": "Ribeirão Preto",
-          "tarifa": 7.25,
+          "tarifa": 9.0,
           "horarios": [
             {
               "horario": "05:00",
@@ -542,7 +542,7 @@
         {
           "origem": "Ribeirão Preto",
           "destino": "Cruz das Posses",
-          "tarifa": 7.25,
+          "tarifa": 9.0,
           "horarios": []
         }
       ]
@@ -579,6 +579,13 @@
               "observacao": "Via 17:05 | 17:50"
             },
             {
+              "horario": "07:50",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": "Via 08:20 | 09:05"
+            },
+            {
               "horario": "10:30",
               "diaDaSemana": "Segunda a Sexta",
               "sentido": "ida",
@@ -591,6 +598,27 @@
               "sentido": "ida",
               "tipo": "rodoviaria",
               "observacao": "Via 13:20 | 14:05"
+            },
+            {
+              "horario": "15:00",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": "Via 15:30 | 16:15"
+            },
+            {
+              "horario": "16:40",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": "Via ***** | 17:40"
+            },
+            {
+              "horario": "16:40",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": "Via 17:10 | 17:55"
             },
             {
               "horario": "18:45",
@@ -628,11 +656,25 @@
               "observacao": "Via 11:00 | 11:45"
             },
             {
+              "horario": "12:50",
+              "diaDaSemana": "Sábado",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": "Via 13:20 | 14:05"
+            },
+            {
               "horario": "15:00",
               "diaDaSemana": "Sábado",
               "sentido": "ida",
               "tipo": "rodoviaria",
               "observacao": "Via 15:30 | 16:15"
+            },
+            {
+              "horario": "16:40",
+              "diaDaSemana": "Sábado",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": "Via 17:10 | 17:55"
             },
             {
               "horario": "18:45",
@@ -677,7 +719,35 @@
           "tarifa": null,
           "horarios": [
             {
+              "horario": "06:45",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "07:45",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "08:00",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
               "horario": "08:15",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "11:30",
               "diaDaSemana": "Segunda a Sexta",
               "sentido": "ida",
               "tipo": "rodoviaria",
@@ -719,7 +789,21 @@
               "observacao": null
             },
             {
+              "horario": "06:45",
+              "diaDaSemana": "Sábado",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
               "horario": "08:15",
+              "diaDaSemana": "Sábado",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "11:30",
               "diaDaSemana": "Sábado",
               "sentido": "ida",
               "tipo": "rodoviaria",
@@ -795,12 +879,12 @@
     {
       "codigo": "0086",
       "nome": "0086 Terra Roxa x Bebedouro",
-      "tarifa": 10.25,
+      "tarifa": 10.75,
       "rotas": [
         {
           "origem": "Terra Roxa",
           "destino": "Bebedouro",
-          "tarifa": 10.25,
+          "tarifa": 10.75,
           "horarios": [
             {
               "horario": "06:00",
@@ -905,7 +989,7 @@
         {
           "origem": "Bebedouro",
           "destino": "Terra Roxa",
-          "tarifa": 10.25,
+          "tarifa": 10.75,
           "horarios": []
         }
       ]
@@ -913,12 +997,12 @@
     {
       "codigo": "0086-2",
       "nome": "0086-2 Cândia x Pontal",
-      "tarifa": 7.35,
+      "tarifa": 9.25,
       "rotas": [
         {
           "origem": "Cândia",
           "destino": "Pontal",
-          "tarifa": 7.35,
+          "tarifa": 9.25,
           "horarios": [
             {
               "horario": "06:30",
@@ -967,7 +1051,7 @@
         {
           "origem": "Pontal",
           "destino": "Cândia",
-          "tarifa": 7.35,
+          "tarifa": 9.25,
           "horarios": []
         }
       ]
@@ -975,12 +1059,12 @@
     {
       "codigo": "6228",
       "nome": "6228 Morro Agudo x Ribeirão Preto",
-      "tarifa": 21.4,
+      "tarifa": 22.15,
       "rotas": [
         {
           "origem": "Morro Agudo",
           "destino": "Ribeirão Preto",
-          "tarifa": 21.4,
+          "tarifa": 22.15,
           "horarios": [
             {
               "horario": "05:45",
@@ -1043,7 +1127,7 @@
         {
           "origem": "Ribeirão Preto",
           "destino": "Morro Agudo",
-          "tarifa": 21.4,
+          "tarifa": 22.15,
           "horarios": [
             {
               "horario": "09:15",
@@ -1522,11 +1606,109 @@
           "tarifa": null,
           "horarios": [
             {
+              "horario": "05:35",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": "Via 06:30 | 07:00"
+            },
+            {
+              "horario": "06:45",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": "Via ****** | 07:55"
+            },
+            {
+              "horario": "08:30",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": "Via 09:10 | 09:35"
+            },
+            {
+              "horario": "10:40",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": "Via ****** | 11:40"
+            },
+            {
+              "horario": "12:40",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": "Via 13:20 | 13:45"
+            },
+            {
+              "horario": "15:30",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": "Via 16:10 | 16:40"
+            },
+            {
+              "horario": "16:50",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": "Via 17:30 | 17:55"
+            },
+            {
+              "horario": "17:40",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": "Via ****** | 18:40"
+            },
+            {
+              "horario": "06:45",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": "Via ****** | 07:55"
+            },
+            {
+              "horario": "07:30",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": "Via ****** | 08:30"
+            },
+            {
               "horario": "08:00",
               "diaDaSemana": "Segunda a Sexta",
               "sentido": "ida",
               "tipo": "rodoviaria",
               "observacao": "Via 08:30 | 09:10"
+            },
+            {
+              "horario": "10:30",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": "Via 10:55 | 11:40"
+            },
+            {
+              "horario": "12:30",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": "Via 13:00 | 13:40"
+            },
+            {
+              "horario": "15:30",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": "Via ****** | 16:30"
+            },
+            {
+              "horario": "16:55",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": "Via ****** | 18:00"
             },
             {
               "horario": "18:00",
@@ -1537,17 +1719,73 @@
             },
             {
               "horario": "05:35",
-              "diaDaSemana": "Segunda a Sexta",
+              "diaDaSemana": "Sábado",
               "sentido": "ida",
               "tipo": "rodoviaria",
               "observacao": "Via 06:30 | 07:00"
             },
             {
+              "horario": "06:45",
+              "diaDaSemana": "Sábado",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": "Via ****** | 07:55"
+            },
+            {
+              "horario": "08:30",
+              "diaDaSemana": "Sábado",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": "Via 09:10 | 09:35"
+            },
+            {
+              "horario": "10:40",
+              "diaDaSemana": "Sábado",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": "Via ****** | 11:40"
+            },
+            {
+              "horario": "12:40",
+              "diaDaSemana": "Sábado",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": "Via 13:20 | 13:45"
+            },
+            {
               "horario": "15:30",
-              "diaDaSemana": "Segunda a Sexta",
+              "diaDaSemana": "Sábado",
               "sentido": "ida",
               "tipo": "rodoviaria",
               "observacao": "Via 16:10 | 16:40"
+            },
+            {
+              "horario": "16:50",
+              "diaDaSemana": "Sábado",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": "Via 17:30 | 17:55"
+            },
+            {
+              "horario": "17:40",
+              "diaDaSemana": "Sábado",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": "Via ****** | 18:40"
+            },
+            {
+              "horario": "06:45",
+              "diaDaSemana": "Sábado",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": "Via ****** | 07:55"
+            },
+            {
+              "horario": "07:30",
+              "diaDaSemana": "Sábado",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": "Via ****** | 08:30"
             },
             {
               "horario": "08:00",
@@ -1557,25 +1795,39 @@
               "observacao": "Via 08:30 | 09:10"
             },
             {
-              "horario": "18:00",
+              "horario": "10:30",
               "diaDaSemana": "Sábado",
               "sentido": "ida",
               "tipo": "rodoviaria",
-              "observacao": "Via 18:30 | 19:10"
+              "observacao": "Via 10:55 | 11:40"
             },
             {
-              "horario": "05:35",
+              "horario": "12:30",
               "diaDaSemana": "Sábado",
               "sentido": "ida",
               "tipo": "rodoviaria",
-              "observacao": "Via 06:30 | 07:00"
+              "observacao": "Via 13:00 | 13:40"
             },
             {
               "horario": "15:30",
               "diaDaSemana": "Sábado",
               "sentido": "ida",
               "tipo": "rodoviaria",
-              "observacao": "Via 16:10 | 16:40"
+              "observacao": "Via ****** | 16:30"
+            },
+            {
+              "horario": "16:55",
+              "diaDaSemana": "Sábado",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": "Via ****** | 18:00"
+            },
+            {
+              "horario": "18:00",
+              "diaDaSemana": "Sábado",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": "Via 18:30 | 19:10"
             }
           ]
         },
@@ -1590,12 +1842,12 @@
     {
       "codigo": "6322",
       "nome": "6322 Luiz Antônio x Ribeirão Preto",
-      "tarifa": 16.75,
+      "tarifa": 17.55,
       "rotas": [
         {
           "origem": "Luiz Antônio",
           "destino": "Ribeirão Preto",
-          "tarifa": 16.75,
+          "tarifa": 17.55,
           "horarios": [
             {
               "horario": "05:15",
@@ -1819,7 +2071,7 @@
         {
           "origem": "Ribeirão Preto",
           "destino": "Luiz Antônio",
-          "tarifa": 16.75,
+          "tarifa": 17.55,
           "horarios": []
         }
       ]
@@ -2092,12 +2344,12 @@
     {
       "codigo": "8372",
       "nome": "8372 São Simão x Ribeirão Preto",
-      "tarifa": 16.55,
+      "tarifa": 17.2,
       "rotas": [
         {
           "origem": "São Simão",
           "destino": "Ribeirão Preto",
-          "tarifa": 16.55,
+          "tarifa": 17.2,
           "horarios": [
             {
               "horario": "05:50",
@@ -2160,7 +2412,7 @@
         {
           "origem": "Ribeirão Preto",
           "destino": "São Simão",
-          "tarifa": 16.55,
+          "tarifa": 17.2,
           "horarios": []
         }
       ]
@@ -2168,12 +2420,12 @@
     {
       "codigo": "8374",
       "nome": "8374 Cravinhos x Ribeirão Preto",
-      "tarifa": 8.25,
+      "tarifa": 8.65,
       "rotas": [
         {
           "origem": "Cravinhos",
           "destino": "Ribeirão Preto",
-          "tarifa": 8.25,
+          "tarifa": 8.65,
           "horarios": [
             {
               "horario": "05:00",
@@ -2642,7 +2894,7 @@
         {
           "origem": "Ribeirão Preto",
           "destino": "Cravinhos",
-          "tarifa": 8.25,
+          "tarifa": 8.65,
           "horarios": [
             {
               "horario": "05:50",
@@ -3184,32 +3436,25 @@
           "tarifa": null,
           "horarios": [
             {
-              "horario": "05:30",
-              "diaDaSemana": "Segunda a Sexta",
-              "sentido": "ida",
-              "tipo": "rodoviaria",
-              "observacao": "Via 06:15 | 06:45"
-            },
-            {
               "horario": "06:30",
               "diaDaSemana": "Segunda a Sexta",
               "sentido": "ida",
               "tipo": "rodoviaria",
-              "observacao": "Via 07:15 | 07:45"
+              "observacao": "Via 07:00 | 07:45"
             },
             {
-              "horario": "07:00",
+              "horario": "13:00",
               "diaDaSemana": "Segunda a Sexta",
               "sentido": "ida",
               "tipo": "rodoviaria",
-              "observacao": "08:00"
+              "observacao": "Via 13:35 | 14:20"
             },
             {
-              "horario": "10:15",
+              "horario": "16:35",
               "diaDaSemana": "Segunda a Sexta",
               "sentido": "ida",
               "tipo": "rodoviaria",
-              "observacao": "Via 11:00 | 11:30"
+              "observacao": "Via 17:05 | 17:50"
             },
             {
               "horario": "07:50",
@@ -3217,6 +3462,20 @@
               "sentido": "ida",
               "tipo": "rodoviaria",
               "observacao": "Via 08:20 | 09:05"
+            },
+            {
+              "horario": "10:30",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": "Via 11:00 | 11:45"
+            },
+            {
+              "horario": "12:50",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": "Via 13:20 | 14:05"
             },
             {
               "horario": "15:00",
@@ -3230,7 +3489,7 @@
               "diaDaSemana": "Segunda a Sexta",
               "sentido": "ida",
               "tipo": "rodoviaria",
-              "observacao": "17:40"
+              "observacao": "Via ***** | 17:40"
             },
             {
               "horario": "16:40",
@@ -3240,18 +3499,39 @@
               "observacao": "Via 17:10 | 17:55"
             },
             {
-              "horario": "05:30",
-              "diaDaSemana": "Sábado",
+              "horario": "18:45",
+              "diaDaSemana": "Segunda a Sexta",
               "sentido": "ida",
               "tipo": "rodoviaria",
-              "observacao": "Via 06:15 | 06:45"
+              "observacao": "Via 19:15 | 19:45"
             },
             {
-              "horario": "10:15",
+              "horario": "06:30",
               "diaDaSemana": "Sábado",
               "sentido": "ida",
               "tipo": "rodoviaria",
-              "observacao": "Via 11:00 | 11:30"
+              "observacao": "Via 07:00 | 07:45"
+            },
+            {
+              "horario": "13:15",
+              "diaDaSemana": "Sábado",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": "Via 13:45 | 14:30"
+            },
+            {
+              "horario": "16:55",
+              "diaDaSemana": "Sábado",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": "Via 17:25 | 18:10"
+            },
+            {
+              "horario": "10:30",
+              "diaDaSemana": "Sábado",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": "Via 11:00 | 11:45"
             },
             {
               "horario": "12:50",
@@ -3261,11 +3541,25 @@
               "observacao": "Via 13:20 | 14:05"
             },
             {
+              "horario": "15:00",
+              "diaDaSemana": "Sábado",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": "Via 15:30 | 16:15"
+            },
+            {
               "horario": "16:40",
               "diaDaSemana": "Sábado",
               "sentido": "ida",
               "tipo": "rodoviaria",
               "observacao": "Via 17:10 | 17:55"
+            },
+            {
+              "horario": "18:45",
+              "diaDaSemana": "Sábado",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": "Via 19:15 | 20:00"
             }
           ]
         },
@@ -3273,7 +3567,134 @@
           "origem": "Ribeirão Preto",
           "destino": "Pitangueiras",
           "tarifa": null,
-          "horarios": []
+          "horarios": [
+            {
+              "horario": "06:45",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "07:45",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "08:00",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "08:15",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "11:30",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "14:50",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "18:20",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "12:15",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "14:35",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "20:15",
+              "diaDaSemana": "Segunda a Sexta",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "06:45",
+              "diaDaSemana": "Sábado",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "08:15",
+              "diaDaSemana": "Sábado",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "11:30",
+              "diaDaSemana": "Sábado",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "15:00",
+              "diaDaSemana": "Sábado",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "18:35",
+              "diaDaSemana": "Sábado",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "12:15",
+              "diaDaSemana": "Sábado",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "16:45",
+              "diaDaSemana": "Sábado",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            },
+            {
+              "horario": "20:30",
+              "diaDaSemana": "Sábado",
+              "sentido": "ida",
+              "tipo": "rodoviaria",
+              "observacao": null
+            }
+          ]
         }
       ]
     },
@@ -5728,5 +6149,5 @@
       ]
     }
   ],
-  "pesquisado_em": "2026-06-17T16:38:28.524532"
+  "pesquisado_em": "2026-07-22T11:07:48.655164"
 }
