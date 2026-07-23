@@ -99,54 +99,70 @@ export default function BusScheduleFilter({ schedules, rotasMapa }: BusScheduleF
     return rotasMapa[origin] ?? [];
   }, [rotasMapa, origin]);
 
-  const { filteredSchedules, availableOrigins, availableDestinations } = useMemo(() => {
-    const diaDaSemana = getDiaDaSemana(selectedDate);
+  const diaDaSemana = useMemo(() => getDiaDaSemana(selectedDate), [selectedDate]);
 
-    let base = schedules.filter((s) => {
-      if (s.sentido !== "ida") return false;
-      const diaOk = s.diaDaSemana === diaDaSemana;
-      if (isHoje) return diaOk && s.horario >= selectedTime;
-      return diaOk;
-    });
+  // ── Base do DIA (sem filtro de hora) — usada tanto pra listar origens/destinos
+  // quanto pra exibir TODOS os horários do dia (passados e futuros).
+  const baseDoDia = useMemo(() => {
+    return schedules.filter((s) => s.sentido === "ida" && s.diaDaSemana === diaDaSemana);
+  }, [schedules, diaDaSemana]);
 
-    const origensDisponiveis = Array.from(new Set(base.map((s) => s.origem))).sort();
-    let destinosDisponiveis = Array.from(new Set(base.map((s) => s.destino))).sort();
+  const { filteredSchedules, availableOrigins, availableDestinations, indiceDoProximo } = useMemo(() => {
+    const origensDisponiveis = Array.from(new Set(baseDoDia.map((s) => s.origem))).sort();
+    let destinosDisponiveis = Array.from(new Set(baseDoDia.map((s) => s.destino))).sort();
 
-    let filtered = [...base];
+    let filtered = [...baseDoDia];
     let finalOrigens = origensDisponiveis;
     let finalDestinos = destinosPorOrigem ?? destinosDisponiveis;
 
     if (origin) {
       filtered = filtered.filter((s) => s.origem === origin);
-      if (!destinosPorOrigem) finalDestinos = Array.from(new Set(filtered.map((s) => s.destino))).sort();
+      if (!destinosPorOrigem) {
+        finalDestinos = Array.from(new Set(baseDoDia.filter((s) => s.origem === origin).map((s) => s.destino))).sort();
+      }
     }
     if (destination) {
       filtered = filtered.filter((s) => s.destino === destination);
-      if (!origin) finalOrigens = Array.from(new Set(filtered.map((s) => s.origem))).sort();
+      if (!origin) {
+        finalOrigens = Array.from(new Set(baseDoDia.filter((s) => s.destino === destination).map((s) => s.origem))).sort();
+      }
     }
 
     filtered.sort((a, b) => a.horario.localeCompare(b.horario));
+
+    // Índice do primeiro horário ainda não passado hoje — usado só pra destacar e centralizar a paginação
+    const indice = isHoje ? filtered.findIndex((s) => s.horario >= selectedTime) : -1;
 
     return {
       filteredSchedules: filtered,
       availableOrigins: finalOrigens,
       availableDestinations: finalDestinos,
+      indiceDoProximo: indice,
     };
-  }, [schedules, selectedDate, selectedTime, isHoje, origin, destination, destinosPorOrigem]);
+  }, [baseDoDia, isHoje, selectedTime, origin, destination, destinosPorOrigem]);
 
   useEffect(() => {
     if (destination && !availableDestinations.includes(destination)) setDestination("");
   }, [availableDestinations, destination]);
 
-  useEffect(() => { setCurrentPage(1); }, [filteredSchedules]);
+  useEffect(() => { setCurrentPage(1); }, [origin, destination, selectedDate]);
 
   const totalPages = Math.ceil(filteredSchedules.length / itensPorPagina);
+
+  // Abre automaticamente na página onde está o "próximo horário", mas permite navegar livremente
+  useEffect(() => {
+    if (indiceDoProximo >= 0) {
+      const paginaDoProximo = Math.floor(indiceDoProximo / itensPorPagina) + 1;
+      setCurrentPage(paginaDoProximo);
+    }
+  }, [indiceDoProximo, origin, destination, selectedDate]);
+
   const paginatedSchedules = filteredSchedules.slice(
     (currentPage - 1) * itensPorPagina,
     currentPage * itensPorPagina
   );
 
-  const proximoHorario = filteredSchedules[0] ?? null;
+  const proximoHorario = indiceDoProximo >= 0 ? filteredSchedules[indiceDoProximo] : null;
 
   const rotaInfo = useMemo(() => {
     if (!origin || !destination || !filteredSchedules.length) return null;
@@ -162,13 +178,17 @@ export default function BusScheduleFilter({ schedules, rotasMapa }: BusScheduleF
   const handleClear = () => { resetParaAgora(); setOrigin(""); setDestination(""); };
   const handleSwap = () => { setOrigin(destination); setDestination(origin); };
 
+  // Mensagem mais clara sobre por que não há resultados
+  const mensagemVazio = useMemo(() => {
+    if (!origin && !destination) return "Selecione origem e destino para ver os horários.";
+    return `Nenhum horário disponível para esta rota em ${diaDaSemana.toLowerCase()}. Tente outra data.`;
+  }, [origin, destination, diaDaSemana]);
+
   return (
     <>
       <div className="space-y-4">
-        {/* Painel de alarmes ativos */}
         <PainelAlarmes />
 
-        {/* Filtros */}
         <div className="rounded-2xl border bg-card shadow-sm overflow-hidden">
           <div className="p-4 space-y-3">
             <div className="flex gap-2">
@@ -277,7 +297,6 @@ export default function BusScheduleFilter({ schedules, rotasMapa }: BusScheduleF
           </div>
         </div>
 
-        {/* Próximo ônibus */}
         {proximoHorario && isHoje && (
           <div className="rounded-2xl border-2 border-primary/40 bg-primary/5 dark:bg-primary/10 p-4 flex items-center gap-4">
             <div className="shrink-0 flex flex-col items-center">
@@ -316,7 +335,6 @@ export default function BusScheduleFilter({ schedules, rotasMapa }: BusScheduleF
           </div>
         )}
 
-        {/* Resultados */}
         {paginatedSchedules.length > 0 ? (
           <>
             <div className="hidden md:block rounded-2xl border bg-card shadow-sm overflow-hidden">
@@ -336,7 +354,7 @@ export default function BusScheduleFilter({ schedules, rotasMapa }: BusScheduleF
                 </thead>
                 <tbody className="divide-y">
                   {paginatedSchedules.map((s, idx) => {
-                    const isProximo = idx === 0 && currentPage === 1 && isHoje;
+                    const isProximo = isHoje && (currentPage - 1) * itensPorPagina + idx === indiceDoProximo;
                     return (
                       <tr key={s.id} className={`hover:bg-muted/30 transition-colors ${isProximo ? "bg-primary/5" : ""}`}>
                         <td className="px-4 py-3">
@@ -391,7 +409,7 @@ export default function BusScheduleFilter({ schedules, rotasMapa }: BusScheduleF
 
             <div className="flex flex-col gap-2 md:hidden">
               {paginatedSchedules.map((s, idx) => {
-                const isProximo = idx === 0 && currentPage === 1 && isHoje;
+                const isProximo = isHoje && (currentPage - 1) * itensPorPagina + idx === indiceDoProximo;
                 return (
                   <div key={s.id} className={`rounded-xl border p-3.5 flex items-center gap-3 ${isProximo ? "border-primary/40 bg-primary/5" : "bg-card"}`}>
                     <div className="shrink-0 text-center w-16">
@@ -440,12 +458,7 @@ export default function BusScheduleFilter({ schedules, rotasMapa }: BusScheduleF
         ) : isHydrated ? (
           <div className="rounded-2xl border-2 border-dashed bg-card p-10 text-center">
             <Bus className="mx-auto h-10 w-10 text-muted-foreground/30 mb-3" />
-            <p className="text-muted-foreground font-medium">
-              {origin || destination ? "Nenhum horário disponível para esta rota agora." : "Selecione origem e destino para ver os horários."}
-            </p>
-            {(origin || destination) && (
-              <p className="text-sm text-muted-foreground mt-1">Tente outra data ou remova os filtros.</p>
-            )}
+            <p className="text-muted-foreground font-medium">{mensagemVazio}</p>
           </div>
         ) : null}
       </div>

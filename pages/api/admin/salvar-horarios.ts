@@ -6,6 +6,15 @@ const prisma = new PrismaClient();
 type Horario = { horario: string; tipo: "rodoviaria" | "intermediario" };
 type Sentido = { diaDaSemana: string; origem: string; destino: string; horarios: Horario[] };
 
+// Normaliza texto pra comparar sem depender de acento/espaço (corrige bug de ida/volta trocados)
+function normalizar(texto: string): string {
+  return texto
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .trim();
+}
+
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== "POST") return res.status(405).json({ error: "Use POST" });
 
@@ -13,7 +22,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   if (!origem || !destino || !sentidos) return res.status(400).json({ error: "Dados incompletos" });
 
   try {
-    // Garante que a empresa existe
     const empresa = await prisma.empresa.upsert({
       where: { slug: "saobento" },
       update: {},
@@ -24,68 +32,62 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       },
     });
 
-    // Tarifas
-    const tarifaComum = tarifas?.find((t: { tipo: string; valor: string }) =>
+    const tarifaComumStr = tarifas?.find((t: { tipo: string; valor: string }) =>
       t.tipo.toLowerCase().includes("comum"))?.valor?.replace(/[^\d,]/g, "").replace(",", ".") ?? null;
-    const tarifaEstudante = tarifas?.find((t: { tipo: string; valor: string }) =>
+    const tarifaEstudanteStr = tarifas?.find((t: { tipo: string; valor: string }) =>
       t.tipo.toLowerCase().includes("estudante"))?.valor?.replace(/[^\d,]/g, "").replace(",", ".") ?? null;
 
-    // Upsert da rota
+    const tarifaComum = tarifaComumStr ? parseFloat(tarifaComumStr) : null;
+    const tarifaEstudante = tarifaEstudanteStr ? parseFloat(tarifaEstudanteStr) : null;
+
+    // Monta o update SEM sobrescrever tarifa com null caso essa raspagem não tenha capturado
+    const updateData: Record<string, unknown> = {
+      linha: linha ?? undefined,
+      atualizadoEm: new Date(),
+    };
+    if (tarifaComum !== null) updateData.tarifaComum = tarifaComum;
+    if (tarifaEstudante !== null) updateData.tarifaEstudante = tarifaEstudante;
+
     const rota = await prisma.rota.upsert({
       where: { empresaId_origem_destino: { empresaId: empresa.id, origem, destino } },
-      update: {
-        linha: linha ?? undefined,
-        tarifaComum: tarifaComum ? parseFloat(tarifaComum) : undefined,
-        tarifaEstudante: tarifaEstudante ? parseFloat(tarifaEstudante) : undefined,
-        atualizadoEm: new Date(),
-      },
+      update: updateData,
       create: {
         empresaId: empresa.id,
         origem,
         destino,
         linha: linha ?? `${origem} X ${destino}`,
-        tarifaComum: tarifaComum ? parseFloat(tarifaComum) : null,
-        tarifaEstudante: tarifaEstudante ? parseFloat(tarifaEstudante) : null,
+        tarifaComum,
+        tarifaEstudante,
       },
     });
 
-    // Apaga horários antigos da rota e insere novos
     await prisma.horario.deleteMany({ where: { rotaId: rota.id } });
 
+    const origemNorm = normalizar(origem);
     let total = 0;
+
     for (const sentido of sentidos as Sentido[]) {
-      const sentidoStr = sentido.origem === origem ? "ida" : "volta";
-      for (const h of sentido.horarios) {
-        await prisma.horario.create({
-          data: {
+      // Comparação normalizada — corrige rotas onde acento/espaço fazia
+      // a comparação falhar e tudo virar "volta" incorretamente
+      const sentidoStr = normalizar(sentido.origem) === origemNorm ? "ida" : "volta";
+      if (sentido.horarios.length > 0) {
+        await prisma.horario.createMany({
+          data: sentido.horarios.map((h) => ({
             rotaId: rota.id,
             horario: h.horario,
             diaDaSemana: sentido.diaDaSemana,
             sentido: sentidoStr,
             tipo: h.tipo,
-          },
+          })),
+          skipDuplicates: true,
         });
-        total++;
+        total += sentido.horarios.length;
       }
     }
 
-    // Log
-    await prisma.logRaspagem.create({
-      data: {
-        origem,
-        destino,
-        empresaSlug: "saobento",
-        status: "sucesso",
-        totalHorarios: total,
-      },
-    });
-
-    return res.status(200).json({ message: `${total} horários salvos para ${origem} → ${destino}`, total });
+    return res.status(200).json({ message: `${total} horários salvos`, total });
   } catch (err: unknown) {
     const msg = err instanceof Error ? err.message : String(err);
-    await prisma.logRaspagem.create({
-      data: { origem, destino, empresaSlug: "saobento", status: "erro", totalHorarios: 0, erro: msg },
-    }).catch(() => {});
     return res.status(500).json({ error: msg });
   } finally {
     await prisma.$disconnect();

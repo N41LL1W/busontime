@@ -51,7 +51,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     const raw = fs.readFileSync(outputPath, "utf-8");
     const dados = JSON.parse(raw);
-    console.log(`[scrape-ribe] JSON lido: ${dados.rotas?.length} rotas`);
 
     const emp = await prisma.empresa.upsert({
       where: { slug: "ribe" },
@@ -64,16 +63,30 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     for (const rota of dados.rotas as RotaRibe[]) {
       if (!rota.horarios?.length) continue;
 
+      // Só atualiza a tarifa se essa raspagem realmente capturou um valor —
+      // evita apagar uma tarifa boa anterior quando a raspagem atual falha em achá-la.
+      const updateData: Record<string, unknown> = {
+        linha: dados.linha,
+        atualizadoEm: new Date(),
+      };
+      if (rota.tarifa !== null && rota.tarifa !== undefined) {
+        updateData.tarifaComum = rota.tarifa;
+      }
+
       const rotaDb = await prisma.rota.upsert({
         where: { empresaId_origem_destino: { empresaId: emp.id, origem: rota.origem, destino: rota.destino } },
-        update: { linha: dados.linha, tarifaComum: rota.tarifa, atualizadoEm: new Date() },
-        create: { empresaId: emp.id, origem: rota.origem, destino: rota.destino, linha: dados.linha, tarifaComum: rota.tarifa },
+        update: updateData,
+        create: {
+          empresaId: emp.id,
+          origem: rota.origem,
+          destino: rota.destino,
+          linha: dados.linha,
+          tarifaComum: rota.tarifa ?? null,
+        },
       });
 
-      // Apaga TODOS os horários antigos desta rota primeiro
       await prisma.horario.deleteMany({ where: { rotaId: rotaDb.id } });
 
-      // Insere os novos em lote
       await prisma.horario.createMany({
         data: rota.horarios.map((h) => ({
           rotaId: rotaDb.id,
@@ -93,7 +106,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       data: { origem: "Ribeirão Preto", destino: "Jardinópolis", empresaSlug: "ribe", status: "sucesso", totalHorarios },
     });
 
-    console.log(`[scrape-ribe] ${totalHorarios} horários salvos`);
     return res.status(200).json({ message: `${totalHorarios} horários da Ribe salvos`, total: totalHorarios });
   } catch (err: unknown) {
     const msg = err instanceof Error ? err.message : String(err);

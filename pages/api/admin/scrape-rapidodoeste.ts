@@ -2,8 +2,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { spawn } from "child_process";
 import path from "path";
 import fs from "fs";
-// Removido o PrismaClient local e importado o singleton do seu projeto
-import  prisma  from "@/lib/prisma";
+import prisma from "../../../lib/prisma";
 
 export const config = { api: { responseLimit: false } };
 
@@ -62,7 +61,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const raw = fs.readFileSync(outputPath, "utf-8");
     const dados = JSON.parse(raw);
 
-    // Upsert empresa
     const emp = await prisma.empresa.upsert({
       where: { slug: "rapidodoeste" },
       update: { sourceUrl: dados.sourceUrl },
@@ -77,16 +75,27 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     let totalRotas = 0;
     const erros: string[] = [];
 
-    for (const clientLinha of dados.linhas as LinhaItem[]) {
-      if (clientLinha.erro) {
-        erros.push(`${clientLinha.codigo}: ${clientLinha.erro}`);
+    for (const linha of dados.linhas as LinhaItem[]) {
+      if (linha.erro) {
+        erros.push(`${linha.codigo}: ${linha.erro}`);
         continue;
       }
 
-      for (const rota of clientLinha.rotas) {
+      for (const rota of linha.rotas) {
         if (!rota.horarios?.length) continue;
 
         try {
+          // Prioriza tarifa da rota específica; se não tiver, usa a tarifa geral da linha.
+          // Só sobrescreve o banco se algum dos dois tiver um valor real —
+          // isso evita apagar uma tarifa boa anterior quando a raspagem atual falha.
+          const tarifaNova = rota.tarifa ?? linha.tarifa ?? null;
+
+          const updateData: Record<string, unknown> = {
+            linha: linha.nome,
+            atualizadoEm: new Date(),
+          };
+          if (tarifaNova !== null) updateData.tarifaComum = tarifaNova;
+
           const rotaDb = await prisma.rota.upsert({
             where: {
               empresaId_origem_destino: {
@@ -95,43 +104,35 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 destino: rota.destino,
               },
             },
-            update: {
-              linha: clientLinha.nome,
-              tarifaComum: rota.tarifa ?? clientLinha.tarifa,
-              atualizadoEm: new Date(),
-            },
+            update: updateData,
             create: {
               empresaId: emp.id,
               origem: rota.origem,
               destino: rota.destino,
-              linha: clientLinha.nome,
-              tarifaComum: rota.tarifa ?? clientLinha.tarifa,
+              linha: linha.nome,
+              tarifaComum: tarifaNova,
             },
           });
 
-          // Apaga antigos e insere novos
-          await prisma.$transaction([
-            prisma.horario.deleteMany({ where: { rotaId: rotaDb.id } }),
-          ]);
+          await prisma.horario.deleteMany({ where: { rotaId: rotaDb.id } });
 
-          if (rota.horarios.length > 0) {
-            await prisma.horario.createMany({
-              data: rota.horarios.map((h) => ({
-                rotaId: rotaDb.id,
-                horario: h.horario,
-                diaDaSemana: h.diaDaSemana,
-                sentido: h.sentido,
-                tipo: h.tipo ?? "rodoviaria",
-                observacao: h.observacao ?? null,
-              })),
-              skipDuplicates: true,
-            });
-            totalHorarios += rota.horarios.length;
-            totalRotas++;
-          }
+          await prisma.horario.createMany({
+            data: rota.horarios.map((h) => ({
+              rotaId: rotaDb.id,
+              horario: h.horario,
+              diaDaSemana: h.diaDaSemana,
+              sentido: h.sentido,
+              tipo: h.tipo ?? "rodoviaria",
+              observacao: h.observacao ?? null,
+            })),
+            skipDuplicates: true,
+          });
+
+          totalHorarios += rota.horarios.length;
+          totalRotas++;
         } catch (err) {
           const msg = err instanceof Error ? err.message : String(err);
-          erros.push(`${clientLinha.codigo} ${rota.origem}→${rota.destino}: ${msg}`);
+          erros.push(`${linha.codigo} ${rota.origem}→${rota.destino}: ${msg}`);
         }
       }
     }
@@ -157,7 +158,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const msg = err instanceof Error ? err.message : String(err);
     console.error("[scrape-rapidodoeste] erro:", msg);
     return res.status(500).json({ error: msg });
-  }finally {
+  } finally {
     await prisma.$disconnect();
   }
 }
