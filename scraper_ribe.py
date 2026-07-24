@@ -2,6 +2,7 @@
 """
 scraper_ribe.py - Coloque na raiz: busontime/scraper_ribe.py
 Uso: .venv\\Scripts\\python.exe scraper_ribe.py
+Salva em: public/horarios-ribe.json
 """
 
 import json
@@ -36,8 +37,6 @@ DIAS_MAP = {
     "feriado": "Domingo e Feriados",
 }
 
-HORARIO_RE = re.compile(r"^(\d{1,2}:\d{2})\s*(.*)?$")
-
 def norm(texto):
     t = unicodedata.normalize("NFD", texto)
     return "".join(c for c in t if unicodedata.category(c) != "Mn").lower().strip()
@@ -50,15 +49,10 @@ def identificar_dia(linha):
     return None
 
 def html_para_texto(html):
-    """Remove tags HTML e decodifica entidades básicas."""
-    # Remove scripts e styles completos
     html = re.sub(r"<script[^>]*>.*?</script>", " ", html, flags=re.DOTALL)
     html = re.sub(r"<style[^>]*>.*?</style>", " ", html, flags=re.DOTALL)
-    # Substitui tags de bloco por newline
     html = re.sub(r"<(?:br|p|div|h[1-6]|li)[^>]*>", "\n", html, flags=re.IGNORECASE)
-    # Remove demais tags
     html = re.sub(r"<[^>]+>", " ", html)
-    # Entidades HTML comuns
     entidades = {
         "&amp;": "&", "&lt;": "<", "&gt;": ">", "&nbsp;": " ",
         "&agrave;": "à", "&aacute;": "á", "&acirc;": "â", "&atilde;": "ã",
@@ -74,7 +68,6 @@ def html_para_texto(html):
     }
     for ent, char in entidades.items():
         html = html.replace(ent, char)
-    # Remove entidades numéricas restantes
     html = re.sub(r"&#\d+;", "", html)
     html = re.sub(r"&[a-zA-Z]+;", "", html)
     return html
@@ -83,17 +76,17 @@ def fetch_html(url):
     req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
     with urllib.request.urlopen(req, timeout=15) as resp:
         raw = resp.read()
-        # Tenta detectar encoding pelo header
         content_type = resp.headers.get("Content-Type", "")
         enc_match = re.search(r"charset=([\w-]+)", content_type)
         enc = enc_match.group(1) if enc_match else "utf-8"
         return raw.decode(enc, errors="replace")
 
 def extrair_tarifa(texto):
-    # Ex: "Tarifa: R$ 8,25" ou "Tarifa R$ 8,25"
-    match = re.search(r"[Tt]arifa[:\s]+R\$\s*([\d,\.]+)", texto)
-    if match:
-        val = match.group(1).replace(",", ".")
+    # O site as vezes escreve "Tarifa: R$ R$8,70 ..." (R$ duplicado) —
+    # regex flexível que aceita 1 ou mais "R$" antes do número
+    m = re.search(r"Tarifa[:\s]*(?:R\$\s*)+([\d,\.]+)", texto)
+    if m:
+        val = m.group(1).replace(",", ".")
         try:
             return float(val)
         except ValueError:
@@ -114,11 +107,10 @@ def parse_horarios(html, sentido):
             dia_atual = dia
             continue
 
-        m = HORARIO_RE.match(linha)
+        m = re.match(r"^(\d{1,2}:\d{2})\s*(.*)?$", linha)
         if m:
             h = m.group(1).zfill(5)
             obs = m.group(2).strip() if m.group(2) else None
-            # Ignora linhas que são claramente menu/nav (muito longas ou sem horário real)
             if obs and len(obs) > 80:
                 continue
             horarios.append({
@@ -146,7 +138,7 @@ def scrape_rota(rota):
     }
 
 def main():
-    print("Ribe Transporte — raspagem iniciada...")
+    print("Ribe Transporte - raspagem iniciada...")
     resultados = []
     for rota in ROTAS:
         try:

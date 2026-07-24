@@ -8,7 +8,7 @@
       "origem": "Ribeirão Preto",
       "destino": "Jardinópolis",
       "sentido": "ida",
-      "tarifa": null,
+      "tarifa": 8.7,
       "horarios": [
         {
           "horario": "05:40",
@@ -563,7 +563,7 @@
       "origem": "Jardinópolis",
       "destino": "Ribeirão Preto",
       "sentido": "ida",
-      "tarifa": null,
+      "tarifa": 8.7,
       "horarios": [
         {
           "horario": "04:35",
@@ -1135,5 +1135,5 @@
       ]
     }
   ],
-  "pesquisado_em": "2026-07-23T15:45:30.120941"
+  "pesquisado_em": "2026-07-24T15:38:49.622617"
 }
