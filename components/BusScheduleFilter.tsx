@@ -70,7 +70,11 @@ export default function BusScheduleFilter({ schedules, rotasMapa }: BusScheduleF
   const [modalUrl, setModalUrl] = useState<string | null>(null);
   const [isHydrated, setIsHydrated] = useState(false);
   const [agora, setAgora] = useState(new Date());
-  const itensPorPagina = 12;
+  const itensPorPagina = 20; // só pagina quando passa de 20; dentro disso, rola com o mouse
+  const rowRefsDesktop = React.useRef<Record<number, HTMLTableRowElement | null>>({});
+  const rowRefsMobile = React.useRef<Record<number, HTMLDivElement | null>>({});
+  const scrollContainerDesktop = React.useRef<HTMLDivElement>(null);
+  const scrollContainerMobile = React.useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const now = new Date();
