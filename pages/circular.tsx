@@ -90,6 +90,9 @@ export default function CircularesPage({ cidades }: Props) {
 
   const [pontoSelecionado, setPontoSelecionado] = useState<string>(PONTO_INICIAL);
   const [viagemManual, setViagemManual] = useState<number | null>(null);
+  const [escolhidoManualmente, setEscolhidoManualmente] = useState(false);
+  const [paginaHorarios, setPaginaHorarios] = useState(1);
+  const ITENS_POR_PAGINA_HORARIOS = 20;
 
   useEffect(() => {
     const now = new Date();
