@@ -5,7 +5,7 @@ import { useState, useMemo, useEffect, useCallback } from "react";
 import fs from "fs";
 import path from "path";
 import { format, isBefore, startOfToday } from "date-fns";
-import { ChevronLeft, Bus, MapPin, Clock, Info, CalendarIcon, ClockIcon } from "lucide-react";
+import { ChevronLeft, Bus, MapPin, Clock, Info, CalendarIcon, ClockIcon, FilterX } from "lucide-react";
 import { Calendar } from "@/components/ui/calendar";
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
@@ -13,9 +13,7 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import BotaoAlarme from "@/components/BotaoAlarme";
 import PainelAlarmes from "@/components/PainelAlarmes";
-import AdBanner from "@/components/Adbanner";
 
-// ── Tipos ────────────────────────────────────────────────────────────────
 type CircularSimples = {
   nome: string; descricao: string; atualizadoEm: string; fonte: string; contato: string;
   diasOperacao: string[]; pontos: string[];
@@ -70,14 +68,17 @@ function proximoIndice(horarios: string[], horaAtualStr: string): number {
 
 const INITIAL_DATE = new Date(2000, 0, 1);
 const INITIAL_TIME = "00:00";
+const PONTO_INICIAL = "Rodoviária";
 
-// ── Página ────────────────────────────────────────────────────────────────
 export default function CircularesPage({ cidades }: Props) {
   const cidadesDisponiveis = cidades.filter((c) => c.dados !== null);
 
   const [isHydrated, setIsHydrated] = useState(false);
   const [selectedDate, setSelectedDate] = useState<Date>(INITIAL_DATE);
   const [selectedTime, setSelectedTime] = useState(INITIAL_TIME);
+
+  // Relógio real, independente do horário escolhido manualmente — só pra saber "onde o ônibus está agora"
+  const [agoraReal, setAgoraReal] = useState(new Date());
 
   const [cidadeId, setCidadeId] = useState(cidadesDisponiveis[0]?.id ?? "");
   const cidade = cidadesDisponiveis.find((c) => c.id === cidadeId);
@@ -87,7 +88,7 @@ export default function CircularesPage({ cidades }: Props) {
   const [linhaId, setLinhaId] = useState(linhas?.[0]?.id ?? "");
   const linhaAtual = linhas?.find((l) => l.id === linhaId) ?? linhas?.[0] ?? null;
 
-  const [pontoSelecionado, setPontoSelecionado] = useState("Rodoviária");
+  const [pontoSelecionado, setPontoSelecionado] = useState<string>(PONTO_INICIAL);
   const [viagemManual, setViagemManual] = useState<number | null>(null);
 
   useEffect(() => {
@@ -97,11 +98,24 @@ export default function CircularesPage({ cidades }: Props) {
     setIsHydrated(true);
   }, []);
 
+  // Atualiza o relógio real a cada minuto — usado só pro indicador "ao vivo"
+  useEffect(() => {
+    const interval = setInterval(() => setAgoraReal(new Date()), 60000);
+    return () => clearInterval(interval);
+  }, []);
+
   const resetParaAgora = useCallback(() => {
     const now = new Date();
     setSelectedDate(now);
     setSelectedTime(format(now, "HH:mm"));
   }, []);
+
+  // Botão Limpar: volta ao estado inicial (sem ponto escolhido de propósito, hora atual)
+  const handleLimpar = useCallback(() => {
+    resetParaAgora();
+    setPontoSelecionado(PONTO_INICIAL);
+    setViagemManual(null);
+  }, [resetParaAgora]);
 
   const diaAtivo = useMemo(() => {
     if (!dados || !isHydrated) return dados?.diasOperacao[0] ?? "Segunda a Sexta";
@@ -109,6 +123,12 @@ export default function CircularesPage({ cidades }: Props) {
   }, [dados, selectedDate, isHydrated]);
 
   const isHoje = isHydrated && format(selectedDate, "yyyy-MM-dd") === format(new Date(), "yyyy-MM-dd");
+  // Dia real de hoje (independente da data escolhida) — pra saber se o indicador "ao vivo" faz sentido
+  const diaRealDeHoje = useMemo(() => {
+    if (!dados || !isHydrated) return "";
+    return getDiaDaSemanaPorData(new Date(), dados.diasOperacao);
+  }, [dados, isHydrated]);
+  const aoVivoFazSentido = isHoje && diaAtivo === diaRealDeHoje;
 
   const horariosBase = useMemo(() => {
     if (!dados) return {};
@@ -135,7 +155,8 @@ export default function CircularesPage({ cidades }: Props) {
   const indiceAutoPonto = isHoje ? proximoIndice(horariosDoPonto, selectedTime) : -1;
   const viagemAtual = viagemManual ?? (indiceAutoPonto >= 0 ? indiceAutoPonto : 0);
 
-  const indicePontoAtualNaViagem = useMemo(() => {
+  // Ponto onde o ônibus estaria dentro da viagem selecionada, baseado no horário ESCOLHIDO (manual) — destaque mais sutil
+  const indicePontoNaViagemEscolhida = useMemo(() => {
     if (!isHoje) return -1;
     for (const ponto of pontosOrdenados) {
       const t = horariosBase[ponto]?.[viagemAtual];
@@ -144,9 +165,20 @@ export default function CircularesPage({ cidades }: Props) {
     return -1;
   }, [pontosOrdenados, horariosBase, viagemAtual, isHoje, selectedTime]);
 
+  // Ponto onde o ônibus está DE VERDADE agora (relógio real, ticando a cada minuto) — destaque "ao vivo"
+  const indicePontoAoVivo = useMemo(() => {
+    if (!aoVivoFazSentido) return -1;
+    const horaRealStr = format(agoraReal, "HH:mm");
+    for (const ponto of pontosOrdenados) {
+      const t = horariosBase[ponto]?.[viagemAtual];
+      if (t && minutosDoHorario(t) >= minutosDoHorario(horaRealStr)) return pontosOrdenados.indexOf(ponto);
+    }
+    return -1;
+  }, [pontosOrdenados, horariosBase, viagemAtual, aoVivoFazSentido, agoraReal]);
+
   function handleCidade(id: string) {
     setCidadeId(id);
-    setPontoSelecionado("Rodoviária");
+    setPontoSelecionado(PONTO_INICIAL);
     setViagemManual(null);
     const nova = cidadesDisponiveis.find((c) => c.id === id)?.dados;
     if (nova && temLinhas(nova)) setLinhaId(nova.linhas[0]?.id ?? "");
@@ -154,7 +186,7 @@ export default function CircularesPage({ cidades }: Props) {
 
   function handleLinha(id: string) {
     setLinhaId(id);
-    setPontoSelecionado("Rodoviária");
+    setPontoSelecionado(PONTO_INICIAL);
     setViagemManual(null);
   }
 
@@ -179,18 +211,14 @@ export default function CircularesPage({ cidades }: Props) {
   return (
     <>
       <Head>
-        <title>Circulares Municipais — BusOnTime</title>
+        <title>{`Circulares Municipais — BusOnTime`}</title>
         <meta name="description" content="Horários dos circulares municipais das cidades da região." />
       </Head>
 
       <div className="min-h-screen bg-background pb-16">
         <div className="mx-auto max-w-2xl px-4 py-6 space-y-4">
 
-          {/* 1. Banner do TOPO (Circular) — Usando o TopCircular */}
-          <div className="w-full flex flex-col gap-2">
-            <div className="w-full flex justify-center">
-              <AdBanner slot="2635232734" className="my-1" />
-            </div>
+          <div className="flex items-center justify-between">
             <Link href="/" className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors">
               <ChevronLeft className="h-4 w-4" /> Voltar para busca de suburbanos
             </Link>
@@ -213,7 +241,6 @@ export default function CircularesPage({ cidades }: Props) {
           <div className="rounded-2xl border bg-card shadow-sm overflow-hidden">
             <div className="p-4 space-y-3">
 
-              {/* Data + Hora */}
               <div className="flex gap-2">
                 <Popover>
                   <PopoverTrigger asChild>
@@ -235,15 +262,20 @@ export default function CircularesPage({ cidades }: Props) {
                 </Button>
               </div>
 
-              <Select value={cidadeId} onValueChange={handleCidade}>
-                <SelectTrigger className="h-10 text-sm">
-                  <MapPin className="h-3.5 w-3.5 mr-1.5 shrink-0 text-primary" />
-                  <SelectValue placeholder="Selecione a cidade" />
-                </SelectTrigger>
-                <SelectContent>
-                  {cidadesDisponiveis.map((c) => <SelectItem key={c.id} value={c.id}>{c.nome}</SelectItem>)}
-                </SelectContent>
-              </Select>
+              <div className="flex items-center gap-2">
+                <Select value={cidadeId} onValueChange={handleCidade}>
+                  <SelectTrigger className="h-10 text-sm flex-1">
+                    <MapPin className="h-3.5 w-3.5 mr-1.5 shrink-0 text-primary" />
+                    <SelectValue placeholder="Selecione a cidade" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {cidadesDisponiveis.map((c) => <SelectItem key={c.id} value={c.id}>{c.nome}</SelectItem>)}
+                  </SelectContent>
+                </Select>
+                <Button variant="ghost" size="sm" onClick={handleLimpar} className="shrink-0 text-destructive hover:text-destructive h-10 px-2" title="Limpar seleção">
+                  <FilterX className="h-4 w-4" />
+                </Button>
+              </div>
 
               {linhas && linhas.length > 1 && (
                 <Select value={linhaId} onValueChange={handleLinha}>
@@ -267,7 +299,6 @@ export default function CircularesPage({ cidades }: Props) {
                 </SelectContent>
               </Select>
 
-              {/* Chips de horário do ponto selecionado */}
               <div>
                 <p className="text-xs font-medium text-muted-foreground mb-1.5">
                   Horários em <span className="text-foreground">{pontoSelecionado}</span>:
@@ -314,7 +345,7 @@ export default function CircularesPage({ cidades }: Props) {
             </div>
           )}
 
-          {/* Itinerário completo */}
+          {/* Itinerário completo, ponto a ponto */}
           <div className="rounded-2xl border bg-card shadow-sm overflow-hidden">
             <div className="px-4 py-3 border-b bg-muted/20 flex items-center justify-between gap-2">
               <span className="text-sm font-semibold text-foreground flex items-center gap-2">
@@ -322,21 +353,38 @@ export default function CircularesPage({ cidades }: Props) {
                 Itinerário completo
               </span>
               <span className="text-xs text-muted-foreground">
-                viagem de {horariosBase[pontoSelecionado]?.[viagemAtual] ?? "—"} em {pontoSelecionado}
+                viagem de {horariosBase[pontoSelecionado]?.[viagemAtual] ?? "—"}
               </span>
             </div>
+
+            {/* Legenda dos destaques */}
+            <div className="flex flex-wrap gap-3 px-4 py-2 border-b bg-muted/10 text-[11px] text-muted-foreground">
+              <span className="flex items-center gap-1"><span className="h-2 w-2 rounded-full bg-primary" /> seu ponto</span>
+              <span className="flex items-center gap-1"><span className="h-2 w-2 rounded-full bg-amber-300/70" /> próximo do horário escolhido</span>
+              {aoVivoFazSentido && (
+                <span className="flex items-center gap-1">
+                  <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" /> ônibus agora (ao vivo)
+                </span>
+              )}
+            </div>
+
             <div className="divide-y max-h-[28rem] overflow-y-auto">
               {pontosOrdenados.map((ponto, idx) => {
                 const t = horariosBase[ponto]?.[viagemAtual];
                 const eSelecionado = ponto === pontoSelecionado;
-                const eProximoReal = idx === indicePontoAtualNaViagem;
+                const eProximoEscolhido = idx === indicePontoNaViagemEscolhida;
+                const eAoVivo = idx === indicePontoAoVivo;
+
+                let bgClass = "hover:bg-muted/20";
+                if (eSelecionado) bgClass = "bg-primary/10";
+                else if (eAoVivo) bgClass = "bg-emerald-50 dark:bg-emerald-900/10";
+                else if (eProximoEscolhido) bgClass = "bg-amber-50/60 dark:bg-amber-900/5";
+
                 return (
                   <button
                     key={ponto}
                     onClick={() => handleClicarPontoNaTabela(ponto)}
-                    className={`w-full flex items-center gap-3 px-4 py-2.5 text-left transition-colors ${
-                      eSelecionado ? "bg-primary/10" : eProximoReal ? "bg-amber-50 dark:bg-amber-900/10" : "hover:bg-muted/20"
-                    }`}
+                    className={`w-full flex items-center gap-3 px-4 py-2.5 text-left transition-colors ${bgClass}`}
                   >
                     <span className={`font-mono text-sm font-bold tabular-nums w-14 shrink-0 ${eSelecionado ? "text-primary" : "text-foreground"}`}>
                       {t ?? "—"}
@@ -344,8 +392,19 @@ export default function CircularesPage({ cidades }: Props) {
                     <span className={`flex-1 text-sm truncate ${eSelecionado ? "font-semibold text-foreground" : "text-muted-foreground"}`}>
                       {ponto}
                     </span>
-                    {eSelecionado && <span className="shrink-0 rounded-full bg-primary px-2 py-0.5 text-[10px] font-semibold text-primary-foreground">seu ponto</span>}
-                    {eProximoReal && !eSelecionado && <span className="shrink-0 rounded-full bg-amber-400/80 px-2 py-0.5 text-[10px] font-semibold text-amber-950">próximo</span>}
+                    {eSelecionado && (
+                      <span className="shrink-0 rounded-full bg-primary px-2 py-0.5 text-[10px] font-semibold text-primary-foreground">seu ponto</span>
+                    )}
+                    {eAoVivo && !eSelecionado && (
+                      <span className="shrink-0 flex items-center gap-1 rounded-full bg-emerald-500 px-2 py-0.5 text-[10px] font-semibold text-white">
+                        <span className="h-1.5 w-1.5 rounded-full bg-white animate-pulse" /> agora
+                      </span>
+                    )}
+                    {eProximoEscolhido && !eSelecionado && !eAoVivo && (
+                      <span className="shrink-0 rounded-full bg-amber-300/60 px-2 py-0.5 text-[10px] font-medium text-amber-900 dark:text-amber-100">
+                        próximo
+                      </span>
+                    )}
                   </button>
                 );
               })}
@@ -368,11 +427,6 @@ export default function CircularesPage({ cidades }: Props) {
               {dados.contato && <p>{dados.contato}</p>}
             </div>
           )}
-
-          {/* 2. Banner de BAIXO (Circular) — Usando o BottomCircular */}
-          <div className="w-full flex justify-center mt-4">
-            <AdBanner slot="9009069393" className="my-1" />
-          </div>
 
         </div>
       </div>
