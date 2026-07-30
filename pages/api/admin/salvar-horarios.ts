@@ -6,7 +6,6 @@ const prisma = new PrismaClient();
 type Horario = { horario: string; tipo: "rodoviaria" | "intermediario" };
 type Sentido = { diaDaSemana: string; origem: string; destino: string; horarios: Horario[] };
 
-// Normaliza texto pra comparar sem depender de acento/espaço (corrige bug de ida/volta trocados)
 function normalizar(texto: string): string {
   return texto
     .normalize("NFD")
@@ -40,52 +39,76 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const tarifaComum = tarifaComumStr ? parseFloat(tarifaComumStr) : null;
     const tarifaEstudante = tarifaEstudanteStr ? parseFloat(tarifaEstudanteStr) : null;
 
-    // Monta o update SEM sobrescrever tarifa com null caso essa raspagem não tenha capturado
-    const updateData: Record<string, unknown> = {
-      linha: linha ?? undefined,
-      atualizadoEm: new Date(),
-    };
-    if (tarifaComum !== null) updateData.tarifaComum = tarifaComum;
-    if (tarifaEstudante !== null) updateData.tarifaEstudante = tarifaEstudante;
-
-    const rota = await prisma.rota.upsert({
-      where: { empresaId_origem_destino: { empresaId: empresa.id, origem, destino } },
-      update: updateData,
-      create: {
-        empresaId: empresa.id,
-        origem,
-        destino,
-        linha: linha ?? `${origem} X ${destino}`,
-        tarifaComum,
-        tarifaEstudante,
-      },
-    });
-
-    await prisma.horario.deleteMany({ where: { rotaId: rota.id } });
-
-    const origemNorm = normalizar(origem);
-    let total = 0;
+    // ── Agrupa os "sentidos" retornados pelo scraper por PAR (origem,destino) real ──
+    // Cada direção vira sua PRÓPRIA rota no banco, com sentido "ida" — assim as duas
+    // direções ficam sempre visíveis, independente de qual foi pedida na busca.
+    const grupos = new Map<string, { origem: string; destino: string; horarios: Array<Horario & { diaDaSemana: string }> }>();
 
     for (const sentido of sentidos as Sentido[]) {
-      // Comparação normalizada — corrige rotas onde acento/espaço fazia
-      // a comparação falhar e tudo virar "volta" incorretamente
-      const sentidoStr = normalizar(sentido.origem) === origemNorm ? "ida" : "volta";
-      if (sentido.horarios.length > 0) {
+      const chave = `${normalizar(sentido.origem)}→${normalizar(sentido.destino)}`;
+      if (!grupos.has(chave)) {
+        grupos.set(chave, { origem: sentido.origem, destino: sentido.destino, horarios: [] });
+      }
+      const grupo = grupos.get(chave)!;
+      for (const h of sentido.horarios) {
+        grupo.horarios.push({ ...h, diaDaSemana: sentido.diaDaSemana });
+      }
+    }
+
+    let total = 0;
+    const rotasSalvas: string[] = [];
+
+    for (const grupo of grupos.values()) {
+      const ehParPrincipal =
+        normalizar(grupo.origem) === normalizar(origem) && normalizar(grupo.destino) === normalizar(destino);
+
+      const updateData: Record<string, unknown> = { atualizadoEm: new Date() };
+      if (linha) updateData.linha = linha;
+      if (tarifaComum !== null) updateData.tarifaComum = tarifaComum;
+      if (tarifaEstudante !== null) updateData.tarifaEstudante = tarifaEstudante;
+
+      const rota = await prisma.rota.upsert({
+        where: {
+          empresaId_origem_destino: {
+            empresaId: empresa.id,
+            origem: grupo.origem,
+            destino: grupo.destino,
+          },
+        },
+        update: updateData,
+        create: {
+          empresaId: empresa.id,
+          origem: grupo.origem,
+          destino: grupo.destino,
+          linha: linha ?? `${grupo.origem} X ${grupo.destino}`,
+          tarifaComum,
+          tarifaEstudante,
+        },
+      });
+
+      await prisma.horario.deleteMany({ where: { rotaId: rota.id } });
+
+      if (grupo.horarios.length > 0) {
         await prisma.horario.createMany({
-          data: sentido.horarios.map((h) => ({
+          data: grupo.horarios.map((h) => ({
             rotaId: rota.id,
             horario: h.horario,
-            diaDaSemana: sentido.diaDaSemana,
-            sentido: sentidoStr,
+            diaDaSemana: h.diaDaSemana,
+            sentido: "ida",
             tipo: h.tipo,
           })),
           skipDuplicates: true,
         });
-        total += sentido.horarios.length;
+        total += grupo.horarios.length;
       }
+
+      rotasSalvas.push(`${grupo.origem} → ${grupo.destino}${ehParPrincipal ? "" : " (reversa)"}`);
     }
 
-    return res.status(200).json({ message: `${total} horários salvos`, total });
+    return res.status(200).json({
+      message: `${total} horários salvos em ${grupos.size} rota(s): ${rotasSalvas.join("; ")}`,
+      total,
+    });
   } catch (err: unknown) {
     const msg = err instanceof Error ? err.message : String(err);
     return res.status(500).json({ error: msg });
