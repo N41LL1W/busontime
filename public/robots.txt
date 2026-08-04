@@ -1,0 +1,5 @@
+User-agent: *
+Disallow: /admin-horarios
+Disallow: /api/
+
+Sitemap: https://busontime.vercel.app/sitemap.xml
