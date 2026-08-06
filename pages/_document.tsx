@@ -17,14 +17,9 @@ export default function Document() {
         <link rel="icon" type="image/png" sizes="16x16" href="/icons/favicon-16.png" />
         <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
 
-        {/* Google AdSense — só carrega se a variável de ambiente estiver configurada */}
-        {process.env.NEXT_PUBLIC_ADSENSE_CLIENT && (
-          <script
-            async
-            src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${process.env.NEXT_PUBLIC_ADSENSE_CLIENT}`}
-            crossOrigin="anonymous"
-          />
-        )}
+        {/* O script do Google AdSense NÃO fica mais aqui —
+            ele só carrega em páginas com conteúdo real, via _app.tsx,
+            pra não violar a política de "anúncios em telas sem conteúdo" (ex: /admin-horarios) */}
       </Head>
       <body>
         <Main />
