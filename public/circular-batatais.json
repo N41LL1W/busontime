@@ -1,0 +1,48 @@
+{
+  "nome": "Circular de Batatais",
+  "descricao": "Transporte Público Municipal Gratuito operado em sistema de rotas por bairros e pontos-chave da cidade, como Rodoviária, Centro, Poupatempo e Hospitais.",
+  "atualizadoEm": "2026-08-07",
+  "fonte": "Prefeitura de Batatais — DIMUTRAN (Transporte Público Municipal Gratuito)",
+  "contato": "(16) 99667-9307 (WhatsApp)",
+  "diasOperacao": [
+    "Dias Úteis",
+    "Sábado"
+  ],
+  "linhas": [
+    {
+      "id": "rota_geral",
+      "nome": "Rota Geral Municipal",
+      "pontos": [
+        "Rodoviária / Bancários",
+        "Dom Romeu / Altino Arantes",
+        "Ant. Claret / S. Carlos",
+        "Jd. Elisa / Jd. Veneza",
+        "Central Park",
+        "Centro / Hospital",
+        "Riachuelo / Tiro de Guerra",
+        "R. Arthur L Oliv. / Vila S. Franc.",
+        "Poupatempo",
+        "Capela N. S. Aparecida / Vila Cruzeiro"
+      ],
+      "horarios": {
+        "Dias Úteis": {
+          "Rodoviária / Bancários": ["05:15", "06:45", "10:45", "14:40", "17:00", "18:35"],
+          "Dom Romeu / Altino Arantes": ["05:15", "06:45", "10:45", "14:40", "17:05", "18:35"],
+          "Ant. Claret / S. Carlos": ["06:25", "06:50", "10:50", "14:45", "17:05", "18:40"],
+          "Jd. Elisa / Jd. Veneza": ["06:35", "06:55", "10:55", "14:50", "17:10", "18:50"],
+          "Central Park": ["05:20", "07:00", "11:00", "14:55", "17:15", "18:55"],
+          "Centro / Hospital": ["06:45", "07:05", "11:00", "15:00", "17:20", "19:05"],
+          "Riachuelo / Tiro de Guerra": ["05:30", "07:10", "11:05", "15:05", "17:25", "19:10"],
+          "R. Arthur L Oliv. / Vila S. Franc.": ["05:35"],
+          "Poupatempo": ["07:50", "11:50", "15:40"],
+          "Capela N. S. Aparecida / Vila Cruzeiro": ["06:05", "07:50", "11:50", "15:40", "17:50"]
+        }
+      }
+    }
+  ],
+  "observacoes": [
+    "Onde o itinerário é marcado com 'X' original na tabela, o ônibus não passará pelo ponto naquele horário.",
+    "Os horários são aproximados e previstos, podendo ocorrer alterações.",
+    "O sistema de transporte é municipal e gratuito."
+  ]
+}

@@ -1,0 +1,135 @@
+{
+  "nome": "Circular de Barretos",
+  "descricao": "Linhas Especiais do Transporte Coletivo Urbano (Amarela, Branca, Verde, Vermelha e IFSP). O itinerário detalha as vias percorridas, com horários de partida do Terminal de Integração.",
+  "atualizadoEm": "2026-08-07",
+  "fonte": "Prefeitura do Município de Barretos — Secretaria Municipal de Trânsito e Mobilidade Urbana",
+  "contato": "N/D",
+  "diasOperacao": [
+    "Dias Úteis",
+    "Sábado",
+    "Domingo"
+  ],
+  "linhas": [
+    {
+      "id": "linha_amarela",
+      "nome": "Linha Especial - AMARELA - Circular",
+      "pontos": [
+        "Terminal de Integração",
+        "Avenida 25",
+        "Rua 18",
+        "Avenida Vinte e Um",
+        "Rua 6",
+        "Avenida São Cristóvão",
+        "Rua Mohamud Mustafa Issa",
+        "Avenida Antônio Manso Bernardes"
+      ],
+      "horarios": {
+        "Dias Úteis": {
+          "Terminal de Integração": ["05:00", "06:30", "07:30", "08:30", "17:30", "18:40", "20:00", "21:00", "22:30", "23:30"]
+        },
+        "Sábado": {
+          "Terminal de Integração": ["14:15", "16:30", "18:00", "19:30"]
+        },
+        "Domingo": {
+          "Terminal de Integração": ["06:00", "07:00", "09:00", "11:00", "17:30", "19:00"]
+        }
+      }
+    },
+    {
+      "id": "linha_branca",
+      "nome": "Linha Especial - BRANCA - Circular",
+      "pontos": [
+        "Terminal de Integração",
+        "Rua 32",
+        "Avenida 39",
+        "Rua Quarenta e Quatro",
+        "Rua Santa Teresinha",
+        "Avenida Eng. José Domingos Ducati",
+        "Avenida Marginal"
+      ],
+      "horarios": {
+        "Dias Úteis": {
+          "Terminal de Integração": ["05:00", "06:30", "07:30", "08:30", "17:30", "18:40", "20:00", "21:00", "22:30", "23:30"]
+        },
+        "Sábado": {
+          "Terminal de Integração": ["14:15", "16:30", "18:00", "19:30"]
+        },
+        "Domingo": {
+          "Terminal de Integração": ["06:00", "07:00", "09:00", "11:00", "17:30", "19:00"]
+        }
+      }
+    },
+    {
+      "id": "linha_verde",
+      "nome": "Linha Especial - VERDE - Circular",
+      "pontos": [
+        "Terminal de Integração",
+        "Avenida 25",
+        "Rua Vinte e Dois",
+        "Avenida Três",
+        "Rua Vinte e Seis",
+        "Avenida Prof. Roberto Frade Monte",
+        "Avenida Conselheiro Antônio Prado"
+      ],
+      "horarios": {
+        "Dias Úteis": {
+          "Terminal de Integração": ["05:00", "06:30", "07:30", "08:30", "17:30", "18:40", "20:00", "21:00", "22:30", "23:30"]
+        },
+        "Sábado": {
+          "Terminal de Integração": ["14:15", "16:30", "18:00", "19:30"]
+        },
+        "Domingo": {
+          "Terminal de Integração": ["06:00", "07:00", "09:00", "11:00", "17:30", "19:00"]
+        }
+      }
+    },
+    {
+      "id": "linha_vermelha",
+      "nome": "Linha Especial - VERMELHA - Circular",
+      "pontos": [
+        "Terminal de Integração",
+        "Avenida 25",
+        "Rua Vinte e Dois",
+        "Avenida 7",
+        "Rua 36",
+        "Avenida Onze",
+        "Rua Vinte e Cinco de Agosto",
+        "Avenida dos Maçons"
+      ],
+      "horarios": {
+        "Dias Úteis": {
+          "Terminal de Integração": ["05:00", "06:30", "07:30", "08:30", "17:30", "18:40", "20:00", "21:00", "22:30", "23:30"]
+        },
+        "Sábado": {
+          "Terminal de Integração": ["14:15", "16:30", "18:00", "19:30"]
+        },
+        "Domingo": {
+          "Terminal de Integração": ["06:00", "07:00", "09:00", "11:00", "17:30", "19:00"]
+        }
+      }
+    },
+    {
+      "id": "linha_ifsp",
+      "nome": "Linha Especial - IFSP UNIDADE AGRÍCOLA - Circular",
+      "pontos": [
+        "Terminal de Integração",
+        "Rua 32",
+        "Rua Trinta",
+        "Avenida Contorno",
+        "Avenida Antônio Frederico Ozanam",
+        "Avenida Celso Daniel Galvani",
+        "Estrada Nadir Kenan"
+      ],
+      "horarios": {
+        "Dias Úteis": {
+          "Terminal de Integração": ["07:00", "08:00", "12:00", "13:00", "15:00", "17:00"]
+        }
+      }
+    }
+  ],
+  "observacoes": [
+    "Os horários listados representam a partida do Terminal de Integração.",
+    "O percurso abrange diversas ruas e avenidas que formam o eixo circular de cada linha.",
+    "A linha IFSP Unidade Agrícola opera exclusivamente em Dias Úteis."
+  ]
+}

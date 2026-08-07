@@ -1,0 +1,106 @@
+{
+  "nome": "Circular de São Joaquim da Barra",
+  "descricao": "Serviço de Transporte Coletivo Urbano de São Joaquim da Barra, conectando o Centro (Terminal) a diversos bairros.",
+  "atualizadoEm": "2026-08-07",
+  "fonte": "Prefeitura de São Joaquim da Barra — Praça Prof. Ivo Vannuchi, Vila Bela Vista",
+  "contato": "(16) 3810-9000",
+  "diasOperacao": [
+    "Segunda a Sexta-feira",
+    "Sábados",
+    "Domingos e Feriados"
+  ],
+  "linhas": [
+    {
+      "id": "linha_1",
+      "nome": "LINHA 1: CENTRO/VILA DEIENNO/RESIDENCIAL ESPIGÃO/JOÃO MATTARAIA/MARIA DO CARMO",
+      "pontos": [
+        "Terminal",
+        "Bairro"
+      ],
+      "horarios": {
+        "Segunda a Sexta-feira": {
+          "Terminal": ["07:15", "10:45", "12:30", "14:15", "16:00", "17:45"],
+          "Bairro": ["07:35", "11:05", "12:50", "14:35", "16:20", "18:05"]
+        },
+        "Sábados": {
+          "Terminal": ["08:30", "12:00", "16:00", "18:00"],
+          "Bairro": ["10:20", "15:35", "19:05", "18:20"]
+        },
+        "Domingos e Feriados": {
+          "Terminal": ["07:45", "16:00"],
+          "Bairro": ["08:05", "16:20"]
+        }
+      }
+    },
+    {
+      "id": "linha_2",
+      "nome": "LINHA 2: CENTRO/PEDRO CHEDIACK/JARDIM SANTA LÚCIA/JARDIM SANTA ISABEL/MORADA DO SOL/VILA DEIENNO",
+      "pontos": [
+        "Terminal",
+        "Bairro"
+      ],
+      "horarios": {
+        "Segunda a Sexta-feira": {
+          "Terminal": ["06:30", "10:00", "13:30", "15:15", "17:00", "18:45"],
+          "Bairro": ["06:50", "10:20", "13:50", "15:35", "17:20", "19:05"]
+        },
+        "Sábados": {
+          "Terminal": ["06:30", "13:00", "15:00", "17:00"],
+          "Bairro": ["06:50", "13:25", "15:25", "17:25"]
+        },
+        "Domingos e Feriados": {
+          "Terminal": ["06:45"],
+          "Bairro": ["07:05"]
+        }
+      }
+    },
+    {
+      "id": "linha_3",
+      "nome": "LINHA 3: CENTRO/JOÃO PAULO II (DIRETO)",
+      "pontos": [
+        "Terminal",
+        "Bairro"
+      ],
+      "horarios": {
+        "Segunda a Sexta-feira": {
+          "Terminal": ["05:15", "06:15", "07:10", "08:00", "09:00", "11:10", "12:10", "13:35", "15:00", "16:00", "17:00", "18:10", "19:05"],
+          "Bairro": ["05:40", "06:35", "07:30", "08:20", "09:20", "11:30", "12:30", "13:55", "15:30", "16:30", "17:30", "18:35", "19:30"]
+        },
+        "Sábados": {
+          "Terminal": ["06:00", "06:55", "10:00", "12:00", "13:00", "17:00", "19:00"],
+          "Bairro": ["06:20", "07:20", "10:20", "12:20", "13:20", "17:20", "19:20"]
+        },
+        "Domingos e Feriados": {
+          "Terminal": ["05:50", "10:00", "15:00", "17:00", "18:00"],
+          "Bairro": ["06:20", "10:20", "15:20", "17:20", "18:20"]
+        }
+      }
+    },
+    {
+      "id": "linha_4",
+      "nome": "LINHA 4: BAIXADA/JARDIM CANADÁ/JARDIM PARAISO/JARDIM PAULISTA/JOÃO PAULO II",
+      "pontos": [
+        "Terminal",
+        "Bairro"
+      ],
+      "horarios": {
+        "Segunda a Sexta-feira": {
+          "Terminal": ["07:25", "12:50", "13:55", "18:15"],
+          "Bairro": ["07:50", "13:15", "14:20", "18:40"]
+        },
+        "Sábados": {
+          "Terminal": ["08:55", "13:55"],
+          "Bairro": ["09:20", "14:20"]
+        },
+        "Domingos e Feriados": {
+          "Terminal": ["12:55", "19:00"],
+          "Bairro": ["13:20", "19:20"]
+        }
+      }
+    }
+  ],
+  "observacoes": [
+    "O sistema indica a saída do Terminal no Centro e a chegada estimada no Bairro de destino.",
+    "Horários podem sofrer pequenas variações devido ao trânsito."
+  ]
+}

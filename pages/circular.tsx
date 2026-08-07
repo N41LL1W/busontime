@@ -37,6 +37,9 @@ export const getStaticProps: GetStaticProps<Props> = async () => {
   }
   const cidades: Cidade[] = [
     { id: "brodowski", nome: "Brodowski", dados: tentarLer("circular-brodowski.json") },
+    { id: "batatais", nome: "Batatais", dados: tentarLer("circular-batatais.json") },
+    { id: "barretos", nome: "Barretos", dados: tentarLer("circular-barretos.json") },
+    { id: "sao-joaquim-da-barra", nome: "São Joaquim da Barra", dados: tentarLer("circular-saojoaquimdabarra.json") },
     { id: "jardinopolis", nome: "Jardinópolis", dados: tentarLer("circular-jardinopolis.json") },
   ];
   return { props: { cidades } };
