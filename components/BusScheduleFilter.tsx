@@ -195,10 +195,10 @@ export default function BusScheduleFilter({ schedules, rotasMapa }: BusScheduleF
 
         <div className="rounded-2xl border bg-card shadow-sm overflow-hidden">
           <div className="p-4 space-y-3">
-            <div className="flex gap-2">
+            <div className="flex flex-wrap gap-2">
               <Popover>
                 <PopoverTrigger asChild>
-                  <Button variant="outline" className="flex-1 justify-start text-left font-normal text-sm h-10">
+                  <Button variant="outline" className="flex-1 min-w-[130px] justify-start text-left font-normal text-sm h-10">
                     <CalendarIcon className="mr-2 h-4 w-4 shrink-0" />
                     {isHydrated ? format(selectedDate, "EEE, dd/MM") : "—"}
                   </Button>
@@ -213,13 +213,13 @@ export default function BusScheduleFilter({ schedules, rotasMapa }: BusScheduleF
                 </PopoverContent>
               </Popover>
 
-              <div className="relative w-32 shrink-0">
-                <ClockIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <div className="relative flex-1 min-w-[110px] max-w-[140px]">
+                <ClockIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
                 <Input
                   type="time"
                   value={selectedTime}
                   onChange={(e) => setSelectedTime(e.target.value)}
-                  className="pl-9 h-10 text-sm"
+                  className="pl-9 h-10 text-sm w-full"
                 />
               </div>
 
