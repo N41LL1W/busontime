@@ -4,11 +4,6 @@ export default function Document() {
   return (
     <Html lang="pt-BR">
       <Head>
-        {/* Viewport — CRÍTICO para mobile. Sem isso, o Android renderiza a página
-            como "desktop" (~980px) e depois escala, fazendo os seletores nativos
-            (data/hora) ficarem cortados/posicionados errado na tela real. */}
-        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
-
         {/* PWA */}
         <link rel="manifest" href="/manifest.json" />
         <meta name="theme-color" content="#2563eb" />
