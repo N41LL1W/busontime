@@ -1,4 +1,4 @@
-"use client";
+// "use client";
 
 import { useEffect, useRef } from "react";
 
@@ -69,15 +69,18 @@ export default function AdBanner({ slot, format = "auto", className = "" }: AdBa
 /**
  * ── PASSO A PASSO COMPLETO ──────────────────────────────────────────────
  *
- * 1) Crie a variável de ambiente no Vercel:
- *    Settings > Environment Variables > NEXT_PUBLIC_ADSENSE_CLIENT = ca-pub-XXXXXXXXXXXXXXXX
+ * 1) Crie a variável de ambiente no Vercel (e no .env local):
+ *    NEXT_PUBLIC_ADSENSE_CLIENT = ca-pub-XXXXXXXXXXXXXXXX
  *
- * 2) No arquivo pages/_document.tsx, adicione dentro do <Head>:
- *
- *    <script
+ * 2) No arquivo pages/_app.tsx, adicione o Script do Next.js:
+ *    import Script from "next/script";
+ * 
+ *    <Script
+ *      id="adsense-script"
  *      async
  *      src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${process.env.NEXT_PUBLIC_ADSENSE_CLIENT}`}
  *      crossOrigin="anonymous"
+ *      strategy="afterInteractive"
  *    />
  *
  * 3) Crie o arquivo public/ads.txt com o conteúdo que o AdSense fornecer

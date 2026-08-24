@@ -75,6 +75,8 @@ function MyApp({ Component, pageProps }: AppProps) {
     <QueryClientProvider client={queryClient}>
       <Head>
         <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+        {/* Adicione a linha abaixo para evitar os warnings do Next.js */}
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
       </Head>
       <div className="min-h-screen bg-background text-foreground transition-colors">
         <header className="flex justify-between items-center p-4 border-b sticky top-0 bg-background/80 backdrop-blur-sm z-10">
