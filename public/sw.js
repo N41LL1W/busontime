@@ -5,7 +5,7 @@
 const CACHE_NAME = "busontime-v1";
 const URLS_PARA_CACHE = [
   "/",
-  "/circulares",
+  "/circular",
   "/manifest.json",
 ];
 
