@@ -17,10 +17,13 @@ export default function Document() {
         <link rel="icon" type="image/png" sizes="16x16" href="/icons/favicon-16.png" />
         <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
 
-        {/* Viewport e script do AdSense NÃO ficam mais aqui —
-            o Next.js recomenda oficialmente não colocar viewport no _document.tsx
-            (ver aviso: nextjs.org/docs/messages/no-document-viewport-meta).
-            Ambos foram movidos para _app.tsx. */}
+        {/* Script do Google AdSense
+            Inserido com tag nativa para evitar o erro "data-nscript" */}
+        <script
+          async
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2852931130226129"
+          crossOrigin="anonymous"
+        ></script>
       </Head>
       <body>
         <Main />

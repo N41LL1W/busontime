@@ -1,7 +1,7 @@
 import '@/styles/globals.css';
 import type { AppProps } from 'next/app';
 import Head from 'next/head';
-import Script from 'next/script';
+// A importação do Script foi removida, pois não será mais usada aqui
 import NavBar from '@/components/NavBar';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
@@ -79,19 +79,6 @@ function MyApp({ Component, pageProps }: AppProps) {
         {/* Viewport — deve ficar aqui (ou em cada página), NUNCA em _document.tsx */}
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
       </Head>
-
-      {/* Script do AdSense — carregado de forma otimizada pelo Next.js,
-          só nesta página raiz (aplica-se a todas as rotas), estratégia
-          afterInteractive não bloqueia a renderização inicial da página. */}
-      {process.env.NEXT_PUBLIC_ADSENSE_CLIENT && (
-        <Script
-          id="adsense-script"
-          async
-          src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${process.env.NEXT_PUBLIC_ADSENSE_CLIENT}`}
-          crossOrigin="anonymous"
-          strategy="afterInteractive"
-        />
-      )}
 
       <div className="min-h-screen bg-background text-foreground transition-colors">
         <header className="flex justify-between items-center p-4 border-b sticky top-0 bg-background/80 backdrop-blur-sm z-10">
