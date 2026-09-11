@@ -459,12 +459,14 @@ export default function BusScheduleFilter({ schedules, rotasMapa }: BusScheduleF
               </div>
             )}
           </>
-        ) : isHydrated ? (
+        ) : (
           <div className="rounded-2xl border-2 border-dashed bg-card p-10 text-center">
             <Bus className="mx-auto h-10 w-10 text-muted-foreground/30 mb-3" />
-            <p className="text-muted-foreground font-medium">{mensagemVazio}</p>
+            <p className="text-muted-foreground font-medium">
+              {isHydrated ? mensagemVazio : "Selecione origem e destino para ver os horários."}
+            </p>
           </div>
-        ) : null}
+        )}
       </div>
 
       {modalUrl && <SourceModal url={modalUrl} onClose={() => setModalUrl(null)} />}
