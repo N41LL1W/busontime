@@ -200,7 +200,7 @@ export default function BusScheduleFilter({ schedules, rotasMapa }: BusScheduleF
                 <PopoverTrigger asChild>
                   <Button variant="outline" className="flex-1 min-w-[130px] justify-start text-left font-normal text-sm h-10">
                     <CalendarIcon className="mr-2 h-4 w-4 shrink-0" />
-                    {isHydrated ? format(selectedDate, "EEE, dd/MM") : "—"}
+                    {isHydrated ? format(selectedDate, "EEE, dd/MM") : "Hoje"}
                   </Button>
                 </PopoverTrigger>
                 <PopoverContent className="w-auto p-0">
