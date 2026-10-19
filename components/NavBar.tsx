@@ -17,14 +17,15 @@ export default function NavBar() {
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 h-16 bg-background/95 backdrop-blur-sm border-t z-20">
-      <div className="grid h-full max-w-lg grid-cols-4 mx-auto">
+      {/* Usando flex com espaço igualitário para garantir que nunca quebre de linha */}
+      <div className="flex h-full max-w-lg justify-around items-center mx-auto px-2">
         {navItems.map((item) => {
           const isActive = pathname === item.href;
           return (
             <Link
               key={item.href}
               href={item.href}
-              className="group inline-flex flex-col items-center justify-center hover:bg-muted/40 transition-colors"
+              className="group flex-1 inline-flex flex-col items-center justify-center py-2 hover:bg-muted/40 transition-colors"
             >
               <item.icon className={`w-5 h-5 mb-1 transition-colors ${isActive ? 'text-primary' : 'text-muted-foreground group-hover:text-foreground'}`} />
               <span className={`text-[11px] font-medium transition-colors ${isActive ? 'text-primary' : 'text-muted-foreground group-hover:text-foreground'}`}>
