@@ -2,10 +2,11 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Home, Info, MessageSquarePlus, RotateCw } from 'lucide-react';
+import { Home, Info, MessageSquarePlus, RotateCw, Bus } from 'lucide-react';
 
 const navItems = [
-  { href: '/', label: 'Suburbanos', icon: Home },
+  { href: '/', label: 'Home', icon: Home },
+  { href: '/horarios', label: 'Suburbanos', icon: Bus },
   { href: '/circular', label: 'Circular', icon: RotateCw },
   { href: '/suggest', label: 'Sugerir', icon: MessageSquarePlus },
   { href: '/about', label: 'Sobre', icon: Info },
