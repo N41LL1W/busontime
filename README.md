@@ -78,6 +78,9 @@ O projeto foi construído com uma abordagem moderna e desacoplada, separando a c
 
 ---
 
+
+> 📌 Para o plano de evolução do pipeline de dados, veja `docs/data-pipeline-roadmap.md`.
+
 ## 🔮 Próximos Passos e Visão de Futuro
 
 - [ ] Implementar compras no app para remover anúncios (versão Premium).
