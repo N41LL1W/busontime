@@ -70,11 +70,7 @@ export default function BusScheduleFilter({ schedules, rotasMapa }: BusScheduleF
   const [modalUrl, setModalUrl] = useState<string | null>(null);
   const [isHydrated, setIsHydrated] = useState(false);
   const [agora, setAgora] = useState(new Date());
-  const itensPorPagina = 20; // só pagina quando passa de 20; dentro disso, rola com o mouse
-  const rowRefsDesktop = React.useRef<Record<number, HTMLTableRowElement | null>>({});
-  const rowRefsMobile = React.useRef<Record<number, HTMLDivElement | null>>({});
-  const scrollContainerDesktop = React.useRef<HTMLDivElement>(null);
-  const scrollContainerMobile = React.useRef<HTMLDivElement>(null);
+  const itensPorPagina = 20;
 
   useEffect(() => {
     const now = new Date();
@@ -105,8 +101,6 @@ export default function BusScheduleFilter({ schedules, rotasMapa }: BusScheduleF
 
   const diaDaSemana = useMemo(() => getDiaDaSemana(selectedDate), [selectedDate]);
 
-  // ── Base do DIA (sem filtro de hora) — usada tanto pra listar origens/destinos
-  // quanto pra exibir TODOS os horários do dia (passados e futuros).
   const baseDoDia = useMemo(() => {
     return schedules.filter((s) => s.sentido === "ida" && s.diaDaSemana === diaDaSemana);
   }, [schedules, diaDaSemana]);
@@ -133,8 +127,6 @@ export default function BusScheduleFilter({ schedules, rotasMapa }: BusScheduleF
     }
 
     filtered.sort((a, b) => a.horario.localeCompare(b.horario));
-
-    // Índice do primeiro horário ainda não passado hoje — usado só pra destacar e centralizar a paginação
     const indice = isHoje ? filtered.findIndex((s) => s.horario >= selectedTime) : -1;
 
     return {
@@ -153,7 +145,6 @@ export default function BusScheduleFilter({ schedules, rotasMapa }: BusScheduleF
 
   const totalPages = Math.ceil(filteredSchedules.length / itensPorPagina);
 
-  // Abre automaticamente na página onde está o "próximo horário", mas permite navegar livremente
   useEffect(() => {
     if (indiceDoProximo >= 0) {
       const paginaDoProximo = Math.floor(indiceDoProximo / itensPorPagina) + 1;
@@ -182,7 +173,6 @@ export default function BusScheduleFilter({ schedules, rotasMapa }: BusScheduleF
   const handleClear = () => { resetParaAgora(); setOrigin(""); setDestination(""); };
   const handleSwap = () => { setOrigin(destination); setDestination(origin); };
 
-  // Mensagem mais clara sobre por que não há resultados
   const mensagemVazio = useMemo(() => {
     if (!origin && !destination) return "Selecione origem e destino para ver os horários.";
     return `Nenhum horário disponível para esta rota em ${diaDaSemana.toLowerCase()}. Tente outra data.`;
@@ -190,17 +180,20 @@ export default function BusScheduleFilter({ schedules, rotasMapa }: BusScheduleF
 
   return (
     <>
-      <div className="space-y-4">
+      {/* w-full e min-w-0 aplicados para conter o layout estrito na tela mobile */}
+      <div className="w-full max-w-full min-w-0 space-y-4 overflow-x-hidden">
         <PainelAlarmes />
 
-        <div className="rounded-2xl border bg-card shadow-sm overflow-hidden">
-          <div className="p-4 space-y-3">
-            <div className="flex flex-wrap gap-2">
+        <div className="rounded-2xl border bg-card shadow-sm overflow-hidden w-full min-w-0">
+          <div className="p-3 md:p-4 space-y-3 w-full min-w-0">
+            
+            {/* Bloco de Data e Hora */}
+            <div className="flex flex-row items-center gap-2 w-full min-w-0">
               <Popover>
                 <PopoverTrigger asChild>
-                  <Button variant="outline" className="flex-1 min-w-[130px] justify-start text-left font-normal text-sm h-10">
-                    <CalendarIcon className="mr-2 h-4 w-4 shrink-0" />
-                    {isHydrated ? format(selectedDate, "EEE, dd/MM") : "Hoje"}
+                  <Button variant="outline" className="flex-1 min-w-0 justify-start text-left font-normal text-xs md:text-sm h-10 px-2 md:px-3 truncate">
+                    <CalendarIcon className="mr-1.5 h-4 w-4 shrink-0" />
+                    <span className="truncate">{isHydrated ? format(selectedDate, "EEE, dd/MM") : "Hoje"}</span>
                   </Button>
                 </PopoverTrigger>
                 <PopoverContent className="w-auto p-0">
@@ -213,25 +206,27 @@ export default function BusScheduleFilter({ schedules, rotasMapa }: BusScheduleF
                 </PopoverContent>
               </Popover>
 
-              <div className="relative flex-1 min-w-[110px] max-w-[140px]">
-                <ClockIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
+              <div className="relative w-28 sm:w-32 shrink-0">
+                <ClockIcon className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
                 <Input
                   type="time"
                   value={selectedTime}
                   onChange={(e) => setSelectedTime(e.target.value)}
-                  className="pl-9 h-10 text-sm w-full"
+                  /* Adicionada a classe text-base para evitar zoom e centralizar melhor no mobile */
+                  className="pl-8 h-10 text-sm sm:text-sm w-full bg-background"
                 />
               </div>
 
-              <Button variant="outline" size="sm" onClick={resetParaAgora} title="Hora atual" className="shrink-0 px-2 h-10">
+              <Button variant="outline" size="sm" onClick={resetParaAgora} title="Hora atual" className="shrink-0 px-2.5 h-10">
                 <Clock className="h-4 w-4" />
               </Button>
             </div>
 
-            <div className="flex items-center gap-2">
+            {/* Bloco de Origem e Destino */}
+            <div className="flex items-center gap-1.5 md:gap-2 w-full min-w-0">
               <Select value={origin} onValueChange={(v) => { setOrigin(v); setDestination(""); }}>
-                <SelectTrigger className="flex-1 h-10 text-sm">
-                  <MapPin className="h-3.5 w-3.5 mr-1.5 shrink-0 text-primary" />
+                <SelectTrigger className="flex-1 min-w-0 h-10 text-xs md:text-sm px-2">
+                  <MapPin className="h-3.5 w-3.5 mr-1 shrink-0 text-primary" />
                   <SelectValue placeholder="De onde?" />
                 </SelectTrigger>
                 <SelectContent>
@@ -241,13 +236,13 @@ export default function BusScheduleFilter({ schedules, rotasMapa }: BusScheduleF
                 </SelectContent>
               </Select>
 
-              <Button variant="outline" size="sm" onClick={handleSwap} disabled={!origin && !destination} className="shrink-0 rounded-full px-2 h-10 border-primary/30">
+              <Button variant="outline" size="sm" onClick={handleSwap} disabled={!origin && !destination} className="shrink-0 rounded-full p-2 h-10 w-10 border-primary/30">
                 <ArrowLeftRight className="h-4 w-4 text-primary" />
               </Button>
 
               <Select value={destination} onValueChange={setDestination}>
-                <SelectTrigger className="flex-1 h-10 text-sm">
-                  <MapPin className="h-3.5 w-3.5 mr-1.5 shrink-0 text-muted-foreground" />
+                <SelectTrigger className="flex-1 min-w-0 h-10 text-xs md:text-sm px-2">
+                  <MapPin className="h-3.5 w-3.5 mr-1 shrink-0 text-muted-foreground" />
                   <SelectValue placeholder="Para onde?" />
                 </SelectTrigger>
                 <SelectContent>
@@ -258,29 +253,23 @@ export default function BusScheduleFilter({ schedules, rotasMapa }: BusScheduleF
               </Select>
             </div>
 
-            <div className="flex items-center justify-between gap-2">
+            <div className="flex items-center justify-between gap-2 pt-1">
               {rotaInfo ? (
-                <div className="flex flex-wrap items-center gap-2 text-xs">
-                  <span className="font-medium text-foreground truncate max-w-[200px]">
+                <div className="flex flex-wrap items-center gap-1.5 text-xs min-w-0">
+                  <span className="font-medium text-foreground truncate max-w-[150px] sm:max-w-[220px]">
                     {rotaInfo.linha ?? `${origin} → ${destination}`}
                   </span>
-                  <span className={`rounded-full px-2 py-0.5 font-medium ${empresaCor[rotaInfo.empresa] ?? "bg-muted text-muted-foreground"}`}>
+                  <span className={`rounded-full px-2 py-0.5 font-medium shrink-0 ${empresaCor[rotaInfo.empresa] ?? "bg-muted text-muted-foreground"}`}>
                     {rotaInfo.empresa}
                   </span>
                   {rotaInfo.tarifaComum && (
-                    <span className="text-muted-foreground">
+                    <span className="text-muted-foreground shrink-0">
                       {formatTarifa(rotaInfo.tarifaComum)}
-                      {rotaInfo.tarifaEstudante && (
-                        <span className="text-green-600 dark:text-green-400"> · Estudante {formatTarifa(rotaInfo.tarifaEstudante)}</span>
-                      )}
                     </span>
                   )}
-                  <span className="text-muted-foreground">
-                    {filteredSchedules.length} horário{filteredSchedules.length !== 1 ? "s" : ""}
-                  </span>
                 </div>
               ) : (
-                <span className="text-xs text-muted-foreground">
+                <span className="text-xs text-muted-foreground truncate">
                   {filteredSchedules.length > 0 ? `${filteredSchedules.length} horários disponíveis` : "Selecione origem e destino"}
                 </span>
               )}
@@ -294,54 +283,51 @@ export default function BusScheduleFilter({ schedules, rotasMapa }: BusScheduleF
                 href={`/rota/${slugify(origin)}-ate-${slugify(destination)}`}
                 className="flex items-center justify-between rounded-xl border border-primary/20 bg-primary/5 px-3 py-2 text-xs font-medium text-primary hover:bg-primary/10 transition-colors"
               >
-                <span>📋 Ver página completa desta rota</span>
-                <span className="opacity-60">→</span>
+                <span className="truncate">📋 Ver página completa desta rota</span>
+                <span className="opacity-60 shrink-0 ml-2">→</span>
               </Link>
             )}
           </div>
         </div>
 
         {proximoHorario && isHoje && (
-          <div className="rounded-2xl border-2 border-primary/40 bg-primary/5 dark:bg-primary/10 p-4 flex items-center gap-4">
-            <div className="shrink-0 flex flex-col items-center">
-              <span className="text-4xl font-bold tabular-nums text-primary leading-none">{proximoHorario.horario}</span>
-              <span className="text-xs font-medium text-primary/70 mt-1">em {tempoAte(proximoHorario.horario)}</span>
+          <div className="rounded-2xl border-2 border-primary/40 bg-primary/5 dark:bg-primary/10 p-3.5 md:p-4 flex items-center gap-3 w-full min-w-0">
+            <div className="shrink-0 text-center">
+              <span className="text-2xl md:text-4xl font-bold tabular-nums text-primary leading-none block">{proximoHorario.horario}</span>
+              <span className="text-[11px] md:text-xs font-medium text-primary/70 mt-1 block">em {tempoAte(proximoHorario.horario)}</span>
             </div>
-            <div className="flex-1 min-w-0 border-l border-primary/20 pl-4">
-              <p className="text-sm font-semibold text-foreground truncate">
+            <div className="flex-1 min-w-0 border-l border-primary/20 pl-3">
+              <p className="text-xs md:text-sm font-semibold text-foreground truncate">
                 {proximoHorario.origem} → {proximoHorario.destino}
               </p>
               <div className="flex flex-wrap items-center gap-1.5 mt-1">
-                <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${empresaCor[proximoHorario.empresaNome] ?? "bg-muted text-muted-foreground"}`}>
+                <span className={`rounded-full px-2 py-0.5 text-[11px] font-medium ${empresaCor[proximoHorario.empresaNome] ?? "bg-muted text-muted-foreground"}`}>
                   {proximoHorario.empresaNome}
                 </span>
-                {proximoHorario.tipo === "intermediario" && (
-                  <span className="rounded-full px-2 py-0.5 text-xs bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-200">
-                    ponto intermediário
-                  </span>
-                )}
                 {proximoHorario.tarifaComum && (
-                  <span className="text-xs text-muted-foreground">{formatTarifa(proximoHorario.tarifaComum)}</span>
+                  <span className="text-[11px] text-muted-foreground">{formatTarifa(proximoHorario.tarifaComum)}</span>
                 )}
               </div>
             </div>
-            <BotaoAlarme
-              horario={proximoHorario.horario}
-              origem={proximoHorario.origem}
-              destino={proximoHorario.destino}
-              empresa={proximoHorario.empresaNome}
-            />
-            {proximoHorario.sourceUrl && (
-              <button onClick={() => setModalUrl(proximoHorario.sourceUrl!)} className="shrink-0 p-2 text-muted-foreground hover:text-primary rounded-full">
-                <LinkIcon size={14} />
-              </button>
-            )}
+            <div className="shrink-0 flex items-center gap-1">
+              <BotaoAlarme
+                horario={proximoHorario.horario}
+                origem={proximoHorario.origem}
+                destino={proximoHorario.destino}
+                empresa={proximoHorario.empresaNome}
+              />
+              {proximoHorario.sourceUrl && (
+                <button onClick={() => setModalUrl(proximoHorario.sourceUrl!)} className="p-2 text-muted-foreground hover:text-primary rounded-full">
+                  <LinkIcon size={14} />
+                </button>
+              )}
+            </div>
           </div>
         )}
 
         {paginatedSchedules.length > 0 ? (
-          <>
-            <div className="hidden md:block rounded-2xl border bg-card shadow-sm overflow-hidden">
+          <div className="w-full min-w-0 space-y-3">
+            <div className="hidden md:block rounded-2xl border bg-card shadow-sm overflow-x-auto w-full">
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b bg-muted/40 text-xs text-muted-foreground">
@@ -411,13 +397,13 @@ export default function BusScheduleFilter({ schedules, rotasMapa }: BusScheduleF
               </table>
             </div>
 
-            <div className="flex flex-col gap-2 md:hidden">
+            <div className="flex flex-col gap-2 md:hidden w-full min-w-0">
               {paginatedSchedules.map((s, idx) => {
                 const isProximo = isHoje && (currentPage - 1) * itensPorPagina + idx === indiceDoProximo;
                 return (
-                  <div key={s.id} className={`rounded-xl border p-3.5 flex items-center gap-3 ${isProximo ? "border-primary/40 bg-primary/5" : "bg-card"}`}>
-                    <div className="shrink-0 text-center w-16">
-                      <div className={`text-2xl font-bold tabular-nums leading-none ${isProximo ? "text-primary" : "text-foreground"}`}>
+                  <div key={s.id} className={`rounded-xl border p-3.5 flex items-center gap-3 w-full min-w-0 ${isProximo ? "border-primary/40 bg-primary/5" : "bg-card"}`}>
+                    <div className="shrink-0 text-center w-14">
+                      <div className={`text-xl font-bold tabular-nums leading-none ${isProximo ? "text-primary" : "text-foreground"}`}>
                         {s.horario}
                       </div>
                       {isProximo && isHoje && (
@@ -425,16 +411,13 @@ export default function BusScheduleFilter({ schedules, rotasMapa }: BusScheduleF
                       )}
                     </div>
                     <div className="flex-1 min-w-0 border-l pl-3">
-                      <p className="text-sm font-semibold text-foreground truncate">{s.origem} → {s.destino}</p>
+                      <p className="text-xs font-semibold text-foreground truncate">{s.origem} → {s.destino}</p>
                       <div className="flex flex-wrap items-center gap-1.5 mt-1">
-                        <span className={`rounded-full px-1.5 py-0 text-[11px] font-medium ${empresaCor[s.empresaNome] ?? "bg-muted text-muted-foreground"}`}>
+                        <span className={`rounded-full px-1.5 py-0 text-[10px] font-medium truncate max-w-[120px] ${empresaCor[s.empresaNome] ?? "bg-muted text-muted-foreground"}`}>
                           {s.empresaNome}
                         </span>
-                        {s.tipo === "intermediario" && (
-                          <span className="rounded-full px-1.5 py-0 text-[11px] bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-200">ponto</span>
-                        )}
                         {s.tarifaComum && (
-                          <span className="text-[11px] text-muted-foreground">{formatTarifa(s.tarifaComum)}</span>
+                          <span className="text-[10px] text-muted-foreground">{formatTarifa(s.tarifaComum)}</span>
                         )}
                       </div>
                     </div>
@@ -452,17 +435,17 @@ export default function BusScheduleFilter({ schedules, rotasMapa }: BusScheduleF
             </div>
 
             {totalPages > 1 && (
-              <div className="flex justify-center items-center gap-3 py-2">
+              <div className="flex justify-center items-center gap-3 py-2 w-full">
                 <Button variant="outline" size="sm" disabled={currentPage === 1} onClick={() => setCurrentPage((p) => p - 1)}>← Anterior</Button>
                 <span className="text-sm text-muted-foreground tabular-nums">{currentPage} / {totalPages}</span>
                 <Button variant="outline" size="sm" disabled={currentPage === totalPages} onClick={() => setCurrentPage((p) => p + 1)}>Próximo →</Button>
               </div>
             )}
-          </>
+          </div>
         ) : (
-          <div className="rounded-2xl border-2 border-dashed bg-card p-10 text-center">
+          <div className="rounded-2xl border-2 border-dashed bg-card p-8 text-center w-full min-w-0">
             <Bus className="mx-auto h-10 w-10 text-muted-foreground/30 mb-3" />
-            <p className="text-muted-foreground font-medium">
+            <p className="text-sm text-muted-foreground font-medium">
               {isHydrated ? mensagemVazio : "Selecione origem e destino para ver os horários."}
             </p>
           </div>

@@ -72,12 +72,22 @@ export default function HorariosPage({ horarios, rotasMapa, error }: HorariosPag
       <Head>
         <title>Consulta de Horários — BusOnTime</title>
       </Head>
-      <div className="flex flex-col items-center w-full p-4 md:p-6 pb-24 max-w-4xl mx-auto">
-        <h1 className="text-2xl font-bold mb-2">Consulta de Horários Intermunicipais</h1>
-        <p className="text-sm text-muted-foreground mb-6">
+      {/*
+        Adicionados:
+        - overflow-x-hidden no container externo
+        - w-full e min-w-0 para travar vazamentos no mobile
+      */}
+      <div className="w-full max-w-4xl mx-auto p-4 md:p-6 pb-24 flex flex-col items-center overflow-x-hidden min-w-0">
+        <h1 className="text-xl md:text-2xl font-bold mb-2 text-center">
+          Consulta de Horários Intermunicipais
+        </h1>
+        <p className="text-xs md:text-sm text-muted-foreground mb-6 text-center">
           Selecione a origem e o destino para verificar as próximas saídas.
         </p>
-        <BusScheduleFilter schedules={horarios} rotasMapa={rotasMapa} />
+
+        <div className="w-full min-w-0">
+          <BusScheduleFilter schedules={horarios} rotasMapa={rotasMapa} />
+        </div>
       </div>
     </>
   );
