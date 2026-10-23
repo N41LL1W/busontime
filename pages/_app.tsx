@@ -82,7 +82,9 @@ function MyApp({ Component, pageProps }: AppProps) {
 
       <div className="min-h-screen bg-background text-foreground transition-colors">
         <header className="flex justify-between items-center p-4 border-b sticky top-0 bg-background/80 backdrop-blur-sm z-10">
-          <h1 className="text-2xl font-bold">BusOnTime</h1>
+          <Link href="/" className="hover:opacity-80 transition-opacity">
+            <h1 className="text-2xl font-bold">BusOnTime</h1>
+          </Link>
           <button
             onClick={() => setDarkMode(!darkMode)}
             className="px-4 py-2 rounded-lg bg-secondary text-secondary-foreground hover:bg-secondary/80 transition-colors"
